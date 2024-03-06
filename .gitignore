@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+## 서버 설정 정보 ##
+!**/src/main/resources/application.yml
+
 ### STS ###
 .apt_generated
 .classpath
