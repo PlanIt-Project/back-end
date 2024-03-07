@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "banner_id")
+    @Column(name = "id")
     private Long Id;
 
     @Column

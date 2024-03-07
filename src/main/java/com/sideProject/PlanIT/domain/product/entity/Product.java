@@ -9,7 +9,7 @@ import java.time.Period;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
+    @Column(name = "id")
     private Long Id;
 
     @Column(name = "product_name")
