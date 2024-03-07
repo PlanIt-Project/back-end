@@ -42,10 +42,25 @@ public class Notice {
         this.title = noticeRequestDto.getTitle();
         this.startAt = noticeRequestDto.getStartAt();
         this.endAt = noticeRequestDto.getEndAt();
-        this.imagePath = noticeRequestDto.getImage().getOriginalFilename();
-        this.attachmentPath = noticeRequestDto.getAttachment().getOriginalFilename();
+        if (noticeRequestDto.getImage() != null) {
+            this.imagePath = noticeRequestDto.getImage().getOriginalFilename();
+        }
+        if (noticeRequestDto.getAttachment() != null) {
+            this.attachmentPath = noticeRequestDto.getAttachment().getOriginalFilename();
+        }
         this.content = noticeRequestDto.getContent();
 
         return this;
+    }
+
+    public static NoticeDto.NoticeResponseDto toDto(Notice notice) {
+        return NoticeDto.NoticeResponseDto.builder()
+                .title(notice.title)
+                .startAt(notice.startAt)
+                .endAt(notice.endAt)
+                .attachmentPath(notice.attachmentPath)
+                .imagePath(notice.imagePath)
+                .content(notice.content)
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.post.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,17 @@ public class NoticeDto {
         private LocalDateTime endAt;
         private MultipartFile attachment;
         private MultipartFile image;
+        private String content;
+    }
+
+    @Getter
+    @Builder
+    public static class NoticeResponseDto {
+        private String title;
+        private LocalDateTime startAt;
+        private LocalDateTime endAt;
+        private String attachmentPath;
+        private String imagePath;
         private String content;
     }
 }
