@@ -45,4 +45,14 @@ public class Product {
 
         return this;
     }
+
+    public static ProductDto.ProductResponseDto toDto(Product product) {
+        return ProductDto.ProductResponseDto.builder()
+                .name(product.name)
+                .number(product.number)
+                .period(product.period)
+                .price(product.price)
+                .type(product.type)
+                .build();
+    }
 }
