@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class NoticeServiceImpl implements NoticeService{
 
     private final NoticeRepository noticeRepository;
-
+  
     @Autowired
     private FileHandler fileHandler;
 
