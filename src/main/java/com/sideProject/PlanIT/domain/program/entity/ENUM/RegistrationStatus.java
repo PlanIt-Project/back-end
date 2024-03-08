@@ -1,7 +1,8 @@
 package com.sideProject.PlanIT.domain.program.entity.ENUM;
 
-public enum RegisterationStatus {
+public enum RegistrationStatus {
     PENDING,
     ACCEPTED,
-    DECLINED
+    DECLINED,
+    REFUND,
 }

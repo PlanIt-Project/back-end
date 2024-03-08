@@ -21,7 +21,6 @@ public class Product {
     @Column(name = "id")
     private Long Id;
 
-    @Column(name = "product_name")
     private String name;
 
     @Column
