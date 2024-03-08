@@ -1,18 +1,17 @@
-package com.sideProject.PlanIT.domain.post.service;
+package com.sideProject.PlanIT.common.modules;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 
-@Service
-public class FileServiceImpl implements FileService{
+@Component
+public class FileHandler {
     @Value("${fileStorage.dir}")
     private String fileStorageDir;
 
-    @Override
     public String saveFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;
