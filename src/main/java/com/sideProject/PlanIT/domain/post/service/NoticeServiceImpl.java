@@ -5,18 +5,21 @@ import com.sideProject.PlanIT.common.modules.FileHandler;
 import com.sideProject.PlanIT.domain.post.dto.NoticeDto;
 import com.sideProject.PlanIT.domain.post.entity.Notice;
 import com.sideProject.PlanIT.domain.post.repository.NoticeRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService{
 
     private final NoticeRepository noticeRepository;
-    private final FileHandler fileHandler;
+
+    @Autowired
+    private FileHandler fileHandler;
 
     @Override
     public Notice createNotice(NoticeDto.NoticeRequestDto noticeRequestDto) {
