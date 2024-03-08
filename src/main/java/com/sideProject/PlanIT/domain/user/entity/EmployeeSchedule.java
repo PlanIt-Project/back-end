@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class EmployeeSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_schedule_id")
+    @Column(name = "id")
     private Long Id;
 
     @Column

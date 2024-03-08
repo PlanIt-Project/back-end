@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class HoliDay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "holiday_id")
+    @Column(name = "id")
     private Long Id;
 
     @ManyToOne

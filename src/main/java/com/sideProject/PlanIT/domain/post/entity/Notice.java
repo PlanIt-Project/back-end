@@ -8,8 +8,11 @@ import java.time.LocalDateTime;
 public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notice_id")
+    @Column(name = "id")
     private Long Id;
+
+    @Column
+    private String title;
 
     @Column
     private LocalDateTime startAt;
