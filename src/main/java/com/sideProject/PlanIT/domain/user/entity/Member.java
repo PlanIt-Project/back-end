@@ -1,5 +1,6 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
+import com.sideProject.PlanIT.domain.user.dto.MemberDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,14 +19,14 @@ public class Member {
     @Column(name = "id")
     private Long Id;
 
-    @Column
-    private String name;
-
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column
     private String password;
+
+    @Column
+    private String name;
 
     @Column
     private String phone_number;
@@ -48,5 +49,21 @@ public class Member {
         this.birth = birth;
         this.address = address;
         this.role = role;
+    }
+
+    public void update(MemberDto.MemberEditRequestDto memberEditRequestDto) {
+        this.email = memberEditRequestDto.getEmail();
+        this.name = memberEditRequestDto.getName();
+        this.birth = memberEditRequestDto.getBirth();
+        this.address = memberEditRequestDto.getAddress();
+        this.phone_number = memberEditRequestDto.getPhone_number();
+    }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    public void  grantEmployeeAuth() {
+        this.role = MemberRole.TRAINER;
     }
 }
