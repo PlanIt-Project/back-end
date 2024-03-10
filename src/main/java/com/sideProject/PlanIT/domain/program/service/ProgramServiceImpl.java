@@ -5,8 +5,10 @@ import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
@@ -28,6 +30,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * 프로그램 관련 Service
+ * 프로그램 조회, 환불, 수정, 승인 요청
+ *
+ * @author 김문진
+ */
 @Slf4j
 @Service
 @Transactional
@@ -167,12 +175,19 @@ public class ProgramServiceImpl implements ProgramService {
         }
     }
 
+    /**
+     * 프로그램을 조회하여 리스트를 반환하는 메서드
+     *
+     * @param userId 조회하는 유저 정보
+     * @param option 조회 옵션(ALL : 전부, VAILD : 유효한 프로그램, UNVAILD : 유효하지 않은 프로그램)
+     * @return List<ProgramResponse>
+     */
     @Override
     public List<ProgramResponse> find(long userId, ProgramSearchStatus option) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-
+        //todo : 유저가 어드민 일 때 유저에 따라 조회하는거 구현
         List<Program> programs = null;
         if(member.getRole() == MemberRole.MEMBER) {
             programs = findProgramByUser(member, option);
@@ -194,7 +209,7 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByEmployeeId(employee.getId());
         } else {
-            return programRepository.findInProgressProgramsByEmployeeId(employee.getId());
+            return programRepository.findByEmployeeIdAndStatus(employee.getId(), ProgramStatus.IN_PROGRESS);
         }
     }
     private List<Program> findProgramByUser(Member member, ProgramSearchStatus option) {
@@ -202,7 +217,7 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByMemberId(member.getId());
         } else {
-            return programRepository.findInProgressProgramsByMemberId(member.getId());
+            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS);
         }
     }
 
@@ -211,7 +226,47 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findAll();
         } else {
-            return programRepository.findInProgressProgramsAll();
+            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS);
+        }
+    }
+
+    @Override
+    public List<RegistrationResponse> findRegistration(long userId, RegistrationSearchStatus option) {
+        Member member = memberRepository.findById(userId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+        //todo : 유저가 어드민 일 때 유저에 따라 조회하는거 구현
+        List<Registration> registration;
+        if(member.getRole() == MemberRole.MEMBER) {
+            registration = findRegistrationByUser(member, option);
+        } else {
+            registration = findRegistration(option);
+        }
+
+        if(registration.isEmpty()) {
+            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
+        }
+
+        return registration.stream().map(RegistrationResponse::of).toList();
+    }
+
+    private List<Registration> findRegistrationByUser(Member member, RegistrationSearchStatus option) {
+        //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
+        if(option == RegistrationSearchStatus.ALL) {
+            return registrationRepository.findByMemberId(member.getId());
+        } else {
+            //PENDING인 상태 조회
+            return registrationRepository.findByMemberIdAndStatus(member.getId(),RegistrationStatus.PENDING);
+        }
+    }
+
+    private List<Registration> findRegistration(RegistrationSearchStatus option) {
+        //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
+        log.info("{} = option", option);
+        if(option == RegistrationSearchStatus.ALL) {
+            return registrationRepository.findAll();
+        } else {
+            return registrationRepository.findByStatus(RegistrationStatus.PENDING);
         }
     }
 }

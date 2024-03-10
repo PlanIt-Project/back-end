@@ -3,7 +3,9 @@ package com.sideProject.PlanIT.domain.program.controller;
 import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
+import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
 import jakarta.websocket.server.PathParam;
 import lombok.Getter;
@@ -23,6 +25,15 @@ import static com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchSta
 public class ProgramController {
 
     private final ProgramService programService;
+
+
+    @GetMapping("/")
+    public ApiResponse<List<ProgramResponse>> search(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") ProgramSearchStatus option) {
+        //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
+        return ApiResponse.ok(
+                programService.find(1L, option)
+        );
+    }
 
     @DeleteMapping("/{id}")
     public ApiResponse<String> refund(@PathVariable("id") Long id) {
@@ -49,12 +60,14 @@ public class ProgramController {
         );
     }
 
-    @GetMapping("/")
-    public ApiResponse<List<ProgramResponse>> search(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") ProgramSearchStatus option) {
+    @GetMapping("/registration")
+    public ApiResponse<List<RegistrationResponse>> findRegistration(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") RegistrationSearchStatus option) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
         return ApiResponse.ok(
-            programService.find(1L, option)
+                programService.findRegistration(1L,option)
         );
     }
+
+
 
 }
