@@ -209,7 +209,7 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByEmployeeId(employee.getId());
         } else {
-            return programRepository.findInProgressProgramsByEmployeeId(employee.getId());
+            return programRepository.findByEmployeeIdAndStatus(employee.getId(), ProgramStatus.IN_PROGRESS);
         }
     }
     private List<Program> findProgramByUser(Member member, ProgramSearchStatus option) {
@@ -217,7 +217,7 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByMemberId(member.getId());
         } else {
-            return programRepository.findInProgressProgramsByMemberId(member.getId());
+            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS);
         }
     }
 
@@ -226,7 +226,7 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findAll();
         } else {
-            return programRepository.findInProgressProgramsAll();
+            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS);
         }
     }
 
