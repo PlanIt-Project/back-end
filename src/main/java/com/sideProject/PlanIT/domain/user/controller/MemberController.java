@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.user.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
+import com.sideProject.PlanIT.domain.user.dto.EmployeeDto;
 import com.sideProject.PlanIT.domain.user.dto.MemberDto;
 import com.sideProject.PlanIT.domain.user.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,7 @@ public class MemberController {
     }
 
     @PutMapping("/member/employee/{member_id}")
-    public ApiResponse<?> grantEmployeeAuth(@PathVariable Long member_id) {
-        return ApiResponse.ok(memberService.grantEmployeeAuth(member_id));
+    public ApiResponse<?> grantEmployeeAuth(@PathVariable Long member_id, @RequestBody EmployeeDto.TrainerRequestDto trainerRequestDto) {
+        return ApiResponse.ok(memberService.grantEmployeeAuth(member_id, trainerRequestDto));
     }
 }

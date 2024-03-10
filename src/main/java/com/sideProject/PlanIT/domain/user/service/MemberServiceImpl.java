@@ -2,9 +2,12 @@ package com.sideProject.PlanIT.domain.user.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
+import com.sideProject.PlanIT.domain.user.dto.EmployeeDto;
 import com.sideProject.PlanIT.domain.user.dto.MemberDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
+import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
@@ -102,19 +106,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberDto.MemberResponseDto> findAllEmployees() {
-        List<Member> employees = memberRepository.findAllEmployees();
+    public List<EmployeeDto.TrainerResponseDto> findAllEmployees() {
+        List<Employee> employees = employeeRepository.findAllTrainers();
         return employees.stream()
-                .map(Member::toDto)
+                .map(Employee::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public String grantEmployeeAuth(Long member_id) {
+    public String grantEmployeeAuth(Long member_id, EmployeeDto.TrainerRequestDto trainerRequestDto) {
         Member memberToEmployee = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no exist id"));
         memberToEmployee.grantEmployeeAuth();
         memberRepository.save(memberToEmployee);
+
+        employeeRepository.save(Employee.builder()
+                        .member(memberToEmployee)
+                        .career(trainerRequestDto.getCareer())
+                .build());
 
         return "직원 설정 완료";
     }

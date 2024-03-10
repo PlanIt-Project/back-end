@@ -1,5 +1,6 @@
 package com.sideProject.PlanIT.domain.user.service;
 
+import com.sideProject.PlanIT.domain.user.dto.EmployeeDto;
 import com.sideProject.PlanIT.domain.user.dto.MemberDto;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 
@@ -13,6 +14,6 @@ public interface MemberService {
     MemberDto.MemberResponseDto findMember(Long member_id);
 
     List<MemberDto.MemberResponseDto> findAllMembers();
-    List<MemberDto.MemberResponseDto> findAllEmployees();
-    String grantEmployeeAuth(Long member_id);
+    List<EmployeeDto.TrainerResponseDto> findAllEmployees();
+    String grantEmployeeAuth(Long member_id, EmployeeDto.TrainerRequestDto trainerRequestDto);
 }
