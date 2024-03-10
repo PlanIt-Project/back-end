@@ -26,16 +26,16 @@ public class ProgramResponse {
     public ProgramResponse(
             long id,
             int remainedNumber,
-            LocalDate startAt,
-            LocalDate endAt,
+            String startAt,
+            String endAt,
             ProgramStatus status,
             Product product,
             Member member,
             Employee employee) {
         this.id = id;
         this.remainedNumber = remainedNumber;
-        this.startAt = startAt.toString();
-        this.endAt = endAt.toString();
+        this.startAt = startAt;
+        this.endAt = endAt;
         this.status = status;
         this.productName = product.getName();
         this.member = member.getName();
@@ -46,8 +46,8 @@ public class ProgramResponse {
         return ProgramResponse.builder()
                 .id(program.getId())
                 .remainedNumber(program.getRemainedNumber())
-                .startAt(program.getStartAt())
-                .endAt(program.getEndAt())
+                .startAt(program.getStartAt().toString())
+                .endAt(program.getEndAt().toString())
                 .status(program.getStatus())
                 .product(program.getProduct())
                 .member(program.getMember())
