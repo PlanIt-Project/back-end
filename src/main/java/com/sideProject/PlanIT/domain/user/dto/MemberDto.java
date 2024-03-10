@@ -22,9 +22,9 @@ public class MemberDto {
     public static class MemberEditRequestDto {
         private String email;
         private String name;
+        private String phone_number;
         private LocalDate birth;
         private String address;
-        private String phone_number;
     }
 
     @Getter
@@ -35,9 +35,9 @@ public class MemberDto {
     }
 
     @Builder
+    @Getter
     public static class MemberResponseDto {
         private String email;
-        private String password;
         private String name;
         private String phone_number;
         private LocalDate birth;

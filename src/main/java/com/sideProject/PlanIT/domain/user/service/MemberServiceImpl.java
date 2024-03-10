@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,19 +88,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMember(Long member_id) {
+    public MemberDto.MemberResponseDto findMember(Long member_id) {
         return memberRepository.findById(member_id).orElseThrow(() ->
-                new IllegalArgumentException("no extist id"));
+                new IllegalArgumentException("no extist id")).toDto();
     }
 
     @Override
-    public List<Member> findAllMembers() {
-        return memberRepository.findAllMembers();
+    public List<MemberDto.MemberResponseDto> findAllMembers() {
+        List<Member> members = memberRepository.findAllMembers();
+        return members.stream()
+                .map(Member::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Member> findAllEmployees() {
-        return memberRepository.findAllEmployees();
+    public List<MemberDto.MemberResponseDto> findAllEmployees() {
+        List<Member> employees = memberRepository.findAllEmployees();
+        return employees.stream()
+                .map(Member::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -10,9 +10,9 @@ public interface MemberService {
     String deleteMember(Long member_id);
     Member editMember(Long member_id, MemberDto.MemberEditRequestDto memberEditRequestDto);
     String changePassword(Long member_id, MemberDto.MemberChangePasswordRequestDto memberChangePasswordRequestDto);
-    Member findMember(Long member_id);
+    MemberDto.MemberResponseDto findMember(Long member_id);
 
-    List<Member> findAllMembers();
-    List<Member> findAllEmployees();
+    List<MemberDto.MemberResponseDto> findAllMembers();
+    List<MemberDto.MemberResponseDto> findAllEmployees();
     String grantEmployeeAuth(Long member_id);
 }

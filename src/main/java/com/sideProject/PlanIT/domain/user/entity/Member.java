@@ -66,4 +66,15 @@ public class Member {
     public void  grantEmployeeAuth() {
         this.role = MemberRole.TRAINER;
     }
+
+    public MemberDto.MemberResponseDto toDto() {
+        return MemberDto.MemberResponseDto.builder()
+                .email(this.email)
+                .name(this.name)
+                .birth(this.birth)
+                .phone_number(this.phone_number)
+                .address(this.address)
+                .role(this.role)
+                .build();
+    }
 }
