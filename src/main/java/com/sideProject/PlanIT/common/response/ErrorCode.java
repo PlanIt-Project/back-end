@@ -10,6 +10,8 @@ public enum ErrorCode {
     INVALID_PARAMETER(400, "파라미터 값을 확인해주세요."),
     ALREADY_REFUNDED_PROGRAM(400, "이미 환불된 프로그램입니다."),
     ALREADY_APPROVE_PROGRAM(400, "이미 등록된 프로그램입니다."),
+    ALREADY_EXIST_EMAIL(400, "이미 존재하는 이메일입니다."),
+    INVALID_PASSWORD(400, "비밀번호가 틀렸습니다."),
 
 
     //404 Error Not found.
