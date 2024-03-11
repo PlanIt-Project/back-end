@@ -1,10 +1,19 @@
 package com.sideProject.PlanIT.domain.post.entity;
 
+import com.sideProject.PlanIT.domain.post.dto.BannerDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,13 +21,34 @@ public class Banner {
     private Long Id;
 
     @Column
+    private String title;
+
+    @Column
     private LocalDateTime startAt;
 
     @Column
-    //todo: 용도 다시 확인!
-    private boolean isExposure;
+    private LocalDateTime endAt;
 
     @Column
-    //todo: 이미지 파일 시스템이 저장 or DB 저장 or 외부 스토리지 사용 중에서 선별 (회의)
-    private String path;
+    private String imagePath;
+
+    public Banner update(BannerDto.BannerRequestDto bannerRequestDto) {
+        this.title = bannerRequestDto.getTitle();
+        this.startAt = bannerRequestDto.getStartAt();
+        this.endAt = bannerRequestDto.getEndAt();
+        if (bannerRequestDto.getImage() != null) {
+            this.imagePath = bannerRequestDto.getImage().getOriginalFilename();
+        }
+
+        return this;
+    }
+
+    public static BannerDto.BannerResponseDto toDto(Banner banner) {
+        return BannerDto.BannerResponseDto.builder()
+                .title(banner.title)
+                .startAt(banner.startAt)
+                .endAt(banner.endAt)
+                .imagePath(banner.imagePath)
+                .build();
+    }
 }
