@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.dto.ProductDto;
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
@@ -19,7 +20,7 @@ public class RegistrationResponse {
     private RegistrationStatus status;
     private int discount;
     private int totalPrice;
-    private ProductDto.ProductResponseDto product;
+    private ProductResponseDto product;
     private Long memberId;
     private String member;
 

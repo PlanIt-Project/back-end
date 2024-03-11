@@ -1,9 +1,10 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-import com.sideProject.PlanIT.common.baseentity.StartToEndTimeBaseEntity;
 import jakarta.persistence.*;
 
-public class WorkTime extends StartToEndTimeBaseEntity {
+import java.time.LocalDateTime;
+
+public class WorkTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -12,8 +13,13 @@ public class WorkTime extends StartToEndTimeBaseEntity {
     @Column
     private String week; // 요일
 
+    @Column
+    LocalDateTime startAt;
+
+    @Column
+    LocalDateTime endAt;
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     Employee employee;
-
 }

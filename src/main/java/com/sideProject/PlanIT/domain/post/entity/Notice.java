@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.post.entity;
 
-import com.sideProject.PlanIT.domain.post.dto.NoticeDto;
+import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
+import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +39,7 @@ public class Notice {
     @Column
     private String content;
 
-    public Notice update(NoticeDto.NoticeRequestDto noticeRequestDto) {
+    public Notice update(NoticeRequestDto noticeRequestDto) {
         this.title = noticeRequestDto.getTitle();
         this.startAt = noticeRequestDto.getStartAt();
         this.endAt = noticeRequestDto.getEndAt();
@@ -53,8 +54,8 @@ public class Notice {
         return this;
     }
 
-    public static NoticeDto.NoticeResponseDto toDto(Notice notice) {
-        return NoticeDto.NoticeResponseDto.builder()
+    public static NoticeResponseDto toDto(Notice notice) {
+        return NoticeResponseDto.builder()
                 .title(notice.title)
                 .startAt(notice.startAt)
                 .endAt(notice.endAt)

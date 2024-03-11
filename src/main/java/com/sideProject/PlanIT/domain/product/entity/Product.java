@@ -1,6 +1,8 @@
 package com.sideProject.PlanIT.domain.product.entity;
 
 import com.sideProject.PlanIT.domain.product.dto.ProductDto;
+import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,7 +37,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductType type;
 
-    public Product update(ProductDto.ProductRequestDto productRequestDto) {
+    public Product update(ProductRequestDto productRequestDto) {
         this.name = productRequestDto.getName();
         this.period = productRequestDto.getPeriod();
         this.number = productRequestDto.getNumber();
@@ -45,8 +47,8 @@ public class Product {
         return this;
     }
 
-    public static ProductDto.ProductResponseDto toDto(Product product) {
-        return ProductDto.ProductResponseDto.builder()
+    public static ProductResponseDto toDto(Product product) {
+        return ProductResponseDto.builder()
                 .name(product.name)
                 .number(product.number)
                 .period(product.period)
