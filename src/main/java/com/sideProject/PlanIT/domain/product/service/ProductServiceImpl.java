@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.product.service;
 
-import com.sideProject.PlanIT.domain.product.dto.ProductDto;
+import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     @Override
-    public Product createProduct(ProductDto.ProductRequestDto productRequestDto) {
+    public Product createProduct(ProductRequestDto productRequestDto) {
         return productRepository.save(Product.builder()
                         .name(productRequestDto.getName())
                         .period(productRequestDto.getPeriod())
@@ -27,7 +28,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product editProduct(Long product_id, ProductDto.ProductRequestDto productRequestDto) {
+    public Product editProduct(Long product_id, ProductRequestDto productRequestDto) {
         Product productToEdit = productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id"));
         return productRepository.save(productToEdit.update(productRequestDto));
     }
@@ -39,7 +40,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductDto.ProductResponseDto> findAllProducts() {
+    public List<ProductResponseDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(Product::toDto)
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductDto.ProductResponseDto findProduct(Long product_id) {
+    public ProductResponseDto findProduct(Long product_id) {
         return Product.toDto(productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
     }
 }

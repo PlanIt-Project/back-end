@@ -1,7 +1,8 @@
 package com.sideProject.PlanIT.domain.post.service;
 
 import com.sideProject.PlanIT.common.modules.FileHandler;
-import com.sideProject.PlanIT.domain.post.dto.BannerDto;
+import com.sideProject.PlanIT.domain.post.dto.request.BannerRequestDto;
+import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
 import com.sideProject.PlanIT.domain.post.entity.Banner;
 import com.sideProject.PlanIT.domain.post.repository.BannerRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class BannerServiceImpl implements BannerService{
     @Autowired
     private FileHandler fileHandler;
 
-    public Banner createBanner(BannerDto.BannerRequestDto bannerRequestDto) {
+    public Banner createBanner(BannerRequestDto bannerRequestDto) {
         return bannerRepository.save(Banner.builder()
                 .title(bannerRequestDto.getTitle())
                 .startAt(bannerRequestDto.getStartAt())
@@ -30,13 +31,13 @@ public class BannerServiceImpl implements BannerService{
     }
 
     @Override
-    public Banner editBanner(Long banner_id, BannerDto.BannerRequestDto bannerRequestDto) {
+    public Banner editBanner(Long banner_id, BannerRequestDto bannerRequestDto) {
         Banner bannerToEdit = bannerRepository.findById(banner_id).orElseThrow(() -> new IllegalStateException("no exist id"));
         return bannerRepository.save(bannerToEdit.update(bannerRequestDto));
     }
 
     @Override
-    public List<BannerDto.BannerResponseDto> findAllBanners() {
+    public List<BannerResponseDto> findAllBanners() {
         List<Banner> banners = bannerRepository.findAll();
         return banners.stream()
                 .map(Banner::toDto)
@@ -44,7 +45,7 @@ public class BannerServiceImpl implements BannerService{
     }
 
     @Override
-    public List<BannerDto.BannerResponseDto> findAllBannersInTime() {
+    public List<BannerResponseDto> findAllBannersInTime() {
         List<Banner> banners = bannerRepository.findByStartAtBeforeAndEndAtAfter();
         return banners.stream()
                 .map(Banner::toDto)
@@ -52,7 +53,7 @@ public class BannerServiceImpl implements BannerService{
     }
 
     @Override
-    public BannerDto.BannerResponseDto findBanner(Long banner_id) {
+    public BannerResponseDto findBanner(Long banner_id) {
         return Banner.toDto(bannerRepository.findById(banner_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
     }
 }

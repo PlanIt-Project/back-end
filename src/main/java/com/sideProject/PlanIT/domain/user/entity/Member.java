@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-import com.sideProject.PlanIT.domain.user.dto.MemberDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -51,7 +52,7 @@ public class Member {
         this.role = role;
     }
 
-    public void update(MemberDto.MemberEditRequestDto memberEditRequestDto) {
+    public void update(MemberEditRequestDto memberEditRequestDto) {
         this.email = memberEditRequestDto.getEmail();
         this.name = memberEditRequestDto.getName();
         this.birth = memberEditRequestDto.getBirth();
@@ -67,8 +68,8 @@ public class Member {
         this.role = MemberRole.TRAINER;
     }
 
-    public MemberDto.MemberResponseDto toDto() {
-        return MemberDto.MemberResponseDto.builder()
+    public MemberResponseDto toDto() {
+        return MemberResponseDto.builder()
                 .email(this.email)
                 .name(this.name)
                 .birth(this.birth)

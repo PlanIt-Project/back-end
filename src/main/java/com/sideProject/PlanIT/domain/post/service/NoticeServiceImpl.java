@@ -2,7 +2,8 @@ package com.sideProject.PlanIT.domain.post.service;
 
 
 import com.sideProject.PlanIT.common.modules.FileHandler;
-import com.sideProject.PlanIT.domain.post.dto.NoticeDto;
+import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
+import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import com.sideProject.PlanIT.domain.post.entity.Notice;
 import com.sideProject.PlanIT.domain.post.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class NoticeServiceImpl implements NoticeService{
     private FileHandler fileHandler;
 
     @Override
-    public Notice createNotice(NoticeDto.NoticeRequestDto noticeRequestDto) {
+    public Notice createNotice(NoticeRequestDto noticeRequestDto) {
         return noticeRepository.save(Notice.builder()
                 .title(noticeRequestDto.getTitle())
                 .startAt(noticeRequestDto.getStartAt())
@@ -34,7 +35,7 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public Notice editNotice(Long notice_id, NoticeDto.NoticeRequestDto noticeRequestDto) {
+    public Notice editNotice(Long notice_id, NoticeRequestDto noticeRequestDto) {
         Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id"));
         fileHandler.saveFile(noticeRequestDto.getAttachment());
         fileHandler.saveFile(noticeRequestDto.getImage());
@@ -44,7 +45,7 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeDto.NoticeResponseDto> findAllNotices() {
+    public List<NoticeResponseDto> findAllNotices() {
         List<Notice> notices = noticeRepository.findAll();
         return notices.stream()
                 .map(Notice::toDto)
@@ -52,14 +53,14 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeDto.NoticeResponseDto> findAllNoticesInTime() {
+    public List<NoticeResponseDto> findAllNoticesInTime() {
         List<Notice> notices = noticeRepository.findByStartAtBeforeAndEndAtAfter();
         return notices.stream()
                 .map(Notice::toDto)
                 .collect(Collectors.toList());
     }
 
-    public NoticeDto.NoticeResponseDto findNotice(Long notice_id) {
+    public NoticeResponseDto findNotice(Long notice_id) {
         return Notice.toDto(noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id")));
     }
 

@@ -1,16 +1,12 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
 
-import com.sideProject.PlanIT.domain.user.dto.EmployeeDto;
-import com.sideProject.PlanIT.domain.user.dto.MemberDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.time.Period;
 
 @Entity
 @Getter
@@ -34,8 +30,8 @@ public class Employee {
         this.member = member;
     }
 
-    public EmployeeDto.TrainerResponseDto toDto() {
-        return EmployeeDto.TrainerResponseDto.builder()
+    public TrainerResponseDto toDto() {
+        return TrainerResponseDto.builder()
                 .email(this.member.getEmail())
                 .name(this.member.getName())
                 .birth(this.member.getBirth())

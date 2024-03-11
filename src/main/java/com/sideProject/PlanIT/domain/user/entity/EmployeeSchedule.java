@@ -1,14 +1,18 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-import com.sideProject.PlanIT.common.baseentity.StartToEndTimeBaseEntity;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.ScheduleStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-public class EmployeeSchedule extends StartToEndTimeBaseEntity {
+@NoArgsConstructor
+@Getter
+public class EmployeeSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -17,6 +21,12 @@ public class EmployeeSchedule extends StartToEndTimeBaseEntity {
     @Column
     private LocalDate date;
 
+    @Column
+    private LocalDateTime startAt;
+
+    @Column
+    private LocalDateTime endAt;
+
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status;
 
@@ -24,4 +34,12 @@ public class EmployeeSchedule extends StartToEndTimeBaseEntity {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @Builder
+    public EmployeeSchedule(LocalDate date, LocalDateTime startAt, LocalDateTime endAt, ScheduleStatus status, Employee employee) {
+        this.date = date;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.status = status;
+        this.employee = employee;
+    }
 }

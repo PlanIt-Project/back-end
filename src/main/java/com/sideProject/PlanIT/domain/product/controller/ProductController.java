@@ -1,12 +1,14 @@
 package com.sideProject.PlanIT.domain.product.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.product.dto.ProductDto;
+import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -15,47 +17,27 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/product")
-    public ApiResponse<?> createProduct(@RequestBody ProductDto.ProductRequestDto productRequestDto) {
-        try {
-            return ApiResponse.ok(productService.createProduct(productRequestDto));
-        } catch (Exception e) {
-            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
-        }
+    public ApiResponse<Product> createProduct(@RequestBody ProductRequestDto productRequestDto) {
+        return ApiResponse.ok(productService.createProduct(productRequestDto));
     }
 
     @PutMapping("/product/{product_id}")
-    public ApiResponse<?> editProduct(@PathVariable Long product_id, @RequestBody ProductDto.ProductRequestDto productRequestDto) {
-        try {
-            return ApiResponse.ok(productService.editProduct(product_id, productRequestDto));
-        } catch (Exception e) {
-            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
-        }
+    public ApiResponse<Product> editProduct(@PathVariable Long product_id, @RequestBody ProductRequestDto productRequestDto) {
+        return ApiResponse.ok(productService.editProduct(product_id, productRequestDto));
     }
 
     @DeleteMapping("/product/{product_id}")
-    public ApiResponse<?> deleteProduct(@PathVariable Long product_id) {
-        try {
-            return ApiResponse.ok(productService.deleteProduct(product_id));
-        } catch (Exception e) {
-            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
-        }
+    public ApiResponse<String> deleteProduct(@PathVariable Long product_id) {
+        return ApiResponse.ok(productService.deleteProduct(product_id));
     }
 
     @GetMapping("/product")
-    public ApiResponse<?> findAllProducts() {
-        try {
-            return ApiResponse.ok(productService.findAllProducts());
-        } catch (Exception e) {
-            return ApiResponse.error(ErrorCode.RESOURCE_NOT_FOUND);
-        }
+    public ApiResponse<List<ProductResponseDto>> findAllProducts() {
+        return ApiResponse.ok(productService.findAllProducts());
     }
 
     @GetMapping("/product/{product_id}")
-    public ApiResponse<?> findProduct(@PathVariable Long product_id) {
-        try {
-            return ApiResponse.ok(productService.findProduct(product_id));
-        } catch (Exception e) {
-            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
-        }
+    public ApiResponse<ProductResponseDto> findProduct(@PathVariable Long product_id) {
+        return ApiResponse.ok(productService.findProduct(product_id));
     }
 }

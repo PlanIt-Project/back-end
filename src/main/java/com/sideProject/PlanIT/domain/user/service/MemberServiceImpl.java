@@ -2,8 +2,12 @@ package com.sideProject.PlanIT.domain.user.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.user.dto.EmployeeDto;
-import com.sideProject.PlanIT.domain.user.dto.MemberDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
@@ -25,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public Member signUp(MemberDto.MemberSignUpRequestDto memberSignUpRequestDto) {
+    public Member signUp(MemberSignUpRequestDto memberSignUpRequestDto) {
         memberRepository.findByEmail(memberSignUpRequestDto.getEmail())
                 .ifPresent( user1 -> {
                     throw new CustomException("이메일이 이미 존재합니다.", ErrorCode.ALREADY_EXIST_EMAIL);
@@ -54,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member editMember(Long member_id, MemberDto.MemberEditRequestDto memberEditRequestDto) {
+    public Member editMember(Long member_id, MemberEditRequestDto memberEditRequestDto) {
         Member memberToEdit = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id"));
 
@@ -72,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String changePassword(Long member_id, MemberDto.MemberChangePasswordRequestDto memberChangePasswordRequestDto) {
+    public String changePassword(Long member_id, MemberChangePasswordRequestDto memberChangePasswordRequestDto) {
         Member memberToChangePassword = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no exist id"));
 
@@ -92,13 +96,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDto.MemberResponseDto findMember(Long member_id) {
+    public MemberResponseDto findMember(Long member_id) {
         return memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id")).toDto();
     }
 
     @Override
-    public List<MemberDto.MemberResponseDto> findAllMembers() {
+    public List<MemberResponseDto> findAllMembers() {
         List<Member> members = memberRepository.findAllMembers();
         return members.stream()
                 .map(Member::toDto)
@@ -106,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<EmployeeDto.TrainerResponseDto> findAllEmployees() {
+    public List<TrainerResponseDto> findAllEmployees() {
         List<Employee> employees = employeeRepository.findAllTrainers();
         return employees.stream()
                 .map(Employee::toDto)
@@ -114,7 +118,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String grantEmployeeAuth(Long member_id, EmployeeDto.TrainerRequestDto trainerRequestDto) {
+    public String grantEmployeeAuth(Long member_id, TrainerRequestDto trainerRequestDto) {
         Member memberToEmployee = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no exist id"));
         memberToEmployee.grantEmployeeAuth();
