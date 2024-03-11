@@ -1,15 +1,11 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
-import com.sideProject.PlanIT.domain.product.dto.ProductDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
-import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Builder

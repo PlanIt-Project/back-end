@@ -1,6 +1,5 @@
 package com.sideProject.PlanIT.domain.post.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 

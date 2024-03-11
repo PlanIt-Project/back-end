@@ -1,21 +1,13 @@
 package com.sideProject.PlanIT.domain.product.entity;
 
-import com.sideProject.PlanIT.domain.product.dto.ProductDto;
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.Period;
+import lombok.*;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Product {
     @Id
@@ -36,6 +28,15 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private ProductType type;
+
+    @Builder
+    public Product(String name, String period, int number, int price, ProductType type) {
+        this.name = name;
+        this.period = period;
+        this.number = number;
+        this.price = price;
+        this.type = type;
+    }
 
     public Product update(ProductRequestDto productRequestDto) {
         this.name = productRequestDto.getName();

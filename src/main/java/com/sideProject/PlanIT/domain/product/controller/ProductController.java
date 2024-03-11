@@ -1,8 +1,6 @@
 package com.sideProject.PlanIT.domain.product.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.product.dto.ProductDto;
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;

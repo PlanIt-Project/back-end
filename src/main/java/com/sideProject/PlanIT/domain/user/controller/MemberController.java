@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-//todo: 1. 유저 정보 수정 service 로직 이상함
-//todo: 2. api 요청 url 다시 수정
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
