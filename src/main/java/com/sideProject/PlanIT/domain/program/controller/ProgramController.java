@@ -1,7 +1,9 @@
 package com.sideProject.PlanIT.domain.program.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
+import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
+import com.sideProject.PlanIT.domain.program.dto.request.ProgramRegistraion;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
@@ -23,7 +25,14 @@ import static com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchSta
 public class ProgramController {
 
     private final ProgramService programService;
-
+    @PostMapping("/registration")
+    public ApiResponse<?> registration(@RequestBody ProgramRegistraion.programRegistrationrequest programRegistrationrequest){
+        try {
+            return ApiResponse.ok(programService.registration(programRegistrationrequest));
+        } catch (Exception e){
+            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
+        }
+    }
     @DeleteMapping("/{id}")
     public ApiResponse<String> refund(@PathVariable("id") Long id) {
         LocalDateTime now = LocalDateTime.now();
