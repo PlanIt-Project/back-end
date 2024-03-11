@@ -5,8 +5,10 @@ import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
@@ -21,6 +23,7 @@ import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,28 +75,21 @@ class ProgramServiceTest {
         return productRepository.save(product);
     }
 
-    private Member initMember(String name, String email) {
+    private Member initMember(String name, MemberRole role) {
         Member member = Member.builder()
                 .name(name)
-                .email(email)
+                .email(name + "test.com")
                 .password("test123")
                 .birth(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
                 .phone_number("010-0000-0000")
-                .role(MemberRole.MEMBER)
+                .role(role)
                 .build();
 
         return memberRepository.save(member);
     }
 
     private Employee initTrainer(String name) {
-        Member member = Member.builder()
-                .name(name)
-                .email(name + "@test.com")
-                .password("test123")
-                .birth(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
-                .phone_number("010-0000-0000")
-                .role(MemberRole.TRAINER)
-                .build();
+        Member member = initMember(name, MemberRole.TRAINER);
 
         Employee employee = Employee.builder()
                 .member(memberRepository.save(member))
@@ -107,7 +103,7 @@ class ProgramServiceTest {
         //given
         Product product = initProduct("pt 30회권", "30",0,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -134,7 +130,7 @@ class ProgramServiceTest {
 
         //변경할 멤버들
         Employee trainer2 = initTrainer("employee2@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         //when
         ProgramModifyRequest request = ProgramModifyRequest.builder()
@@ -186,7 +182,7 @@ class ProgramServiceTest {
         //given //when
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
         log.info("memberId = {}",member.getId());
 
         Registration registration = Registration.builder()
@@ -232,7 +228,7 @@ class ProgramServiceTest {
         //given //when
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
         log.info("memberId = {}",member.getId());
 
         Registration registration = Registration.builder()
@@ -282,7 +278,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -328,7 +324,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -378,7 +374,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1" ,MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -409,7 +405,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("30일권", "30",0,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -442,7 +438,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("pt 30회권", "0",30,ProductType.PT);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -475,7 +471,7 @@ class ProgramServiceTest {
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -513,7 +509,7 @@ class ProgramServiceTest {
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -541,7 +537,7 @@ class ProgramServiceTest {
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
-        Member member = initMember("tester1","member1@test.com");
+        Member member = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -568,8 +564,8 @@ class ProgramServiceTest {
         //given
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1@test.com");
-        Member member1 = initMember("tester1","member1@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -662,8 +658,8 @@ class ProgramServiceTest {
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1");
         Employee trainer2 = initTrainer("employee2");
-        Member member1 = initMember("tester1","member1@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -756,8 +752,8 @@ class ProgramServiceTest {
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1");
         Employee trainer2 = initTrainer("employee2");
-        Member member1 = initMember("tester1","member1@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         Member member3 = Member.builder()
                 .name("admin")
@@ -856,7 +852,7 @@ class ProgramServiceTest {
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1");
         Employee trainer2 = initTrainer("employee2");
-        Member member1 = initMember("tester1","member1@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -945,8 +941,8 @@ class ProgramServiceTest {
         //given
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1");
-        Member member1 = initMember("tester1","member1@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         Registration registration = Registration.builder()
                 .product(product)
@@ -1036,8 +1032,8 @@ class ProgramServiceTest {
         Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
         Employee trainer = initTrainer("employee1");
         Employee trainer2 = initTrainer("employee2");
-        Member member1 = initMember("tester1","member1@test.com");
-        Member member2 = initMember("tester2","member2@test.com");
+        Member member1 = initMember("tester1",MemberRole.MEMBER);
+        Member member2 = initMember("tester2",MemberRole.MEMBER);
 
         Member member3 = Member.builder()
                 .name("admin")
@@ -1128,6 +1124,475 @@ class ProgramServiceTest {
                         tuple("tester1","employee1","2000-01-01","2000-03-01",IN_PROGRESS),
                         tuple("tester2","employee2","2000-01-01","2000-04-01",EXPIRED)
                 );
+    }
+
+    @Nested
+    @DisplayName("findRegistrationTest")
+    class FindRegistrationTest {
+
+        @Nested
+        @DisplayName("유저의 모든 registration을 조회 가능하다.")
+        class FindAllRegistrationByUser {
+            @DisplayName("성공")
+            @Test
+            void success(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                Registration registration3 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(30000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration3);
+
+                Registration registration4= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.REFUND)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration4);
+                Registration registration5= Registration.builder()
+                        .product(product)
+                        .member(member2)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration5);
+
+                //when
+                List<RegistrationResponse> result1 = programService.findRegistration(member1.getId(), RegistrationSearchStatus.ALL);
+                List<RegistrationResponse> result2 = programService.findRegistration(member2.getId(), RegistrationSearchStatus.ALL);
+
+                //then
+                assertThat(result1).hasSize(4);
+                assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
+                                tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
+                                tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+                                tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND)
+                        );
+                assertThat(result2).hasSize(1);
+                assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                        );
+            }
+
+            @DisplayName("실패")
+            @Test
+            void fail(){
+                //given
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+                //when //then
+                assertThatThrownBy(() -> programService.findRegistration(member1.getId(), RegistrationSearchStatus.ALL))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessage("조건을 만족하는 Registration이 없습니다.");
+            }
+        }
+
+        @Nested
+        @DisplayName("유저의 승인대기 중 인 registration을 조회 가능하다.")
+        class FindReadyRegistrationByUser {
+            @DisplayName("성공")
+            @Test
+            void success(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                Registration registration3 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(30000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration3);
+
+                Registration registration4= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration4);
+                Registration registration5= Registration.builder()
+                        .product(product)
+                        .member(member2)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration5);
+
+                //when
+                List<RegistrationResponse> result1 = programService.findRegistration(member1.getId(), RegistrationSearchStatus.READY);
+                List<RegistrationResponse> result2 = programService.findRegistration(member2.getId(), RegistrationSearchStatus.READY);
+
+                //then
+                assertThat(result1).hasSize(2);
+                assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(
+                                tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+                                tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING)
+                        );
+                assertThat(result2).hasSize(1);
+                assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                        );
+            }
+
+            @DisplayName("실패 : 조회 데이터 없음")
+            @Test
+            void fail(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                //when //then
+                assertThatThrownBy(() -> programService.findRegistration(member1.getId(), RegistrationSearchStatus.READY))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessage("조건을 만족하는 Registration이 없습니다.");
+            }
+        }
+
+        @Nested
+        @DisplayName("어드민은 모든 registration을 조회 가능하다")
+        class AdminIsFindReadyRegistration {
+            @DisplayName("성공")
+            @Test
+            void success(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Member member2 = initMember("tester2",MemberRole.MEMBER);
+                Member admin = initMember("admin",MemberRole.ADMIN);
+
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                Registration registration3 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(30000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration3);
+
+                Registration registration4= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.REFUND)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration4);
+                Registration registration5= Registration.builder()
+                        .product(product)
+                        .member(member2)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration5);
+
+                //when
+                List<RegistrationResponse> result1 = programService.findRegistration(admin.getId(), RegistrationSearchStatus.ALL);
+
+                //then
+                assertThat(result1).hasSize(5);
+                assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(
+                                tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
+                                tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
+                                tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+                                tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND),
+                                tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                        );
+            }
+
+            @DisplayName("실패 : 조회 데이터 없음")
+            @Test
+            void fail(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member admin = initMember("tester1",MemberRole.MEMBER);
+
+                //when //then
+                assertThatThrownBy(() -> programService.findRegistration(admin.getId(), RegistrationSearchStatus.READY))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessage("조건을 만족하는 Registration이 없습니다.");
+            }
+        }
+
+        @Nested
+        @DisplayName("어드민은 승인대기 중 인 모든 registration을 조회 가능하다.")
+        class AdminIsFindReadyRegistrationByUser {
+            @DisplayName("성공")
+            @Test
+            void success(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Member member2 = initMember("tester2",MemberRole.MEMBER);
+                Member admin = initMember("admin",MemberRole.ADMIN);
+
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                Registration registration3 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(30000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration3);
+
+                Registration registration4= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration4);
+                Registration registration5= Registration.builder()
+                        .product(product)
+                        .member(member2)
+                        .discount(0)
+                        .totalPrice(40000)
+                        .status(RegistrationStatus.PENDING)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration5);
+
+                //when
+                List<RegistrationResponse> result1 = programService.findRegistration(admin.getId(), RegistrationSearchStatus.READY);
+
+                //then
+                assertThat(result1).hasSize(3);
+                assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+                        .contains(
+                                tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+                                tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING),
+                                tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                        );
+            }
+
+            @DisplayName("실패 : 조회 데이터 없음")
+            @Test
+            void fail(){
+                //given
+                Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+                Member member1 = initMember("tester1",MemberRole.MEMBER);
+                Member admin = initMember("tester2",MemberRole.MEMBER);
+                Registration registration1= Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(10000)
+                        .status(RegistrationStatus.DECLINED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration1);
+
+                Registration registration2 = Registration.builder()
+                        .product(product)
+                        .member(member1)
+                        .discount(0)
+                        .totalPrice(20000)
+                        .status(RegistrationStatus.ACCEPTED)
+                        .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                        .refundAt(null)
+                        .build();
+                registrationRepository.save(registration2);
+
+                //when //then
+                assertThatThrownBy(() -> programService.findRegistration(admin.getId(), RegistrationSearchStatus.READY))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessage("조건을 만족하는 Registration이 없습니다.");
+            }
+        }
+
+        @Nested
+        @DisplayName("공통 실패")
+        class CommonFail {
+            @DisplayName("실패 : 존재하지 않는 회원")
+            @Test
+            void fail1(){
+                //given
+                Member admin = initMember("tester2",MemberRole.MEMBER);
+
+                //when //then
+                assertThatThrownBy(() -> programService.findRegistration(admin.getId() + 1, RegistrationSearchStatus.READY))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessage("존재하지 않는 회원입니다.");
+            }
+        }
+
     }
 
 }
