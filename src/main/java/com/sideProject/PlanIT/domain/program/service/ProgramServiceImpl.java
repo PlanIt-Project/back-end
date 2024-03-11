@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
+import com.sideProject.PlanIT.domain.program.dto.request.ProgramRegistraion.programRegistrationrequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
@@ -46,7 +47,19 @@ public class ProgramServiceImpl implements ProgramService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final RegistrationRepository registrationRepository;
-
+    @Override
+    public Registration registration(programRegistrationrequest programRegistrationrequest){
+        return registrationRepository.save(Registration.builder().
+                registrationAt(programRegistrationrequest.getRegistrationAt()).
+                paymentAt(programRegistrationrequest.getPaymentAt()).
+                refundAt(programRegistrationrequest.getRefundAt()).
+                status(RegistrationStatus.PENDING).
+                discount(programRegistrationrequest.getDiscount()).
+                totalPrice(programRegistrationrequest.getTotalPrice()).
+                member(programRegistrationrequest.getMember()).
+                product(programRegistrationrequest.getProduct()).build()
+                );
+    }
     @Override
     public String refund(long programId, LocalDateTime localDateTime) {
         Program program = getProgramById(programId);
