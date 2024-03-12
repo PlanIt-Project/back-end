@@ -1,34 +1,45 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
+import com.sideProject.PlanIT.domain.user.entity.ENUM.ScheduleStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
+@Getter
 public class EmployeeSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_schedule_id")
+    @Column(name = "id")
     private Long Id;
 
     @Column
     private LocalDate date;
 
     @Column
-    private Boolean firstClass;
+    private LocalDateTime startAt;
 
     @Column
-    private Boolean secondClass;
+    private LocalDateTime endAt;
 
-    @Column
-    private Boolean thirdClass;
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus status;
 
-    @Column
-    private Boolean fourthClass;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
-    @Column
-    private Boolean fifthClass;
-
-    @Column
-    private Boolean sixthClass;
+    @Builder
+    public EmployeeSchedule(LocalDate date, LocalDateTime startAt, LocalDateTime endAt, ScheduleStatus status, Employee employee) {
+        this.date = date;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.status = status;
+        this.employee = employee;
+    }
 }

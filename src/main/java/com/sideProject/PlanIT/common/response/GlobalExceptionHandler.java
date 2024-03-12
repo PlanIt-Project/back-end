@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value =  CustomException.class)
+    @ExceptionHandler(value = CustomException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     protected ApiResponse<?> handleCustomException(CustomException ex) {
         log.error("{} : {}", ex.getClass(), ex.getMessage());
