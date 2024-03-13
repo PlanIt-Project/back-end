@@ -12,7 +12,7 @@ spring:
         show_sql: true
 
 fileStorage:
-  dir: /src/test
+  dir: ${FILE_STORAGE_DIR}
 
 
 # 환경변수 설정
