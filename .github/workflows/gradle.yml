@@ -15,10 +15,15 @@ jobs:
     - name: Set up Docker Environment
       run: |
         touch ./.env
-        echo "DATABASE_URL=${{ secrets.MYSQL_DB_URL }}" >> .env
-        echo "DATABASE_USERNAME=${{ secrets.DB_USER }}" >> .env
-        echo "DATABASE_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "DB_CONNECTION_URL=${{ secrets.MYSQL_DB_URL }}" >> .env
+        echo "USER_NAME=${{ secrets.DB_USER }}" >> .env
+        echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "FILE_STORAGE_DIR=${{ secrets.FILE_PATH }}" >> .env
       shell: bash
+
+    # Gradle build
+    - name: Build with Gradle
+      run: ./gradlew bootJar
 
     - name: Build and Push Docker image
       run: |
