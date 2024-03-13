@@ -14,9 +14,11 @@ jobs:
 
     - name: Set up Docker Environment
       run: |
+        touch ./.env
         echo "DATABASE_URL=${{ secrets.MYSQL_DB_URL }}" >> .env
         echo "DATABASE_USERNAME=${{ secrets.DB_USER }}" >> .env
         echo "DATABASE_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+      shell: bash
 
     - name: Build and Push Docker image
       run: |
