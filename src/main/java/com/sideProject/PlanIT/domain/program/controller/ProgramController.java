@@ -28,6 +28,11 @@ public class ProgramController {
 
     private final ProgramService programService;
 
+    @GetMapping("/test")
+    public ApiResponse<String> test() {
+        return ApiResponse.ok("ok");
+    }
+
     @PostMapping("/registration")
     public ApiResponse<?> registration(@RequestBody ProgramRegistraion.programRegistrationrequest programRegistrationrequest){
         try {
