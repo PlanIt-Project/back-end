@@ -63,3 +63,7 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_REPO }}/planit-server
           docker-compose up -d
           docker image prune -f
+          
+    - name: Remove Github Actions IP From Security Group
+      run: |
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
