@@ -31,10 +31,11 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew bootJar
 
-    - name: Build and Push Docker image
+    - name: web docker build and push
       run: |
-        docker-compose build
-        docker-compose up -d
+        docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -t ${{ secrets.DOCKER_REPO }}/planit-server .
+        docker push ${{ secrets.DOCKER_REPO }}/planit-server
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
@@ -43,5 +44,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker-compose down
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/planit-server
           docker-compose up -d
+          docker image prune -f
