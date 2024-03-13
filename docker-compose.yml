@@ -5,9 +5,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_CONNECTION_URL: ${DATABASE_URL}
-      USER_NAME: ${DATABASE_USERNAME}
-      PASSWORD: ${DATABASE_PASSWORD}
+      DB_CONNECTION_URL: ${DB_CONNECTION_URL}
+      USER_NAME: ${USER_NAME}
+      PASSWORD: ${PASSWORD}
       FILE_STORAGE_DIR: ${FILE_STORAGE_DIR}
     depends_on:
       - redis
