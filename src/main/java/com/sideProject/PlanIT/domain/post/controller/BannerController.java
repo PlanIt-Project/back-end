@@ -6,6 +6,7 @@ import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
 import com.sideProject.PlanIT.domain.post.entity.Banner;
 import com.sideProject.PlanIT.domain.post.service.BannerService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class BannerController {
 
     private final BannerService bannerService;
 
-    @PostMapping("/banner")
+    @PostMapping("admin/banner")
     public ApiResponse<Banner> createBanner(@ModelAttribute BannerRequestDto bannerRequestDto) {
         return ApiResponse.ok(bannerService.createBanner(bannerRequestDto));
     }
