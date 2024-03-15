@@ -20,6 +20,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "ok";
+    }
+
     @PostMapping("/member/signup")
     public ApiResponse<Member> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
         return ApiResponse.ok(memberService.signUp(memberSignUpRequestDto));
