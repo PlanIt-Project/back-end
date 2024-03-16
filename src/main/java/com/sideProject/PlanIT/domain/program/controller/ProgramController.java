@@ -37,8 +37,6 @@ public class ProgramController {
         }
     }
 
-
-
     @GetMapping("/")
     public ApiResponse<List<ProgramResponse>> search(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") ProgramSearchStatus option) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
