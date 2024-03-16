@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramRegistraion;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
@@ -13,6 +14,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -30,12 +32,10 @@ public class ProgramController {
     private final ProgramService programService;
 
     @PostMapping("/registration")
-    public ApiResponse<?> registration(@RequestBody ProgramRegistraion.programRegistrationrequest programRegistrationrequest){
-        try {
-            return ApiResponse.ok(programService.registration(programRegistrationrequest));
-        } catch (Exception e){
-            return ApiResponse.error(ErrorCode.INVALID_PARAMETER);
-        }
+    public ApiResponse<?> registration(@RequestBody RegistrationRequest request, Principal principal){
+        LocalDateTime now = LocalDateTime.now();
+        Long id = Long.parseLong(principal.getName());
+        return ApiResponse.ok(programService.registration(request, id, now));
     }
 
     @GetMapping

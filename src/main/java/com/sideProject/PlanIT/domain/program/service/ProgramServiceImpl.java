@@ -4,7 +4,8 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramRegistraion.programRegistrationrequest;
+import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
@@ -47,18 +48,39 @@ public class ProgramServiceImpl implements ProgramService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final RegistrationRepository registrationRepository;
+    private final ProductRepository productRepository;
     @Override
-    public Registration registration(programRegistrationrequest programRegistrationrequest){
-        return registrationRepository.save(Registration.builder().
-                registrationAt(programRegistrationrequest.getRegistrationAt()).
-                paymentAt(programRegistrationrequest.getPaymentAt()).
-                refundAt(programRegistrationrequest.getRefundAt()).
-                status(RegistrationStatus.PENDING).
-                discount(programRegistrationrequest.getDiscount()).
-                totalPrice(programRegistrationrequest.getTotalPrice()).
-                member(programRegistrationrequest.getMember()).
-                product(programRegistrationrequest.getProduct()).build()
-                );
+    public String registration(RegistrationRequest request, Long memberId, LocalDateTime now){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Product product = productRepository.findById(request.getProductId()).orElseThrow(() ->
+                new CustomException("상품을 찾을 수 없습니다.", ErrorCode.PRODUCT_NOT_FOUND)
+        );
+
+        //결제 로직
+
+        RegistrationStatus status = RegistrationStatus.PENDING;
+
+        Registration registrationEntity = Registration.builder()
+                .registrationAt(request.getRegistrationAt().atStartOfDay())
+                .paymentAt(now)
+                .status(status)
+                .discount(0)
+                .totalPrice(product.getPrice())
+                .member(member)
+                .product(product)
+                .build();
+
+        Registration resultRegistration = registrationRepository.save(registrationEntity);
+
+        if(resultRegistration.getProduct().getType() == ProductType.MEMBERSHIP) {
+            approve(resultRegistration.getId(),null,now);
+            return "회원권 등록이 완료되었습니다.";
+        }
+
+        return "PT등록이 요청되었습니다.";
     }
     @Override
     public String refund(long programId, LocalDateTime localDateTime) {
