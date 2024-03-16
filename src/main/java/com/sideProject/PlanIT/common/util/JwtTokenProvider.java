@@ -17,10 +17,9 @@ public class JwtTokenProvider {
     private final RedisUtil redisUtil;
 
 //    @Value("${jwt.access-token-expire}")
-//    private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 432000L;
-    private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 2000L;
+    private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 5 * 60 * 1000L; //5분
 //    @Value("${jwt.refresh-token-expire}")
-    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 1209600000L;
+    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 15 * 24 * 60 * 60 * 1000L; //15일
 
     public String createAccessToken(Member member) {
         Date now = new Date();
