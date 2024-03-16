@@ -30,19 +30,17 @@ public class JwtUtil {
         return claims.get("memberRole").toString();
     }
 
-    public Boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtConfig.SECRET_KEY).parseClaimsJws(token);
-            return true;
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
     }
 
-    public Boolean validateRefreshToken(String token) {
+    public void validateRefreshToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtConfig.SECRET_KEY).parseClaimsJws(token);
-            return true;
         } catch (Exception e) {
             redisUtil.deleteData(token);
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);

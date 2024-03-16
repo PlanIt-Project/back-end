@@ -1,9 +1,6 @@
 package com.sideProject.PlanIT.common.security;
 
-import com.sideProject.PlanIT.common.response.CustomException;
-import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.common.util.JwtUtil;
-import com.sideProject.PlanIT.common.util.RedisUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +35,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 if (jwtUtil.getTokenTypeFromToken(jwtToken).equals("ACCESS")) {
 
                     jwtUtil.validateToken(jwtToken);
-                    log.info("유효한 토큰입니다. 검증 성공");
 
                     Long memberId = jwtUtil.getMemberIdFromToken(jwtToken);
                     String memberRole = jwtUtil.getMemberRoleFromToken(jwtToken);
@@ -53,8 +49,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 request.setAttribute("exception", e.getMessage());
             }
-        } else {
-            log.info("토큰이 없습니다. 다시 로그인!");
         }
 
         // 필터 체인 계속 진행

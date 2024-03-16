@@ -2,7 +2,6 @@ package com.sideProject.PlanIT.config;
 
 import com.sideProject.PlanIT.common.security.JwtAuthenticationEntryPoint;
 import com.sideProject.PlanIT.common.security.JwtTokenFilter;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
