@@ -53,7 +53,6 @@ public class Member {
     }
 
     public void update(MemberEditRequestDto memberEditRequestDto) {
-        this.email = memberEditRequestDto.getEmail();
         this.name = memberEditRequestDto.getName();
         this.birth = memberEditRequestDto.getBirth();
         this.address = memberEditRequestDto.getAddress();

@@ -109,10 +109,10 @@ public class ProgramServiceImpl implements ProgramService {
         Program program = getProgramById(programId);
 
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() ->
-            new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Employee trainer = employeeRepository.findById(request.getEmployId()).orElseThrow(() ->
-            new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
 
         program.updateProgram(
@@ -127,7 +127,6 @@ public class ProgramServiceImpl implements ProgramService {
 
         return "OK";
     }
-
 
 
     @Override
@@ -189,14 +188,32 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * 프로그램을 조회하여 리스트를 반환하는 메서드
+     * 프로그램을 조회하여 리스트를 반환하는 메서드(어드민 만 사용 가능)
      *
-     * @param userId 조회하는 유저 정보
      * @param option 조회 옵션(ALL : 전부, VAILD : 유효한 프로그램, UNVAILD : 유효하지 않은 프로그램)
      * @return List<ProgramResponse>
      */
     @Override
-    public List<ProgramResponse> find(long userId, ProgramSearchStatus option) {
+    public List<ProgramResponse> find(long adminId, ProgramSearchStatus option) {
+        Member admin = memberRepository.findById(adminId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        if(admin.getRole() != MemberRole.ADMIN) {
+            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
+
+        List<Program> programs = findProgram(option);
+
+        if(programs.isEmpty()) {
+            throw new CustomException("프로그램을 찾을 수 없습니다",ErrorCode.PROGRAM_NOT_FOUND);
+        }
+
+        return programs.stream().map(ProgramResponse::of).toList();
+    }
+
+    @Override
+    public List<ProgramResponse> findByUser(long userId, ProgramSearchStatus option) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -206,8 +223,10 @@ public class ProgramServiceImpl implements ProgramService {
             programs = findProgramByUser(member, option);
         } else if(member.getRole() == MemberRole.TRAINER) {
             programs = findProgramByEmploy(member, option);
-        } else {
-            programs = findProgram(option);
+        }
+
+        if(programs.isEmpty()) {
+            throw new CustomException("프로그램을 찾을 수 없습니다.",ErrorCode.PROGRAM_NOT_FOUND);
         }
 
         return programs.stream().map(ProgramResponse::of).toList();
@@ -243,18 +262,18 @@ public class ProgramServiceImpl implements ProgramService {
         }
     }
 
+    //조건에 맞는 Registration list 조회
     @Override
-    public List<RegistrationResponse> findRegistration(long userId, RegistrationSearchStatus option) {
-        Member member = memberRepository.findById(userId).orElseThrow(() ->
+    public List<RegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option) {
+        Member admin = memberRepository.findById(adminId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        //todo : 유저가 어드민 일 때 유저에 따라 조회하는거 구현
-        List<Registration> registration;
-        if(member.getRole() == MemberRole.MEMBER) {
-            registration = findRegistrationByUser(member, option);
-        } else {
-            registration = findRegistration(option);
+
+        if(admin.getRole() != MemberRole.ADMIN) {
+            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
+
+        List<Registration> registration = findRegistration(option);
 
         if(registration.isEmpty()) {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
@@ -263,6 +282,22 @@ public class ProgramServiceImpl implements ProgramService {
         return registration.stream().map(RegistrationResponse::of).toList();
     }
 
+    @Override
+    public List<RegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option) {
+        Member member = memberRepository.findById(userId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        List<Registration> registration = findRegistrationByUser(member, option);
+
+        if(registration.isEmpty()) {
+            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
+        }
+
+        return registration.stream().map(RegistrationResponse::of).toList();
+    }
+
+    //리팩토링 여부 생각
     private List<Registration> findRegistrationByUser(Member member, RegistrationSearchStatus option) {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == RegistrationSearchStatus.ALL) {

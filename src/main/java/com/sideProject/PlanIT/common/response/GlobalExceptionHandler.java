@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = CustomException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+
     protected ResponseEntity<ApiResponse<?>> handleCustomException(CustomException ex) {
-        return ResponseEntity.status(ex.getErrorCode().getStatus()).body(ApiResponse.error(ex.getErrorCode()));
+        return ResponseEntity.status(ex.getErrorCode().getStatus())
+                .body(ApiResponse.error(ex.getErrorCode()));
     }
 }
