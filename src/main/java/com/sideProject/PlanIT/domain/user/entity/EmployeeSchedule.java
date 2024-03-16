@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.user.entity;
 
 import com.sideProject.PlanIT.domain.user.entity.ENUM.ScheduleStatus;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class EmployeeSchedule {
     @Id

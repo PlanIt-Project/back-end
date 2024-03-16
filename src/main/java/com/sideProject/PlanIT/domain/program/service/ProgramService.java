@@ -18,7 +18,9 @@ public interface ProgramService {
     public Registration registration(ProgramRegistraion.programRegistrationrequest programRegistrationrequest);
     public String refund(long programId, LocalDateTime now);
     public String modify(long programId, ProgramModifyRequest request);
-    public List<ProgramResponse> find(long userId, ProgramSearchStatus option);
+    public List<ProgramResponse> find(long adminId,ProgramSearchStatus option);
+    public List<ProgramResponse> findByUser(long userId, ProgramSearchStatus option);
     public Long approve(Long programId, Long trainerId,LocalDateTime now);
-    public List<RegistrationResponse> findRegistration(long userId, RegistrationSearchStatus option);
+    public List<RegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option);
+    public List<RegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option);
 }

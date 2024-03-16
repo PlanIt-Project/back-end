@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.common.util.JwtTokenProvider;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
@@ -78,14 +79,6 @@ public class MemberServiceImpl implements MemberService {
         Member memberToEdit = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id"));
 
-        String newEmail = memberEditRequestDto.getEmail();
-
-        if (!newEmail.equals(memberToEdit.getEmail())) {
-            memberRepository.findByEmail(newEmail)
-                    .ifPresent(user1 -> {
-                        throw new CustomException("이메일이 이미 존재합니다.", ErrorCode.ALREADY_EXIST_EMAIL);
-                    });
-        }
 
         memberToEdit.update(memberEditRequestDto);
         return memberRepository.save(memberToEdit);
@@ -113,8 +106,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMember(Long member_id) {
-        return memberRepository.findById(member_id).orElseThrow(() ->
-                new CustomException(ErrorCode.MEMBER_NOT_FOUND)).toDto();
+        Member member = memberRepository.findById(member_id).orElseThrow(() ->
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        //트레이너면 트레이너 정보 조회
+        TrainerResponse trainerResponse = null;
+        if(member.getRole().equals(MemberRole.TRAINER)) {
+            Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                    new CustomException(ErrorCode.EMPLOYEE_NOT_FOUND));
+            trainerResponse = TrainerResponse.of(trainer);
+        }
+
+        return MemberResponseDto.of(member,trainerResponse);
     }
 
     @Override

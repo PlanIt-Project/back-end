@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 @Getter
 public class MemberEditRequestDto {
-    private String email;
     private String name;
     private String phone_number;
     private LocalDate birth;

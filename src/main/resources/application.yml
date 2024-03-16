@@ -16,6 +16,9 @@ fileStorage:
 
 jwt:
   secret-key: ${SECRET_KEY}
+#  access-token-expire: 432000
+  access-token-expire: 2000
+  refresh-token-expire: 1209600000
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD

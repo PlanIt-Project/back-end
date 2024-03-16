@@ -12,14 +12,17 @@ import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 //todo: 권한으로 api 분기하는 방법이 조건문 말고 있을까?
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -31,8 +34,8 @@ public class MemberController {
     }
 
     @PostMapping("/member/signup")
-    public ApiResponse<Member> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        return ApiResponse.ok(memberService.signUp(memberSignUpRequestDto));
+    public ApiResponse<Long> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
+        return ApiResponse.ok(memberService.signUp(memberSignUpRequestDto).getId());
     }
 
     @PostMapping("/member/signin")
@@ -55,14 +58,9 @@ public class MemberController {
         return ApiResponse.ok(memberService.changePassword(member_id, memberChangePasswordRequestDto));
     }
 
-    @GetMapping("/member/{member_id}")
-    public ApiResponse<?> findMember(@PathVariable Long member_id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("MEMBER"))) {
-            return ApiResponse.ok(memberService.findMember(member_id));
-        } else {
-            return ApiResponse.ok(memberService.findTrainer(member_id));
-        }
+    @GetMapping("/member")
+    public ApiResponse<MemberResponseDto> findMember(Principal principal) {
+        return ApiResponse.ok(memberService.findMember(Long.parseLong(principal.getName())));
     }
 
     @DeleteMapping("/member/signout")
