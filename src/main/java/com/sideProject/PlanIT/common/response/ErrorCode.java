@@ -13,6 +13,10 @@ public enum ErrorCode {
     ALREADY_EXIST_EMAIL(400, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(400, "비밀번호가 틀렸습니다."),
 
+    //401
+    INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),
+    INVALID_REFRESH_TOKEN(401, "REFRESH TOKEN 오류"),
+
 
     //404 Error Not found.
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),

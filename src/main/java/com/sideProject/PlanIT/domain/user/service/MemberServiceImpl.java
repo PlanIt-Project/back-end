@@ -2,11 +2,14 @@ package com.sideProject.PlanIT.domain.user.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
+import com.sideProject.PlanIT.common.util.JwtTokenProvider;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.JwtResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
@@ -14,12 +17,15 @@ import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+//todo: 모든 조회에서 admin은 조회 안되게 수정하는 로직
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -27,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Member signUp(MemberSignUpRequestDto memberSignUpRequestDto) {
@@ -47,8 +54,17 @@ public class MemberServiceImpl implements MemberService {
                 .build());
     }
 
-    public void signIn() {
-        //todo: 로그인 기능
+    @Override
+    public JwtResponseDto memberValidation(MemberSignInRequestDto memberSignInRequestDto) {
+        Member member = memberRepository.findByEmail(memberSignInRequestDto.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        if(!passwordEncoder.matches(memberSignInRequestDto.getPassword(), member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+        return JwtResponseDto.builder()
+                .accessToken(jwtTokenProvider.createAccessToken(member))
+                .refreshToken(jwtTokenProvider.createRefreshToken(member))
+                .build();
     }
 
     @Override
@@ -98,6 +114,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findMember(Long member_id) {
         return memberRepository.findById(member_id).orElseThrow(() ->
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND)).toDto();
+    }
+
+    @Override
+    public TrainerResponseDto findTrainer(Long trainer_id) {
+        return employeeRepository.findById(trainer_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id")).toDto();
     }
 

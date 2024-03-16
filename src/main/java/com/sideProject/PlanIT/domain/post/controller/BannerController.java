@@ -16,7 +16,7 @@ public class BannerController {
 
     private final BannerService bannerService;
 
-    @PostMapping("/banner")
+    @PostMapping("admin/banner")
     public ApiResponse<Banner> createBanner(@ModelAttribute BannerRequestDto bannerRequestDto) {
         return ApiResponse.ok(bannerService.createBanner(bannerRequestDto));
     }
