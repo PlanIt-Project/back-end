@@ -4,8 +4,10 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramRegistraion.programRegistrationrequest;
+import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
@@ -30,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 프로그램 관련 Service
@@ -47,18 +50,45 @@ public class ProgramServiceImpl implements ProgramService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final RegistrationRepository registrationRepository;
+    private final ProductRepository productRepository;
     @Override
-    public Registration registration(programRegistrationrequest programRegistrationrequest){
-        return registrationRepository.save(Registration.builder().
-                registrationAt(programRegistrationrequest.getRegistrationAt()).
-                paymentAt(programRegistrationrequest.getPaymentAt()).
-                refundAt(programRegistrationrequest.getRefundAt()).
-                status(RegistrationStatus.PENDING).
-                discount(programRegistrationrequest.getDiscount()).
-                totalPrice(programRegistrationrequest.getTotalPrice()).
-                member(programRegistrationrequest.getMember()).
-                product(programRegistrationrequest.getProduct()).build()
-                );
+    public RegistrationResponse registration(RegistrationRequest request, Long memberId, LocalDateTime now){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Product product = productRepository.findById(request.getProductId()).orElseThrow(() ->
+                new CustomException("상품을 찾을 수 없습니다.", ErrorCode.PRODUCT_NOT_FOUND)
+        );
+
+        Long trainerId = null;
+        if(request.getTrainerId() != null) {
+            trainerId = employeeRepository.findById(request.getTrainerId()).orElseThrow(() ->
+                    new CustomException("직원을 찾을 수 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND)
+            ).getId();
+        }
+        //결제 로직
+        RegistrationStatus status = RegistrationStatus.PENDING;
+
+        Registration registrationEntity = Registration.builder()
+                .registrationAt(request.getRegistrationAt().atStartOfDay())
+                .paymentAt(now)
+                .status(status)
+                .discount(0)
+                .trainerId(trainerId)
+                .totalPrice(product.getPrice())
+                .member(member)
+                .product(product)
+                .build();
+
+        Registration resultRegistration = registrationRepository.save(registrationEntity);
+
+        if(resultRegistration.getProduct().getType() == ProductType.MEMBERSHIP) {
+            approve(resultRegistration.getId(),null,now);
+            return RegistrationResponse.of(resultRegistration.getId(),"회원권 등록이 완료되었습니다.");
+        }
+
+        return RegistrationResponse.of(resultRegistration.getId(),"PT권 등록이 요청되었습니다.");
     }
     @Override
     public String refund(long programId, LocalDateTime localDateTime) {
@@ -264,7 +294,7 @@ public class ProgramServiceImpl implements ProgramService {
 
     //조건에 맞는 Registration list 조회
     @Override
-    public List<RegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option) {
+    public List<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option) {
         Member admin = memberRepository.findById(adminId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -279,11 +309,11 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
-        return registration.stream().map(RegistrationResponse::of).toList();
+        return registration.stream().map(FindRegistrationResponse::of).toList();
     }
 
     @Override
-    public List<RegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option) {
+    public List<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -294,7 +324,7 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
-        return registration.stream().map(RegistrationResponse::of).toList();
+        return registration.stream().map(FindRegistrationResponse::of).toList();
     }
 
     //리팩토링 여부 생각
