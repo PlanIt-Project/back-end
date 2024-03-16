@@ -4,7 +4,9 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.Modifying;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -98,6 +99,58 @@ class ProgramServiceTest {
 
         return employeeRepository.save(employee);
     }
+
+    @Nested
+    @DisplayName("registrationTest")
+    class registrationTest {
+        @DisplayName("회원권을 등록한다.")
+        @Test
+        void registerMembership(){
+            //given
+            Product product = initProduct("pt 30회권", "30",0,ProductType.MEMBERSHIP);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId())
+                    .registrationAt(LocalDate.now())
+                    .build();
+
+            //when
+            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            List<Program> programs = programRepository.findByMemberId(member.getId());
+            List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
+
+            //then
+            assertThat(result.getMessage()).isEqualTo("회원권 등록이 완료되었습니다.");
+            assertThat(programs).hasSize(1);
+            assertThat(registrations).hasSize(1);
+        }
+
+        @DisplayName("pt을 등록한다.")
+        @Test
+        void registerPT(){
+            //given
+            Product product = initProduct("pt 30회권", "30",0,ProductType.PT);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId())
+                    .registrationAt(LocalDate.now())
+                    .build();
+
+            //when
+            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            List<Program> programs = programRepository.findByMemberId(member.getId());
+            List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
+
+            //then
+            assertThat(result.getMessage()).isEqualTo("PT권 등록이 요청되었습니다.");
+            assertThat(programs).hasSize(0);
+            assertThat(registrations).hasSize(1);
+        }
+    }
+
+
 
     @Nested
     @DisplayName("modifyProgramTest")
@@ -1428,8 +1481,8 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<RegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL);
-            List<RegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL);
+            List<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL);
+            List<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL);
 
             //then
             assertThat(result1).hasSize(4);
@@ -1512,8 +1565,8 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<RegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY);
-            List<RegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY);
+            List<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY);
+            List<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY);
 
             //then
             assertThat(result1).hasSize(2);
@@ -1662,7 +1715,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<RegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.ALL);
+            List<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.ALL);
 
             //then
             assertThat(result1).hasSize(5);
@@ -1745,7 +1798,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<RegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY);
+            List<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY);
 
             //then
             assertThat(result1).hasSize(3);
@@ -1763,7 +1816,7 @@ class ProgramServiceTest {
             //given
             Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
-            Member admin = initMember("tester2",MemberRole.MEMBER);
+            Member admin = initMember("tester2",MemberRole.ADMIN);
             Registration registration1= Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1798,7 +1851,7 @@ class ProgramServiceTest {
         @Test
         void adminFindRegistrationFail2(){
             //given
-            Member admin = initMember("tester1",MemberRole.MEMBER);
+            Member admin = initMember("tester1",MemberRole.ADMIN);
 
             //when //then
             assertThatThrownBy(() -> programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY))

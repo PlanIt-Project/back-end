@@ -3,7 +3,7 @@ package com.sideProject.PlanIT.domain.program.controller;
 import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
@@ -71,7 +71,7 @@ public class ProgramAdminController {
     }
 
     @GetMapping("/registration")
-    public ApiResponse<List<RegistrationResponse>> findRegistration(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") RegistrationSearchStatus option, Principal principal) {
+    public ApiResponse<List<FindRegistrationResponse>> findRegistration(@RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") RegistrationSearchStatus option, Principal principal) {
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(
                 programService.findRegistrations(id, option)
@@ -80,7 +80,7 @@ public class ProgramAdminController {
 
 
     @GetMapping("/registration/{id}")
-    public ApiResponse<List<RegistrationResponse>> findRegistrationByUser(
+    public ApiResponse<List<FindRegistrationResponse>> findRegistrationByUser(
             @PathVariable("id") Long id,
             @RequestParam(value = "option", required = false, defaultValue = "IN_PROGRESS") RegistrationSearchStatus option) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
