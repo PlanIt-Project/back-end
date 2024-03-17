@@ -20,6 +20,10 @@ jwt:
   access-token-expire: 2000
   refresh-token-expire: 1209600000
 
+email:
+  app-key: ${EMAIL_APP_KEY}
+  redis-timeLimit: 300000
+
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD
 # - 파일 저장 디렉토리 경로
