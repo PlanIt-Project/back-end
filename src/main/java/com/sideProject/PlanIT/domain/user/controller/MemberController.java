@@ -56,6 +56,7 @@ public class MemberController {
 
     @GetMapping
     public ApiResponse<MemberResponseDto> findMember(Principal principal) {
+        log.info("test");
         return ApiResponse.ok(memberService.findMember(Long.parseLong(principal.getName())));
     }
 

@@ -1,15 +1,17 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
+import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Getter
 public class ProgramResponse {
@@ -18,9 +20,11 @@ public class ProgramResponse {
     int remainedNumber;
     String startAt;
     String endAt;
+    String suspendAt;
+    String resumeAt;
     ProgramStatus status;
-    String member;
-    String employee;
+    MemberSemiResponseDto member;
+    EmployeeSemiResponseDto employee;
 
     @Builder
     public ProgramResponse(
@@ -31,27 +35,39 @@ public class ProgramResponse {
             ProgramStatus status,
             Product product,
             Member member,
-            Employee employee) {
+            Employee employee,
+            String suspendAt,
+            String resumeAt) {
         this.id = id;
         this.remainedNumber = remainedNumber;
         this.startAt = startAt;
         this.endAt = endAt;
         this.status = status;
         this.productName = product.getName();
-        this.member = member.getName();
-        this.employee = employee.getMember().getName();
+        this.member = MemberSemiResponseDto.of(member);
+        this.employee = EmployeeSemiResponseDto.of(employee);
+        this.suspendAt = suspendAt;
+        this.resumeAt = resumeAt;
     }
 
     public static ProgramResponse of(Program program){
         return ProgramResponse.builder()
                 .id(program.getId())
                 .remainedNumber(program.getRemainedNumber())
-                .startAt(program.getStartAt().toString())
-                .endAt(program.getEndAt().toString())
                 .status(program.getStatus())
                 .product(program.getProduct())
                 .member(program.getMember())
                 .employee(program.getEmployee())
+                .startAt(program.getStartAt().toString())
+                .endAt(Optional.ofNullable(program.getEndAt())
+                        .map(Object::toString)
+                        .orElse(null))
+                .suspendAt(Optional.ofNullable(program.getSuspendAt())
+                        .map(Object::toString)
+                        .orElse(null))
+                .resumeAt(Optional.ofNullable(program.getResumeAt())
+                        .map(Object::toString)
+                        .orElse(null))
                 .build();
     }
 }

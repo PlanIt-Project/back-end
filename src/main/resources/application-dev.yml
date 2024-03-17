@@ -1,7 +1,8 @@
 # default
 spring:
   profiles:
-    default: prod # 기본 환경을 dev로
+    active:
+      on-profile : dev # 기본 환경을 dev로
 
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
@@ -21,6 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
+
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD

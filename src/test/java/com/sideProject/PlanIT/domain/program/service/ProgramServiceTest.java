@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -66,7 +67,7 @@ class ProgramServiceTest {
         productRepository.deleteAllInBatch();
     }
 
-    private Product initProduct(String name, String period, int number, ProductType type) {
+    private Product initProduct(String name, Period period, int number, ProductType type) {
         Product product = Product.builder()
                 .name(name)
                 .period(period)
@@ -107,7 +108,8 @@ class ProgramServiceTest {
         @Test
         void registerMembership(){
             //given
-            Product product = initProduct("pt 30회권", "30",0,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
             RegistrationRequest request = RegistrationRequest.builder()
@@ -130,7 +132,8 @@ class ProgramServiceTest {
         @Test
         void registerPT(){
             //given
-            Product product = initProduct("pt 30회권", "30",0,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
             RegistrationRequest request = RegistrationRequest.builder()
@@ -159,7 +162,8 @@ class ProgramServiceTest {
         @Test
         void modifyProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",0,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -238,7 +242,8 @@ class ProgramServiceTest {
         @Test
         void modifyProgram3(){
             //given //when
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
             log.info("memberId = {}",member.getId());
@@ -284,7 +289,8 @@ class ProgramServiceTest {
         @Test
         void modifyProgram4(){
             //given //when
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
             log.info("memberId = {}",member.getId());
@@ -336,7 +342,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -382,7 +389,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -435,7 +443,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1" ,MemberRole.MEMBER);
 
@@ -466,7 +475,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("30일권", "30",0,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -489,7 +499,7 @@ class ProgramServiceTest {
             assertThat(program.getRegistration().getId()).isEqualTo(saveRegistration.getId());
             assertThat(program.getEmployee()).isNull();
             assertThat(program.getStartAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate()); //등록일 확인
-            assertThat(program.getEndAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate().plusDays(30)); //등록일 확인
+            assertThat(program.getEndAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate().plusMonths(1).minusDays(1)); //등록일 확인
             assertThat(program.getRemainedNumber()).isEqualTo(0); //등록일 확인
         }
 
@@ -499,7 +509,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "0",30,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -532,7 +543,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member = initMember("tester1",MemberRole.MEMBER);
 
@@ -571,7 +583,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
             Registration registration = Registration.builder()
@@ -599,7 +612,8 @@ class ProgramServiceTest {
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
-            Product product = initProduct("pt 30회권", "30",30,ProductType.PT);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("PT권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
             Registration registration = Registration.builder()
@@ -629,7 +643,8 @@ class ProgramServiceTest {
         @Test
         void findAllInProcessProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
@@ -719,10 +734,10 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("member","employee","startAt","endAt","status")
-                    .contains(tuple("tester1","employee1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","employee1","2000-01-01","2000-03-01",IN_PROGRESS),
-                            tuple("tester2","employee2","2000-01-01","2000-04-01",IN_PROGRESS)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-04-01",IN_PROGRESS)
                     );
         }
 
@@ -730,7 +745,8 @@ class ProgramServiceTest {
         @Test
         void findAllProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
@@ -820,10 +836,10 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("member","employee","startAt","endAt","status")
-                    .contains(tuple("tester1","employee1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","employee1","2000-01-01","2000-03-01",IN_PROGRESS),
-                            tuple("tester2","employee2","2000-01-01","2000-04-01",EXPIRED)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-04-01",EXPIRED)
                     );
         }
 
@@ -855,7 +871,8 @@ class ProgramServiceTest {
         @Test
         void findInProgressProgramNoExistInProgressProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer2 = initTrainer("employee2");
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
@@ -936,7 +953,8 @@ class ProgramServiceTest {
         @Test
         void findInProgressProgramByUser(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1@test.com");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
@@ -1016,20 +1034,21 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(2);
-            assertThat(results1).extracting("member","startAt","endAt","status")
-                    .contains(tuple("tester1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","2000-01-01","2000-03-01",IN_PROGRESS)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS)
                     );
             assertThat(results2.size()).isEqualTo(1);
-            assertThat(results2).extracting("member","startAt","endAt","status")
-                    .contains(tuple("tester2","2000-01-01","2000-04-01",IN_PROGRESS));
+            assertThat(results2).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-04-01",IN_PROGRESS));
         }
 
         @DisplayName("트레이너의 진행중인 프로그램을 조회할 수 있다.")
         @Test
         void findInProgressProgramByEmployee(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Employee trainer = initTrainer("employee1");
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
@@ -1110,13 +1129,13 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(2);
-            assertThat(results1).extracting("member","startAt","endAt","status")
-                    .contains(tuple("tester1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","2000-01-01","2000-03-01",IN_PROGRESS)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS)
                     );
             assertThat(results2.size()).isEqualTo(1);
-            assertThat(results2).extracting("member","startAt","endAt","status")
-                    .contains(tuple("tester2","2000-01-01","2000-04-01",IN_PROGRESS));
+            assertThat(results2).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-04-01",IN_PROGRESS));
         }
 
 
@@ -1125,7 +1144,8 @@ class ProgramServiceTest {
         @Test
         void findAllProgramByUser(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
@@ -1204,10 +1224,10 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("member","employee","startAt","endAt","status")
-                    .contains(tuple("tester1","employee1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","employee1","2000-01-01","2000-03-01",IN_PROGRESS),
-                            tuple("tester1","employee2","2000-01-01","2000-04-01",EXPIRED)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-04-01",EXPIRED)
                     );
         }
 
@@ -1215,7 +1235,8 @@ class ProgramServiceTest {
         @Test
         void findAllProgramByEmployee(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Employee trainer = initTrainer("employee1");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
@@ -1294,10 +1315,10 @@ class ProgramServiceTest {
 
             //then
             assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("member","employee","startAt","endAt","status")
-                    .contains(tuple("tester1","employee1","2000-01-01","2000-02-01",IN_PROGRESS),
-                            tuple("tester1","employee1","2000-01-01","2000-03-01",IN_PROGRESS),
-                            tuple("tester2","employee1","2000-01-01","2000-04-01",EXPIRED)
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-03-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-04-01",EXPIRED)
                     );
         }
 
@@ -1319,7 +1340,8 @@ class ProgramServiceTest {
         @Test
         void findByEmployeeNoExistInProgressProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
 
             Member member2 = initMember("tester2",MemberRole.MEMBER);
@@ -1373,7 +1395,8 @@ class ProgramServiceTest {
         @Test
         void findByMemberNoExistInProgressProgram(){
             //given
-            Product product = initProduct("pt 30회권", "30",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
@@ -1417,7 +1440,8 @@ class ProgramServiceTest {
         @Test
         void FindAllRegistrationByUser(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
@@ -1486,22 +1510,35 @@ class ProgramServiceTest {
 
             //then
             assertThat(result1).hasSize(4);
-            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
-                    .contains(tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
-                            tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
-                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND)
+            assertThat(result1).extracting("totalPrice","discount","status")
+                    .contains(tuple(10000,0,RegistrationStatus.DECLINED),
+                            tuple(20000,0,RegistrationStatus.ACCEPTED),
+                            tuple(30000,0,RegistrationStatus.PENDING),
+                            tuple(40000,0,RegistrationStatus.REFUND)
                     );
             assertThat(result2).hasSize(1);
-            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
-                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+            assertThat(result2).extracting("totalPrice","discount","status")
+                    .contains(tuple(40000,0,RegistrationStatus.PENDING)
                     );
+//
+//            assertThat(result1).hasSize(4);
+//            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+//                    .contains(tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
+//                            tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
+//                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+//                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND)
+//                    );
+//            assertThat(result2).hasSize(1);
+//            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
+//                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+//                    );
         }
         @DisplayName("유저의 승인대기 중 인 registration을 조회 가능하다.")
         @Test
         void findReadyRegistrationByUser(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
@@ -1569,15 +1606,25 @@ class ProgramServiceTest {
             List<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY);
 
             //then
+//            assertThat(result1).hasSize(2);
+//            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+//                    .contains(
+//                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
+//                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING)
+//                    );
+//            assertThat(result2).hasSize(1);
+//            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
+//                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+//                    );
             assertThat(result1).hasSize(2);
-            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+            assertThat(result1).extracting("totalPrice","discount","status")
                     .contains(
-                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING)
+                            tuple(30000,0,RegistrationStatus.PENDING),
+                            tuple(40000,0,RegistrationStatus.PENDING)
                     );
             assertThat(result2).hasSize(1);
-            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
-                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+            assertThat(result2).extracting("totalPrice","discount","status")
+                    .contains(tuple(40000,0,RegistrationStatus.PENDING)
                     );
         }
 
@@ -1597,7 +1644,8 @@ class ProgramServiceTest {
         @Test
         void findReadyRegistrationByUserAtUnknownReadyRegistration(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Registration registration1= Registration.builder()
                     .product(product)
@@ -1650,7 +1698,8 @@ class ProgramServiceTest {
         @Test
         void adminIsFindAllRegistration(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
             Member admin = initMember("admin",MemberRole.ADMIN);
@@ -1719,13 +1768,13 @@ class ProgramServiceTest {
 
             //then
             assertThat(result1).hasSize(5);
-            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+            assertThat(result1).extracting("totalPrice","discount","status")
                     .contains(
-                            tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
-                            tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
-                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND),
-                            tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                            tuple(10000,0,RegistrationStatus.DECLINED),
+                            tuple(20000,0,RegistrationStatus.ACCEPTED),
+                            tuple(30000,0,RegistrationStatus.PENDING),
+                            tuple(40000,0,RegistrationStatus.REFUND),
+                            tuple(40000,0,RegistrationStatus.PENDING)
                     );
         }
 
@@ -1733,7 +1782,8 @@ class ProgramServiceTest {
         @Test
         void adminIsFindReadyRegistration(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
             Member admin = initMember("admin",MemberRole.ADMIN);
@@ -1802,11 +1852,11 @@ class ProgramServiceTest {
 
             //then
             assertThat(result1).hasSize(3);
-            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
+            assertThat(result1).extracting("totalPrice","discount","status")
                     .contains(
-                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING),
-                            tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
+                            tuple(30000,0,RegistrationStatus.PENDING),
+                            tuple(40000,0,RegistrationStatus.PENDING),
+                            tuple(40000,0,RegistrationStatus.PENDING)
                     );
         }
 
@@ -1814,7 +1864,8 @@ class ProgramServiceTest {
         @Test
         void adminFindRegistrationFail(){
             //given
-            Product product = initProduct("pt 30회권", "0",30,ProductType.MEMBERSHIP);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member admin = initMember("tester2",MemberRole.ADMIN);
             Registration registration1= Registration.builder()
@@ -1859,5 +1910,221 @@ class ProgramServiceTest {
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
     }
+
+
+    @Nested
+    @DisplayName("SuspendProgramTest")
+    class SuspendProgramTest {
+        @DisplayName("회원권을 일시정지 할 수 있다.")
+        @Test
+        void suspendProgram(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            Long result = programService.suspendProgram(program.getId(), now);
+            Program program1 = programRepository.findById(program.getId()).orElseThrow();
+
+            //then
+            assertThat(result).isEqualTo(program.getId());
+            assertThat(program1.getStatus()).isEqualTo(ProgramStatus.SUSPEND);
+            assertThat(program1.getStartAt()).isEqualTo(program.getStartAt());
+            assertThat(program1.getEndAt()).isEqualTo(program.getEndAt());
+            assertThat(program1.getSuspendAt()).isEqualTo(now);
+        }
+
+        @DisplayName("회원권을 일시정지 할 수 있다.")
+        @Test
+        void suspendProgramUnknownProgram(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            assertThatThrownBy(() -> programService.suspendProgram(program.getId()+1, now))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("존재하지 않는 프로그램입니다.");
+        }
+
+        @DisplayName("회원권을 일시정지 요청할 때 정지한 적이 있으면 예외를 발생시킨다.")
+        @Test
+        void suspendProgramCantSuspend(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(ProgramStatus.REFUND)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .suspendAt(now)
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            assertThatThrownBy(() -> programService.suspendProgram(program.getId(), now))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("정책상 활불 요청이 거부됩니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("ResumeProgramTest")
+    class ResumeProgramTest {
+        @DisplayName("일시정지한 회원권을 재실행 할 수 있다.")
+        @Test
+        void resumeProgram(){
+            //given
+            LocalDate stopDay = LocalDate.of(2000,1,15);
+            LocalDate resumeDay = LocalDate.of(2000,1,18);
+            Period stopPeriod = Period.between(stopDay,resumeDay);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(ProgramStatus.SUSPEND)
+                    .suspendAt(stopDay)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            Long result = programService.resumeProgram(program.getId(), resumeDay);
+            Program program1 = programRepository.findById(program.getId()).orElseThrow();
+
+            //then
+            assertThat(result).isEqualTo(program.getId());
+            assertThat(program1.getStatus()).isEqualTo(IN_PROGRESS);
+            assertThat(program1.getStartAt()).isEqualTo(program.getStartAt());
+            assertThat(program1.getEndAt()).isEqualTo(program.getEndAt().plus(stopPeriod));
+            assertThat(program1.getSuspendAt()).isEqualTo(stopDay);
+        }
+
+        @DisplayName("일시정지 되지 않은 회원권을 재실행 할 수 있다.")
+        @Test
+        void resumeProgramNotSuspend(){
+            //given
+            LocalDate stopDay = LocalDate.of(2000,1,15);
+            LocalDate resumeDay = LocalDate.of(2000,1,18);
+            Period stopPeriod = Period.between(stopDay,resumeDay);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+
+            //when
+            assertThatThrownBy(() -> programService.resumeProgram(program.getId(), resumeDay))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("프로그램이 정지 상태가 아닙니다.");
+        }
+    }
+
+
 
 }

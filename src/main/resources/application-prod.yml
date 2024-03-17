@@ -1,7 +1,8 @@
 # default
 spring:
   profiles:
-    default: prod # 기본 환경을 dev로
+    active:
+      on-profile : prod # 기본 환경을 dev로
 
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
@@ -17,12 +18,8 @@ spring:
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     properties:
       hibernate:
         format_sql: true
 
-# 환경변수 설정
-# - DB USER_NAME, PASSWORD
-# - 파일 저장 디렉토리 경로
-# - jwt secret_key (추후 확정)

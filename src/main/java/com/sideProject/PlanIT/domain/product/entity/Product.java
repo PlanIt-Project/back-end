@@ -6,6 +6,8 @@ import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Period;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -18,7 +20,7 @@ public class Product {
     private String name;
 
     @Column
-    private String period;
+    private Period period;
 
     @Column
     private int number;
@@ -30,7 +32,7 @@ public class Product {
     private ProductType type;
 
     @Builder
-    public Product(String name, String period, int number, int price, ProductType type) {
+    public Product(String name, Period period, int number, int price, ProductType type) {
         this.name = name;
         this.period = period;
         this.number = number;

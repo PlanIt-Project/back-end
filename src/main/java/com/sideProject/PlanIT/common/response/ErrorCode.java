@@ -25,7 +25,10 @@ public enum ErrorCode {
     PROGRAM_NOT_FOUND(404,"프로그램을 찾을 수 없습니다"),
     REGISTRATION_NOT_FOUND(404,"등록을 찾을 수 없습니다"),
     MEMBER_NOT_FOUND(404,"회원을 찾을 수 없습니다"),
-    EMPLOYEE_NOT_FOUND(404,"직원을 찾을 수 없습니다");
+    EMPLOYEE_NOT_FOUND(404,"직원을 찾을 수 없습니다"),
+
+    NOT_SUSPEND_PROGRAM(422, "일시정지 요청이 거부되었습니다."),
+    SUSPEND_REQUEST_DENIED(422, "일시정지 요청이 거부되었습니다.");
 
 
     private final int status;

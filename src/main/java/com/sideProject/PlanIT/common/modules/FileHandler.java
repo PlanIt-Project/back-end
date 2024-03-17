@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Component
 public class FileHandler {
-    @Value("${fileStorage.dir}")
+    @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;
 
     public String saveFile(MultipartFile file) {
