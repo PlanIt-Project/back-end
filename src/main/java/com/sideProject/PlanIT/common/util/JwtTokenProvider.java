@@ -49,4 +49,8 @@ public class JwtTokenProvider {
         redisUtil.setRefreshToken(refreshToken, member.getId());
         return refreshToken;
     }
+
+    public void deleteRefreshToken(Long member_id) {
+        redisUtil.deleteByValue(member_id.toString());
+    }
 }

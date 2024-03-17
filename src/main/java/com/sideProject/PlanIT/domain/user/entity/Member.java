@@ -69,6 +69,7 @@ public class Member {
 
     public MemberResponseDto toDto() {
         return MemberResponseDto.builder()
+                .Id(this.Id)
                 .email(this.email)
                 .name(this.name)
                 .birth(this.birth)

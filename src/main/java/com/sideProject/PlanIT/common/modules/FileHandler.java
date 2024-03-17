@@ -27,4 +27,9 @@ public class FileHandler {
             return "이미지 업로드 오류 발생";
         }
     }
+
+    public MultipartFile sendFile(String dir) {
+        //todo: 파일 전송
+        return null;
+    }
 }
