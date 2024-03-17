@@ -18,7 +18,6 @@ import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-//todo: 모든 조회에서 admin은 조회 안되게 수정하는 로직
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -121,9 +119,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public TrainerResponseDto findTrainer(Long trainer_id) {
-        return employeeRepository.findById(trainer_id).orElseThrow(() ->
-                new IllegalArgumentException("no extist id")).toDto();
+    public String signOut(Long member_id) {
+        jwtTokenProvider.deleteRefreshToken(member_id);
+
+        return "로그아웃 성공";
     }
 
     @Override

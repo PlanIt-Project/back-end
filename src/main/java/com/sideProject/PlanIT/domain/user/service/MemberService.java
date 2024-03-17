@@ -19,8 +19,7 @@ public interface MemberService {
     Member editMember(Long member_id, MemberEditRequestDto memberEditRequestDto);
     String changePassword(Long member_id, MemberChangePasswordRequestDto memberChangePasswordRequestDto);
     MemberResponseDto findMember(Long member_id);
-    TrainerResponseDto findTrainer(Long trainer_id);
-
+    String signOut(Long member_id);
     List<MemberResponseDto> findAllMembers();
     List<TrainerResponseDto> findAllEmployees();
     String grantEmployeeAuth(Long member_id, TrainerRequestDto trainerRequestDto);
