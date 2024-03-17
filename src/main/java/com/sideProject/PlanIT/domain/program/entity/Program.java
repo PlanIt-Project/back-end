@@ -52,10 +52,10 @@ public class Program extends BaseEntity {
     private LocalDate endAt;
 
     @Column(nullable = true)
-    private LocalDate pauseAt;
+    private LocalDate suspendAt;
 
     @Column(nullable = true)
-    private LocalDate restartAt;
+    private LocalDate resumeAt;
 
     @Builder
     public Program(
@@ -67,8 +67,8 @@ public class Program extends BaseEntity {
             Employee employee,
             LocalDate startAt,
             LocalDate endAt,
-            LocalDate pauseAt,
-            LocalDate restartAt) {
+            LocalDate suspendAt,
+            LocalDate resumeAt) {
         this.remainedNumber = remainedNumber;
         this.status = status;
         this.product = product;
@@ -77,8 +77,8 @@ public class Program extends BaseEntity {
         this.employee = employee;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.pauseAt = pauseAt;
-        this.restartAt = restartAt;
+        this.suspendAt = suspendAt;
+        this.resumeAt = resumeAt;
     }
 
 
@@ -106,14 +106,14 @@ public class Program extends BaseEntity {
     }
 
     //프로그램 일시정지
-    public void pauseProgram(LocalDate pauseAt) {
-        this.pauseAt = pauseAt;
-        this.status = ProgramStatus.PAUSE;
+    public void suspendProgram(LocalDate suspendAt) {
+        this.suspendAt = suspendAt;
+        this.status = ProgramStatus.SUSPEND;
     }
 
     //프로그램 일시정지
-    public void restartProgram(LocalDate restartAt,LocalDate endAt) {
-        this.restartAt = restartAt;
+    public void resumeProgram(LocalDate resumeAt,LocalDate endAt) {
+        this.resumeAt = resumeAt;
         this.endAt = endAt;
         this.status = ProgramStatus.IN_PROGRESS;
     }

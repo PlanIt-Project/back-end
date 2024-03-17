@@ -161,6 +161,41 @@ public class ProgramServiceImpl implements ProgramService {
 
 
     @Override
+    public Long suspendProgram(Long id, LocalDate now) {
+        Program program = programRepository.findById(id).orElseThrow(() ->
+                new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+        );
+
+        if(program.getSuspendAt() != null) {
+            throw new CustomException("정책상 활불 요청이 거부됩니다.", ErrorCode.SUSPEND_REQUEST_DENIED);
+        }
+
+        program.suspendProgram(now);
+        Program result = programRepository.save(program);
+
+        return result.getId();
+    }
+
+    @Override
+    public Long resumeProgram(Long id, LocalDate now) {
+        Program program = programRepository.findById(id).orElseThrow(() ->
+                new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+        );
+
+        if(program.getStatus() != ProgramStatus.SUSPEND) {
+            throw new CustomException("프로그램이 정지 상태가 아닙니다.", ErrorCode.NOT_SUSPEND_PROGRAM);
+        }
+
+        Period periodBetween = Period.between(program.getSuspendAt(), now);
+        LocalDate endAt = program.getEndAt().plus(periodBetween);
+
+        program.resumeProgram(now,endAt);
+        Program result = programRepository.save(program);
+
+        return result.getId();
+    }
+
+    @Override
     public Long approve(Long registrationId, Long trainerId, LocalDateTime localDateTime) {
         Registration registration = getRegistrationById(registrationId);
 

@@ -1911,4 +1911,220 @@ class ProgramServiceTest {
         }
     }
 
+
+    @Nested
+    @DisplayName("SuspendProgramTest")
+    class SuspendProgramTest {
+        @DisplayName("회원권을 일시정지 할 수 있다.")
+        @Test
+        void suspendProgram(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            Long result = programService.suspendProgram(program.getId(), now);
+            Program program1 = programRepository.findById(program.getId()).orElseThrow();
+
+            //then
+            assertThat(result).isEqualTo(program.getId());
+            assertThat(program1.getStatus()).isEqualTo(ProgramStatus.SUSPEND);
+            assertThat(program1.getStartAt()).isEqualTo(program.getStartAt());
+            assertThat(program1.getEndAt()).isEqualTo(program.getEndAt());
+            assertThat(program1.getSuspendAt()).isEqualTo(now);
+        }
+
+        @DisplayName("회원권을 일시정지 할 수 있다.")
+        @Test
+        void suspendProgramUnknownProgram(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            assertThatThrownBy(() -> programService.suspendProgram(program.getId()+1, now))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("존재하지 않는 프로그램입니다.");
+        }
+
+        @DisplayName("회원권을 일시정지 요청할 때 정지한 적이 있으면 예외를 발생시킨다.")
+        @Test
+        void suspendProgramCantSuspend(){
+            //given
+            LocalDate now = LocalDate.of(2000,1,15);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(ProgramStatus.REFUND)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .suspendAt(now)
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            assertThatThrownBy(() -> programService.suspendProgram(program.getId(), now))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("정책상 활불 요청이 거부됩니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("ResumeProgramTest")
+    class ResumeProgramTest {
+        @DisplayName("일시정지한 회원권을 재실행 할 수 있다.")
+        @Test
+        void resumeProgram(){
+            //given
+            LocalDate stopDay = LocalDate.of(2000,1,15);
+            LocalDate resumeDay = LocalDate.of(2000,1,18);
+            Period stopPeriod = Period.between(stopDay,resumeDay);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(ProgramStatus.SUSPEND)
+                    .suspendAt(stopDay)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+            Long result = programService.resumeProgram(program.getId(), resumeDay);
+            Program program1 = programRepository.findById(program.getId()).orElseThrow();
+
+            //then
+            assertThat(result).isEqualTo(program.getId());
+            assertThat(program1.getStatus()).isEqualTo(IN_PROGRESS);
+            assertThat(program1.getStartAt()).isEqualTo(program.getStartAt());
+            assertThat(program1.getEndAt()).isEqualTo(program.getEndAt().plus(stopPeriod));
+            assertThat(program1.getSuspendAt()).isEqualTo(stopDay);
+        }
+
+        @DisplayName("일시정지 되지 않은 회원권을 재실행 할 수 있다.")
+        @Test
+        void resumeProgramNotSuspend(){
+            //given
+            LocalDate stopDay = LocalDate.of(2000,1,15);
+            LocalDate resumeDay = LocalDate.of(2000,1,18);
+            Period stopPeriod = Period.between(stopDay,resumeDay);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            //when
+
+            //when
+            assertThatThrownBy(() -> programService.resumeProgram(program.getId(), resumeDay))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("프로그램이 정지 상태가 아닙니다.");
+        }
+    }
+
+
+
 }

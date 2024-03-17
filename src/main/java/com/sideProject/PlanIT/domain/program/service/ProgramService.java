@@ -10,6 +10,7 @@ import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface ProgramService {
     public Long approve(Long programId, Long trainerId,LocalDateTime now);
     public List<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option);
     public List<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option);
+    public Long suspendProgram(Long id, LocalDate now);
+    public Long resumeProgram(Long id, LocalDate now);
 }

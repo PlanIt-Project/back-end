@@ -20,6 +20,8 @@ public class ProgramResponse {
     int remainedNumber;
     String startAt;
     String endAt;
+    String suspendAt;
+    String resumeAt;
     ProgramStatus status;
     MemberSemiResponseDto member;
     EmployeeSemiResponseDto employee;
@@ -33,7 +35,9 @@ public class ProgramResponse {
             ProgramStatus status,
             Product product,
             Member member,
-            Employee employee) {
+            Employee employee,
+            String suspendAt,
+            String resumeAt) {
         this.id = id;
         this.remainedNumber = remainedNumber;
         this.startAt = startAt;
@@ -42,20 +46,28 @@ public class ProgramResponse {
         this.productName = product.getName();
         this.member = MemberSemiResponseDto.of(member);
         this.employee = EmployeeSemiResponseDto.of(employee);
+        this.suspendAt = suspendAt;
+        this.resumeAt = resumeAt;
     }
 
     public static ProgramResponse of(Program program){
         return ProgramResponse.builder()
                 .id(program.getId())
                 .remainedNumber(program.getRemainedNumber())
-                .startAt(program.getStartAt().toString())
-                .endAt(Optional.ofNullable(program.getEndAt())
-                        .map(Object::toString)
-                        .orElse(null))
                 .status(program.getStatus())
                 .product(program.getProduct())
                 .member(program.getMember())
                 .employee(program.getEmployee())
+                .startAt(program.getStartAt().toString())
+                .endAt(Optional.ofNullable(program.getEndAt())
+                        .map(Object::toString)
+                        .orElse(null))
+                .suspendAt(Optional.ofNullable(program.getSuspendAt())
+                        .map(Object::toString)
+                        .orElse(null))
+                .resumeAt(Optional.ofNullable(program.getResumeAt())
+                        .map(Object::toString)
+                        .orElse(null))
                 .build();
     }
 }
