@@ -56,12 +56,16 @@ public class MemberController {
 
     @GetMapping
     public ApiResponse<MemberResponseDto> findMember(Principal principal) {
-        log.info("test");
         return ApiResponse.ok(memberService.findMember(Long.parseLong(principal.getName())));
     }
 
     @DeleteMapping("/signout")
     public ApiResponse<String> signout(Principal principal) {
         return ApiResponse.ok(memberService.signOut(Long.parseLong(principal.getName())));
+    }
+
+    @GetMapping("/employee")
+    public ApiResponse<List<TrainerResponseDto>> findAllEmployees() {
+        return ApiResponse.ok(memberService.findAllEmployees());
     }
 }

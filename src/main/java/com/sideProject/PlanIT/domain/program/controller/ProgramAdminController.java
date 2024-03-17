@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,13 +92,17 @@ public class ProgramAdminController {
         );
     }
 
-    @PutMapping("/program/{id}/suspend")
-    public ApiResponse<String> suspendProgram(@PathVariable Long id) {
-        return ApiResponse.ok(id + "번 회원권이 일시정지 처리되었습니다.");
+    @PutMapping("/{id}/suspend")
+    public ApiResponse<String> suspendProgram(@PathVariable(name = "id") Long id) {
+        LocalDate today = LocalDate.now();
+        Long result = programService.suspendProgram(id, today);
+        return ApiResponse.ok(result + "번 회원권이 일시정지 처리되었습니다.");
     }
 
-    @PutMapping("/program/{id}/resume")
-    public ApiResponse<String> resumeProgram(@PathVariable Long id) {
-        return ApiResponse.ok(id + "번 회원권이 다시 활성화 되었습니다.");
+    @PutMapping("/{id}/resume")
+    public ApiResponse<String> resumeProgram(@PathVariable(name = "id") Long id) {
+        LocalDate today = LocalDate.now();
+        Long result = programService.resumeProgram(id, today);
+        return ApiResponse.ok(result + "번 회원권이 다시 활성화 되었습니다.");
     }
 }
