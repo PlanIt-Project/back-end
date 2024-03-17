@@ -28,12 +28,6 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product editProduct(Long product_id, ProductRequestDto productRequestDto) {
-        Product productToEdit = productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id"));
-        return productRepository.save(productToEdit.update(productRequestDto));
-    }
-
-    @Override
     public String deleteProduct(Long product_id) {
         productRepository.deleteById(product_id);
         return "삭제 성공";

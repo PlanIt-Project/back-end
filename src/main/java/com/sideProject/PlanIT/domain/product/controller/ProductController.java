@@ -21,11 +21,6 @@ public class ProductController {
         return ApiResponse.ok(productService.createProduct(productRequestDto));
     }
 
-    @PutMapping("/product/{product_id}")
-    public ApiResponse<Product> editProduct(@PathVariable Long product_id, @RequestBody ProductRequestDto productRequestDto) {
-        return ApiResponse.ok(productService.editProduct(product_id, productRequestDto));
-    }
-
     @DeleteMapping("/product/{product_id}")
     public ApiResponse<String> deleteProduct(@PathVariable Long product_id) {
         return ApiResponse.ok(productService.deleteProduct(product_id));
