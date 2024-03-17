@@ -21,26 +21,34 @@ public class BannerServiceImpl implements BannerService{
     @Autowired
     private FileHandler fileHandler;
 
-    public Banner createBanner(BannerRequestDto bannerRequestDto) {
-        return bannerRepository.save(Banner.builder()
-                .title(bannerRequestDto.getTitle())
-                .startAt(bannerRequestDto.getStartAt())
-                .endAt(bannerRequestDto.getEndAt())
-                .imagePath(fileHandler.saveFile(bannerRequestDto.getImage()))
-                .build());
+    public String createBanner(BannerRequestDto bannerRequestDto) {
+        bannerRepository.save(Banner.builder()
+            .title(bannerRequestDto.getTitle())
+            .startAt(bannerRequestDto.getStartAt())
+            .endAt(bannerRequestDto.getEndAt())
+            .imagePath(fileHandler.saveFile(bannerRequestDto.getImage()))
+            .build());
+        return "생성 완료";
     }
 
     @Override
-    public Banner editBanner(Long banner_id, BannerRequestDto bannerRequestDto) {
+    public String editBanner(Long banner_id, BannerRequestDto bannerRequestDto) {
         Banner bannerToEdit = bannerRepository.findById(banner_id).orElseThrow(() -> new IllegalStateException("no exist id"));
-        return bannerRepository.save(bannerToEdit.update(bannerRequestDto));
+        bannerRepository.save(bannerToEdit.update(bannerRequestDto));
+        return "수정 완료";
+    }
+
+    @Override
+    public String deleteBanner(Long banner_id) {
+        bannerRepository.deleteById(banner_id);
+        return "삭제 완료";
     }
 
     @Override
     public List<BannerResponseDto> findAllBanners() {
         List<Banner> banners = bannerRepository.findAll();
         return banners.stream()
-                .map(Banner::toDto)
+                .map(BannerResponseDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -48,12 +56,12 @@ public class BannerServiceImpl implements BannerService{
     public List<BannerResponseDto> findAllBannersInTime() {
         List<Banner> banners = bannerRepository.findByStartAtBeforeAndEndAtAfter();
         return banners.stream()
-                .map(Banner::toDto)
+                .map(BannerResponseDto::of)
                 .collect(Collectors.toList());
     }
 
     @Override
     public BannerResponseDto findBanner(Long banner_id) {
-        return Banner.toDto(bannerRepository.findById(banner_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
+        return BannerResponseDto.of(bannerRepository.findById(banner_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
     }
 }

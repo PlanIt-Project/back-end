@@ -2,7 +2,6 @@ package com.sideProject.PlanIT.domain.user.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.service.MemberService;
 import lombok.RequiredArgsConstructor;

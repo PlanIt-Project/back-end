@@ -14,7 +14,7 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column
     private String title;
@@ -57,16 +57,5 @@ public class Notice {
         this.content = noticeRequestDto.getContent();
 
         return this;
-    }
-
-    public static NoticeResponseDto toDto(Notice notice) {
-        return NoticeResponseDto.builder()
-                .title(notice.title)
-                .startAt(notice.startAt)
-                .endAt(notice.endAt)
-                .attachmentPath(notice.attachmentPath)
-                .imagePath(notice.imagePath)
-                .content(notice.content)
-                .build();
     }
 }

@@ -1,7 +1,6 @@
 package com.sideProject.PlanIT.domain.user.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
@@ -9,7 +8,6 @@ import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequest
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.JwtResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-
-
-//todo: member, admin Controller 분리
 
 @RestController
 @Slf4j
@@ -45,7 +40,7 @@ public class MemberController {
     }
 
     @PutMapping
-    public ApiResponse<Member> editMember(Principal principal, @RequestBody MemberEditRequestDto memberEditRequestDto) {
+    public ApiResponse<String> editMember(Principal principal, @RequestBody MemberEditRequestDto memberEditRequestDto) {
         return ApiResponse.ok(memberService.editMember(Long.parseLong(principal.getName()), memberEditRequestDto));
     }
 
