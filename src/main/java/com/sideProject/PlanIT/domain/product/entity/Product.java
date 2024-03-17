@@ -15,7 +15,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     private String name;
 
@@ -32,7 +32,8 @@ public class Product {
     private ProductType type;
 
     @Builder
-    public Product(String name, Period period, int number, int price, ProductType type) {
+    public Product(Long id,String name, Period period, int number, int price, ProductType type) {
+        this.id = id;
         this.name = name;
         this.period = period;
         this.number = number;
@@ -52,6 +53,7 @@ public class Product {
 
     public static ProductResponseDto toDto(Product product) {
         return ProductResponseDto.builder()
+                .id(product.id)
                 .name(product.name)
                 .number(product.number)
                 .period(product.period)

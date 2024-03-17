@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -195,6 +196,7 @@ public class ProgramServiceImpl implements ProgramService {
         return result.getId();
     }
 
+    //프로그램이 이미 존재하면 종료일 다음날 기준으로 추가
     @Override
     public Long approve(Long registrationId, Long trainerId, LocalDateTime localDateTime) {
         Registration registration = getRegistrationById(registrationId);
@@ -310,6 +312,31 @@ public class ProgramServiceImpl implements ProgramService {
         return programs.stream().map(ProgramResponse::of).toList();
     }
 
+    public ProgramResponse findByProgramId(long programId, long userId) {
+        Member member = memberRepository.findById(userId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Program programs = programRepository.findById(programId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        if(member.getRole().equals(MemberRole.TRAINER)) {
+            Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                    new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+            );
+            if(Objects.equals(programs.getEmployee().getId(), employee.getId())) {
+                throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+            }
+        }
+
+        if(Objects.equals(programs.getMember().getId(), member.getId())) {
+            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
+
+        return ProgramResponse.of(programs);
+    }
+
     private List<Program> findProgramByEmploy(Member member, ProgramSearchStatus option) {
         log.info("findEmployeeByMemberId = {}" , member.getId());
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(()->
@@ -335,6 +362,8 @@ public class ProgramServiceImpl implements ProgramService {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findAll();
+        } else if(option == ProgramSearchStatus.VALID) {
+            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS);
         } else {
             return programRepository.findByStatus(ProgramStatus.IN_PROGRESS);
         }
