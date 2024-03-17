@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: dev # 기본 환경을 dev로
+    default: default # 기본 환경을 dev로
 
   datasource:
     url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -24,14 +24,16 @@ jwt:
   refresh-token-expire: 1209600000
 
 ---
-server:
-  port: 8082
-
 spring:
-  config:
-    activate:
+  profiles:
+    active:
       on-profile: dev
 
+  datasource:
+    url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${USER_NAME}
+    password: ${PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate.ddl-auto: create
     properties:
