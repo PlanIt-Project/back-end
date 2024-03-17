@@ -1,9 +1,9 @@
 name: Deploy to AWS EC2
 
 on:
-  push:
+  pull_request:
     branches:
-      - test
+      - main
 
 jobs:
   deploy:
@@ -40,6 +40,7 @@ jobs:
         echo "USER_NAME=${{ secrets.DB_USER }}" >> .env
         echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
         echo "FILE_STORAGE_DIR=${{ secrets.FILE_PATH }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
       shell: bash
 
     # Gradle build
