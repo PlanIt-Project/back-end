@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ProgramRegistraion {
     @Getter
     @AllArgsConstructor
-    public static class programRegistrationrequest{
+    public static class programRegistrationrequest {
 
         private LocalDateTime registrationAt;
         private LocalDateTime paymentAt;

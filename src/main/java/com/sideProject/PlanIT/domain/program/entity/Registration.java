@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.program.entity;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
+import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,6 +32,9 @@ public class Registration {
     RegistrationStatus status;
 
     @Column
+    private Long trainerId;
+
+    @Column
     private int discount;
 
     @Column
@@ -45,7 +49,7 @@ public class Registration {
     private Product product;
 
     @Builder
-    public Registration(LocalDateTime registrationAt, LocalDateTime paymentAt, LocalDateTime refundAt, RegistrationStatus status, int discount, int totalPrice, Member member, Product product) {
+    public Registration(LocalDateTime registrationAt, LocalDateTime paymentAt, LocalDateTime refundAt, RegistrationStatus status, int discount, int totalPrice, Member member, Product product, Long trainerId) {
         this.registrationAt = registrationAt;
         this.paymentAt = paymentAt;
         this.refundAt = refundAt;
@@ -54,6 +58,7 @@ public class Registration {
         this.totalPrice = totalPrice;
         this.member = member;
         this.product = product;
+        this.trainerId = trainerId;
     }
 
     //환불 상태로 변경

@@ -53,7 +53,6 @@ public class Member {
     }
 
     public void update(MemberEditRequestDto memberEditRequestDto) {
-        this.email = memberEditRequestDto.getEmail();
         this.name = memberEditRequestDto.getName();
         this.birth = memberEditRequestDto.getBirth();
         this.address = memberEditRequestDto.getAddress();
@@ -70,6 +69,7 @@ public class Member {
 
     public MemberResponseDto toDto() {
         return MemberResponseDto.builder()
+                .Id(this.Id)
                 .email(this.email)
                 .name(this.name)
                 .birth(this.birth)

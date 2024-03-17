@@ -1,0 +1,31 @@
+# default
+spring:
+  profiles:
+    active:
+      on-profile : dev # 기본 환경을 dev로
+
+  fileStorage:
+    dir: ${FILE_STORAGE_DIR}
+
+  jwt:
+    secret-key: ${SECRET_KEY}
+    access-token-expire: 432000
+    refresh-token-expire: 1209600000
+
+  datasource:
+    url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${USER_NAME}
+    password: ${PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate.ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+
+# 환경변수 설정
+# - DB USER_NAME, PASSWORD
+# - 파일 저장 디렉토리 경로
+# - jwt secret_key (추후 확정)

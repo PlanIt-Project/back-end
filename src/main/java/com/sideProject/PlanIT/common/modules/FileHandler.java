@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Component
 public class FileHandler {
-    @Value("${fileStorage.dir}")
+    @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;
 
     public String saveFile(MultipartFile file) {
@@ -26,5 +26,10 @@ public class FileHandler {
             e.printStackTrace();
             return "이미지 업로드 오류 발생";
         }
+    }
+
+    public MultipartFile sendFile(String dir) {
+        //todo: 파일 전송
+        return null;
     }
 }

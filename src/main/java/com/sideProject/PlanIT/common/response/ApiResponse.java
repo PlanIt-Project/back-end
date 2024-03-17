@@ -20,8 +20,6 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-
-
     public static <T> ApiResponse<T> ok(T data) {return new ApiResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), data);}
 
     public static ApiResponse<?> error(ErrorCode errorCode) {return new ApiResponse<>(errorCode.getStatus(), errorCode.getMessage(),null);}

@@ -2,11 +2,15 @@ package com.sideProject.PlanIT.domain.user.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
+import com.sideProject.PlanIT.common.util.JwtTokenProvider;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.JwtResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
@@ -20,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -27,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Member signUp(MemberSignUpRequestDto memberSignUpRequestDto) {
@@ -47,8 +53,17 @@ public class MemberServiceImpl implements MemberService {
                 .build());
     }
 
-    public void signIn() {
-        //todo: 로그인 기능
+    @Override
+    public JwtResponseDto memberValidation(MemberSignInRequestDto memberSignInRequestDto) {
+        Member member = memberRepository.findByEmail(memberSignInRequestDto.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        if(!passwordEncoder.matches(memberSignInRequestDto.getPassword(), member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+        return JwtResponseDto.builder()
+                .accessToken(jwtTokenProvider.createAccessToken(member))
+                .refreshToken(jwtTokenProvider.createRefreshToken(member))
+                .build();
     }
 
     @Override
@@ -62,14 +77,6 @@ public class MemberServiceImpl implements MemberService {
         Member memberToEdit = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id"));
 
-        String newEmail = memberEditRequestDto.getEmail();
-
-        if (!newEmail.equals(memberToEdit.getEmail())) {
-            memberRepository.findByEmail(newEmail)
-                    .ifPresent(user1 -> {
-                        throw new CustomException("이메일이 이미 존재합니다.", ErrorCode.ALREADY_EXIST_EMAIL);
-                    });
-        }
 
         memberToEdit.update(memberEditRequestDto);
         return memberRepository.save(memberToEdit);
@@ -97,8 +104,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMember(Long member_id) {
-        return memberRepository.findById(member_id).orElseThrow(() ->
-                new IllegalArgumentException("no extist id")).toDto();
+        Member member = memberRepository.findById(member_id).orElseThrow(() ->
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        //트레이너면 트레이너 정보 조회
+        TrainerResponse trainerResponse = null;
+        if(member.getRole().equals(MemberRole.TRAINER)) {
+            Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                    new CustomException(ErrorCode.EMPLOYEE_NOT_FOUND));
+            trainerResponse = TrainerResponse.of(trainer);
+        }
+
+        return MemberResponseDto.of(member,trainerResponse);
+    }
+
+    @Override
+    public String signOut(Long member_id) {
+        jwtTokenProvider.deleteRefreshToken(member_id);
+
+        return "로그아웃 성공";
     }
 
     @Override
