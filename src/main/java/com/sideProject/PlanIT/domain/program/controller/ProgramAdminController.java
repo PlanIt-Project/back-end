@@ -37,7 +37,7 @@ public class ProgramAdminController {
     }
 
     //어드민이 유저 id로 검색
-    @GetMapping("/{id}")
+    @GetMapping("/by-user/{id}")
     public ApiResponse<List<ProgramResponse>> find(
             @PathVariable("id") Long id,
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option) {
@@ -55,7 +55,6 @@ public class ProgramAdminController {
         );
     }
 
-    //todo : 일시정지 기능 추가해야함
     @PutMapping("/{id}")
     public ApiResponse<String> modify(
             @PathVariable("id") Long id,

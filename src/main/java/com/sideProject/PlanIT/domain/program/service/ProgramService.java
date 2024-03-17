@@ -20,6 +20,7 @@ public interface ProgramService {
     public String modify(long programId, ProgramModifyRequest request);
     public List<ProgramResponse> find(long adminId,ProgramSearchStatus option);
     public List<ProgramResponse> findByUser(long userId, ProgramSearchStatus option);
+    public ProgramResponse findByProgramId(long programId, long userId);
     public Long approve(Long programId, Long trainerId,LocalDateTime now);
     public List<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option);
     public List<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option);

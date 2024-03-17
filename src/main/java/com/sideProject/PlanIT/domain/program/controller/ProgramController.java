@@ -38,6 +38,19 @@ public class ProgramController {
         );
     }
 
+
+    //어드민이 유저 id로 검색
+    @GetMapping("/{id}")
+    public ApiResponse<ProgramResponse> find(
+            @PathVariable("id") Long id,
+            Principal principal) {
+        //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
+        Long userId = Long.parseLong(principal.getName());
+        return ApiResponse.ok(
+                programService.findByProgramId(id, userId)
+        );
+    }
+
     @GetMapping("/registration")
     public ApiResponse<List<FindRegistrationResponse>> findRegistration(
             @RequestParam(value = "option", required = false, defaultValue = "ALL") RegistrationSearchStatus option,

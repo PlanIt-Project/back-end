@@ -8,6 +8,7 @@ import java.time.Period;
 
 @Getter
 public class ProductResponseDto {
+    private Long id;
     private String name;
     private Period period;
     private int number;
@@ -15,7 +16,8 @@ public class ProductResponseDto {
     private ProductType type;
 
     @Builder
-    public ProductResponseDto(String name, Period period, int number, int price, ProductType type) {
+    public ProductResponseDto(Long id,String name, Period period, int number, int price, ProductType type) {
+        this.id = id;
         this.name = name;
         this.period = period;
         this.number = number;
