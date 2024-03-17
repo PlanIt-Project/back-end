@@ -26,12 +26,6 @@ public class Program extends BaseEntity {
     @ColumnDefault("0")
     private int remainedNumber;
 
-    @Column
-    private LocalDate startAt;
-
-    @Column(nullable = true)
-    private LocalDate endAt;
-
     @Enumerated(EnumType.STRING)
     ProgramStatus status;
 
@@ -51,17 +45,42 @@ public class Program extends BaseEntity {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @Column
+    private LocalDate startAt;
+
+    @Column(nullable = true)
+    private LocalDate endAt;
+
+    @Column(nullable = true)
+    private LocalDate pauseAt;
+
+    @Column(nullable = true)
+    private LocalDate restartAt;
+
     @Builder
-    public Program(int remainedNumber, LocalDate startAt, LocalDate endAt, ProgramStatus status, Product product, Registration registration, Member member, Employee employee) {
+    public Program(
+            int remainedNumber,
+            ProgramStatus status,
+            Product product,
+            Registration registration,
+            Member member,
+            Employee employee,
+            LocalDate startAt,
+            LocalDate endAt,
+            LocalDate pauseAt,
+            LocalDate restartAt) {
         this.remainedNumber = remainedNumber;
-        this.startAt = startAt;
-        this.endAt = endAt;
         this.status = status;
         this.product = product;
         this.registration = registration;
         this.member = member;
         this.employee = employee;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.pauseAt = pauseAt;
+        this.restartAt = restartAt;
     }
+
 
     //프로그램 변경
     public void updateProgram(LocalDate startAt, LocalDate endAt, Member member, Employee employee) {
@@ -84,5 +103,18 @@ public class Program extends BaseEntity {
     //프로그램 환불
     public void changeToRefund() {
         this.status = ProgramStatus.REFUND;
+    }
+
+    //프로그램 일시정지
+    public void pauseProgram(LocalDate pauseAt) {
+        this.pauseAt = pauseAt;
+        this.status = ProgramStatus.PAUSE;
+    }
+
+    //프로그램 일시정지
+    public void restartProgram(LocalDate restartAt,LocalDate endAt) {
+        this.restartAt = restartAt;
+        this.endAt = endAt;
+        this.status = ProgramStatus.IN_PROGRESS;
     }
 }

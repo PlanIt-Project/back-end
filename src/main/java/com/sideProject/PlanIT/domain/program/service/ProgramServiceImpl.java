@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -187,11 +188,11 @@ public class ProgramServiceImpl implements ProgramService {
 
         Product product = registration.getProduct();
 
-        //회원궝 종료 일자 계산
+        //회원권 종료 일자 계산
         LocalDate startAt = registration.getRegistrationAt().toLocalDate();
         LocalDate endAt = null;
-        if(Integer.parseInt(product.getPeriod()) > 0) {
-            endAt = startAt.plusDays(Integer.parseInt(product.getPeriod()));
+        if(isPeriodGreaterThanZero(product.getPeriod())) {
+            endAt = startAt.plus(product.getPeriod()).minusDays(1);
         }
 
         Program program = Program.builder()
@@ -206,6 +207,18 @@ public class ProgramServiceImpl implements ProgramService {
                 .build();
 
         return programRepository.save(program).getId();
+    }
+
+    private static boolean isPeriodGreaterThanZero(Period period) {
+        // 전체 기간을 월로 변환하여 검사 (년과 월을 고려)
+        if (period.toTotalMonths() > 0) {
+            return true;
+        }
+        // 월이 0인 경우, 일수로 판단
+        else if (period.getDays() > 0) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -255,7 +268,7 @@ public class ProgramServiceImpl implements ProgramService {
             programs = findProgramByEmploy(member, option);
         }
 
-        if(programs.isEmpty()) {
+        if(programs == null || programs.isEmpty()) {
             throw new CustomException("프로그램을 찾을 수 없습니다.",ErrorCode.PROGRAM_NOT_FOUND);
         }
 

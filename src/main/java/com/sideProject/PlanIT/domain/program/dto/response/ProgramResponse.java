@@ -1,15 +1,17 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
+import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Getter
 public class ProgramResponse {
@@ -19,8 +21,8 @@ public class ProgramResponse {
     String startAt;
     String endAt;
     ProgramStatus status;
-    String member;
-    String employee;
+    MemberSemiResponseDto member;
+    EmployeeSemiResponseDto employee;
 
     @Builder
     public ProgramResponse(
@@ -38,8 +40,8 @@ public class ProgramResponse {
         this.endAt = endAt;
         this.status = status;
         this.productName = product.getName();
-        this.member = member.getName();
-        this.employee = employee.getMember().getName();
+        this.member = MemberSemiResponseDto.of(member);
+        this.employee = EmployeeSemiResponseDto.of(employee);
     }
 
     public static ProgramResponse of(Program program){
@@ -47,7 +49,9 @@ public class ProgramResponse {
                 .id(program.getId())
                 .remainedNumber(program.getRemainedNumber())
                 .startAt(program.getStartAt().toString())
-                .endAt(program.getEndAt().toString())
+                .endAt(Optional.ofNullable(program.getEndAt())
+                        .map(Object::toString)
+                        .orElse(null))
                 .status(program.getStatus())
                 .product(program.getProduct())
                 .member(program.getMember())

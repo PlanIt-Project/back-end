@@ -60,6 +60,7 @@ public class MemberController {
 
     @GetMapping("/member")
     public ApiResponse<MemberResponseDto> findMember(Principal principal) {
+        log.info("test");
         return ApiResponse.ok(memberService.findMember(Long.parseLong(principal.getName())));
     }
 
@@ -79,7 +80,7 @@ public class MemberController {
     }
 
     @PutMapping("admin/member/employee/{member_id}")
-    public ApiResponse<String> grantEmployeeAuth(@PathVariable Long member_id, @RequestBody TrainerRequestDto trainerRequestDto) {
+    public ApiResponse<String> grantEmployeeAuth(@PathVariable("member_id") Long member_id, @RequestBody TrainerRequestDto trainerRequestDto) {
         return ApiResponse.ok(memberService.grantEmployeeAuth(member_id, trainerRequestDto));
     }
 }
