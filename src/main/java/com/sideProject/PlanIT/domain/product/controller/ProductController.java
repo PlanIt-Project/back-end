@@ -16,13 +16,18 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/product")
+    @PostMapping("/admin/product")
     public ApiResponse<Product> createProduct(@RequestBody ProductRequestDto productRequestDto) {
         return ApiResponse.ok(productService.createProduct(productRequestDto));
     }
 
-    @DeleteMapping("/product/{product_id}")
-    public ApiResponse<String> deleteProduct(@PathVariable Long product_id) {
+//    @PutMapping("/admin/product/{product_id}")
+//    public ApiResponse<Product> editProduct(@PathVariable Long product_id, @RequestBody ProductRequestDto productRequestDto) {
+//        return ApiResponse.ok(productService.editProduct(product_id, productRequestDto));
+//    }
+
+    @DeleteMapping("/admin/product/{product_id}")
+    public ApiResponse<String> deleteProduct(@PathVariable(name = "product_id") Long product_id) {
         return ApiResponse.ok(productService.deleteProduct(product_id));
     }
 
@@ -32,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/{product_id}")
-    public ApiResponse<ProductResponseDto> findProduct(@PathVariable Long product_id) {
+    public ApiResponse<ProductResponseDto> findProduct(@PathVariable(name = "product_id") Long product_id) {
         return ApiResponse.ok(productService.findProduct(product_id));
     }
 }

@@ -166,8 +166,8 @@ public class ProgramServiceImpl implements ProgramService {
                 new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
 
-        if(program.getSuspendAt() != null) {
-            throw new CustomException("정책상 활불 요청이 거부됩니다.", ErrorCode.SUSPEND_REQUEST_DENIED);
+        if(program.getSuspendAt() != null || program.getProduct().getType().equals(ProductType.PT)) {
+            throw new CustomException("정책상 정지 요청이 거부됩니다.", ErrorCode.SUSPEND_REQUEST_DENIED);
         }
 
         program.suspendProgram(now);
