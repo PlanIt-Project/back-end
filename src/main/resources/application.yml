@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    default: dev # 기본 환경을 dev로
+
   datasource:
     url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${USER_NAME}
@@ -16,9 +19,26 @@ fileStorage:
 
 jwt:
   secret-key: ${SECRET_KEY}
-#  access-token-expire: 432000
+  #  access-token-expire: 432000
   access-token-expire: 2000
   refresh-token-expire: 1209600000
+
+---
+server:
+  port: 8082
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate.ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD
