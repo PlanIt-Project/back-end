@@ -21,7 +21,7 @@ public class Program extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @ColumnDefault("0")
     private int remainedNumber;

@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/refresh")
-    public ApiResponse<?> refreshAccessToken(@RequestHeader("Authorization") String authorizationHeader) {
+    public ApiResponse<JwtResponseDto> refreshAccessToken(@RequestHeader("Authorization") String authorizationHeader) {
         log.info(authorizationHeader);
         return ApiResponse.ok(authService.refreshAccessToken(authorizationHeader));
     }

@@ -23,32 +23,41 @@ public class NoticeServiceImpl implements NoticeService{
     private FileHandler fileHandler;
 
     @Override
-    public Notice createNotice(NoticeRequestDto noticeRequestDto) {
-        return noticeRepository.save(Notice.builder()
-                .title(noticeRequestDto.getTitle())
-                .startAt(noticeRequestDto.getStartAt())
-                .endAt(noticeRequestDto.getEndAt())
-                .attachmentPath(fileHandler.saveFile(noticeRequestDto.getAttachment()))
-                .imagePath(fileHandler.saveFile(noticeRequestDto.getImage()))
-                .content(noticeRequestDto.getContent())
-                .build());
+    public String createNotice(NoticeRequestDto noticeRequestDto) {
+        noticeRepository.save(Notice.builder()
+            .title(noticeRequestDto.getTitle())
+            .startAt(noticeRequestDto.getStartAt())
+            .endAt(noticeRequestDto.getEndAt())
+            .attachmentPath(fileHandler.saveFile(noticeRequestDto.getAttachment()))
+            .imagePath(fileHandler.saveFile(noticeRequestDto.getImage()))
+            .content(noticeRequestDto.getContent())
+            .build());
+        return "생성 완료";
     }
 
     @Override
-    public Notice editNotice(Long notice_id, NoticeRequestDto noticeRequestDto) {
+    public String editNotice(Long notice_id, NoticeRequestDto noticeRequestDto) {
         Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id"));
         fileHandler.saveFile(noticeRequestDto.getAttachment());
         fileHandler.saveFile(noticeRequestDto.getImage());
         //todo: 기존 저장된 파일 제거?
 
-        return noticeRepository.save(noticeToEdit.update(noticeRequestDto));
+        noticeRepository.save(noticeToEdit.update(noticeRequestDto));
+
+        return "수정 완료";
+    }
+
+    @Override
+    public String deleteNotice(Long notice_id) {
+        noticeRepository.deleteById(notice_id);
+        return "삭제 완료";
     }
 
     @Override
     public List<NoticeResponseDto> findAllNotices() {
         List<Notice> notices = noticeRepository.findAll();
         return notices.stream()
-                .map(Notice::toDto)
+                .map(NoticeResponseDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -56,12 +65,12 @@ public class NoticeServiceImpl implements NoticeService{
     public List<NoticeResponseDto> findAllNoticesInTime() {
         List<Notice> notices = noticeRepository.findByStartAtBeforeAndEndAtAfter();
         return notices.stream()
-                .map(Notice::toDto)
+                .map(NoticeResponseDto::of)
                 .collect(Collectors.toList());
     }
 
     public NoticeResponseDto findNotice(Long notice_id) {
-        return Notice.toDto(noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id")));
+        return NoticeResponseDto.of(noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id")));
     }
 
 

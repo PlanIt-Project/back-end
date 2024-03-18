@@ -17,7 +17,7 @@ public class EmployeeSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column
     private LocalDate date;

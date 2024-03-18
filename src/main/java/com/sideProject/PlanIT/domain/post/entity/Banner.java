@@ -1,7 +1,6 @@
 package com.sideProject.PlanIT.domain.post.entity;
 
 import com.sideProject.PlanIT.domain.post.dto.request.BannerRequestDto;
-import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +13,7 @@ public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column
     private String title;
@@ -45,14 +44,5 @@ public class Banner {
         }
 
         return this;
-    }
-
-    public static BannerResponseDto toDto(Banner banner) {
-        return BannerResponseDto.builder()
-                .title(banner.title)
-                .startAt(banner.startAt)
-                .endAt(banner.endAt)
-                .imagePath(banner.imagePath)
-                .build();
     }
 }

@@ -7,8 +7,9 @@ import com.sideProject.PlanIT.domain.post.entity.Banner;
 import java.util.List;
 
 public interface BannerService {
-    Banner createBanner(BannerRequestDto bannerRequestDto);
-    Banner editBanner(Long banner_id, BannerRequestDto bannerRequestDto);
+    String  createBanner(BannerRequestDto bannerRequestDto);
+    String editBanner(Long banner_id, BannerRequestDto bannerRequestDto);
+    String deleteBanner(Long banner_id);
     List<BannerResponseDto> findAllBanners();
     List<BannerResponseDto> findAllBannersInTime();
     BannerResponseDto findBanner(Long banner_id);

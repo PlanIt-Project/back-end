@@ -40,8 +40,9 @@ public class SecurityConfig {
                         exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers("/member/signin", "/member/signup", "/refresh").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+//                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

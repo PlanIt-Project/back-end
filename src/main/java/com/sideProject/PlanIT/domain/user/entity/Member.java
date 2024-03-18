@@ -18,7 +18,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -65,17 +65,5 @@ public class Member {
 
     public void  grantEmployeeAuth() {
         this.role = MemberRole.TRAINER;
-    }
-
-    public MemberResponseDto toDto() {
-        return MemberResponseDto.builder()
-                .Id(this.Id)
-                .email(this.email)
-                .name(this.name)
-                .birth(this.birth)
-                .phone_number(this.phone_number)
-                .address(this.address)
-                .role(this.role)
-                .build();
     }
 }

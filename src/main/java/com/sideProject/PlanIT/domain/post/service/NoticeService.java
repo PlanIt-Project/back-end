@@ -9,8 +9,9 @@ import java.util.List;
 
 
 public interface NoticeService {
-    Notice createNotice(NoticeRequestDto noticeRequestDto);
-    Notice editNotice(Long notice_id, NoticeRequestDto noticeRequestDto);
+    String createNotice(NoticeRequestDto noticeRequestDto);
+    String editNotice(Long notice_id, NoticeRequestDto noticeRequestDto);
+    String deleteNotice(Long notice_id);
     List<NoticeResponseDto> findAllNotices();
     List<NoticeResponseDto> findAllNoticesInTime();
     public NoticeResponseDto findNotice(Long notice_id);
