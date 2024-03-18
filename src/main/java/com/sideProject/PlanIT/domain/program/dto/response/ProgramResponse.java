@@ -10,7 +10,6 @@ import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Getter

@@ -1,7 +1,5 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,30 +13,22 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column
     private String career;
+
+    @Column
+    private String trainerMessage;
 
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Employee(String career, Member member) {
+    public Employee(String career, String trainerMessage, Member member) {
         this.career = career;
+        this.trainerMessage = trainerMessage;
         this.member = member;
-    }
-
-    public TrainerResponseDto toDto() {
-        return TrainerResponseDto.builder()
-                .email(this.member.getEmail())
-                .name(this.member.getName())
-                .birth(this.member.getBirth())
-                .address(this.member.getAddress())
-                .phone_number(this.member.getPhone_number())
-                .role(this.member.getRole())
-                .career(this.career)
-                .build();
     }
 }

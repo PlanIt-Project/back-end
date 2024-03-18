@@ -73,13 +73,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member editMember(Long member_id, MemberEditRequestDto memberEditRequestDto) {
+    public String editMember(Long member_id, MemberEditRequestDto memberEditRequestDto) {
         Member memberToEdit = memberRepository.findById(member_id).orElseThrow(() ->
                 new IllegalArgumentException("no extist id"));
 
 
         memberToEdit.update(memberEditRequestDto);
-        return memberRepository.save(memberToEdit);
+        memberRepository.save(memberToEdit);
+
+        return "수정 완료";
     }
 
     @Override
@@ -129,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberResponseDto> findAllMembers() {
         List<Member> members = memberRepository.findAllMembers();
         return members.stream()
-                .map(Member::toDto)
+                .map(member -> MemberResponseDto.of(member, null))
                 .collect(Collectors.toList());
     }
 
@@ -137,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
     public List<TrainerResponseDto> findAllEmployees() {
         List<Employee> employees = employeeRepository.findAllTrainers();
         return employees.stream()
-                .map(Employee::toDto)
+                .map(TrainerResponseDto::of)
                 .collect(Collectors.toList());
     }
 
