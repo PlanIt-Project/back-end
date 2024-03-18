@@ -26,6 +26,10 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
+  mvc:
+    cors:
+      allowed-origins: "*"
+
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD
 # - 파일 저장 디렉토리 경로
