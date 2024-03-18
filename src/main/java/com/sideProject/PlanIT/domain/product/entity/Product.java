@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.product.entity;
 
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
+import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductStatus;
 import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,14 +32,18 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductType type;
 
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+
     @Builder
-    public Product(Long id,String name, Period period, int number, int price, ProductType type) {
+    public Product(Long id,String name, Period period, int number, int price, ProductType type, ProductStatus status) {
         this.id = id;
         this.name = name;
         this.period = period;
         this.number = number;
         this.price = price;
         this.type = type;
+        this.status = status;
     }
 
     public Product update(ProductRequestDto productRequestDto) {
@@ -47,18 +52,11 @@ public class Product {
         this.number = productRequestDto.getNumber();
         this.price = productRequestDto.getPrice();
         this.type = productRequestDto.getType();
-
         return this;
     }
 
-    public static ProductResponseDto toDto(Product product) {
-        return ProductResponseDto.builder()
-                .id(product.id)
-                .name(product.name)
-                .number(product.number)
-                .period(product.period)
-                .price(product.price)
-                .type(product.type)
-                .build();
+    public Product changeStatus(ProductStatus status) {
+        this.status = status;
+        return this;
     }
 }

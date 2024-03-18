@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.product.service;
 
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
+import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductStatus;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class ProductServiceImpl implements ProductService{
                         .number(productRequestDto.getNumber())
                         .price(productRequestDto.getPrice())
                         .type(productRequestDto.getType())
+                        .status(ProductStatus.NOT_SELLING)
                 .build());
     }
 
@@ -37,12 +39,12 @@ public class ProductServiceImpl implements ProductService{
     public List<ProductResponseDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(Product::toDto)
+                .map(ProductResponseDto::of)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ProductResponseDto findProduct(Long product_id) {
-        return Product.toDto(productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
+        return ProductResponseDto.of(productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
     }
 }

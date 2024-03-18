@@ -22,7 +22,7 @@ public class ProductController {
     }
 
 //    @PutMapping("/admin/product/{product_id}")
-//    public ApiResponse<Product> editProduct(@PathVariable Long product_id, @RequestBody ProductRequestDto productRequestDto) {
+//    public ApiResponse<Product> changeProduct(@PathVariable Long product_id, @RequestBody ProductRequestDto productRequestDto) {
 //        return ApiResponse.ok(productService.editProduct(product_id, productRequestDto));
 //    }
 

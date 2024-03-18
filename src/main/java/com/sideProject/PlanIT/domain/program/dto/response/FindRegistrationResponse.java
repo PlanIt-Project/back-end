@@ -47,7 +47,7 @@ public class FindRegistrationResponse {
                 .status(registration.getStatus())
                 .discount(registration.getDiscount())
                 .totalPrice(registration.getTotalPrice())
-                .product(Product.toDto(registration.getProduct()))
+                .product(ProductResponseDto.of(registration.getProduct()))
                 .member(MemberSemiResponseDto.of(registration.getMember()))
                 .trainerId(registration.getTrainerId())
                 .build();
