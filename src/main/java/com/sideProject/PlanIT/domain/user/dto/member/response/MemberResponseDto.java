@@ -1,8 +1,7 @@
 package com.sideProject.PlanIT.domain.user.dto.member.response;
 
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.sideProject.PlanIT.domain.user.dto.employee.response;
 
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import lombok.AccessLevel;
 import lombok.Builder;

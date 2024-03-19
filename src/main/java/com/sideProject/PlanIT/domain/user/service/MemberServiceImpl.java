@@ -3,6 +3,7 @@ package com.sideProject.PlanIT.domain.user.service;
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.common.util.JwtTokenProvider;
+import com.sideProject.PlanIT.domain.user.controller.enums.MemberSearchOption;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
@@ -12,17 +13,16 @@ import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequest
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.JwtResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -128,19 +128,33 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponseDto> findAllMembers() {
-        List<Member> members = memberRepository.findAllMembers();
-        return members.stream()
-                .map(member -> MemberResponseDto.of(member, null))
-                .collect(Collectors.toList());
+    public Page<MemberResponseDto> find(MemberSearchOption option, Pageable pageable) {
+        Page<Member> members = null;
+        if(option == MemberSearchOption.ALL) {
+            members = memberRepository.findAllByRoleIn(MemberRole.MemberAndTrainer(),pageable);
+        } else if (option == MemberSearchOption.MEMBER) {
+            members = memberRepository.findByRole(MemberRole.MEMBER,pageable);
+        } else if (option == MemberSearchOption.TRAINER) {
+            members = memberRepository.findByRole(MemberRole.TRAINER,pageable);
+        }
+
+        if(members == null) {
+            throw new CustomException("회원이 없습니다", ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return members.map(member -> MemberResponseDto.of(member, null));
     }
 
     @Override
-    public List<TrainerResponseDto> findAllEmployees() {
-        List<Employee> employees = employeeRepository.findAllTrainers();
-        return employees.stream()
-                .map(TrainerResponseDto::of)
-                .collect(Collectors.toList());
+    public Page<MemberResponseDto> findAllMembers(Pageable pageable) {
+        Page<Member> members = memberRepository.findByRole(MemberRole.MEMBER,pageable);
+        return members.map(member -> MemberResponseDto.of(member, null));
+    }
+
+    @Override
+    public Page<TrainerResponseDto> findAllEmployees(Pageable pageable) {
+        Page<Employee> employees = employeeRepository.findAll(pageable);
+        return employees.map(TrainerResponseDto::of);
     }
 
     @Override

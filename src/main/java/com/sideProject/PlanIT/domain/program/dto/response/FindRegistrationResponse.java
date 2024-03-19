@@ -2,7 +2,7 @@ package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
 import lombok.Builder;
