@@ -1,14 +1,17 @@
 package com.sideProject.PlanIT.domain.product.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
+import com.sideProject.PlanIT.domain.product.controller.enums.ProductSearchOption;
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -32,8 +35,11 @@ public class ProductController {
     }
 
     @GetMapping("/product")
-    public ApiResponse<List<ProductResponseDto>> findAllProducts() {
-        return ApiResponse.ok(productService.findAllProducts());
+    public ApiResponse<Page<ProductResponseDto>> findAllProducts(
+            @RequestParam(value = "option", required = false, defaultValue = "SELLING") ProductSearchOption option,
+            @PageableDefault(size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ApiResponse.ok(productService.findAllProducts(option,pageable));
     }
 
     @GetMapping("/product/{product_id}")

@@ -1,6 +1,5 @@
 package com.sideProject.PlanIT.domain.user.dto.member.request;
 
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

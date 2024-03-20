@@ -8,8 +8,8 @@ spring:
 
   jwt:
     secret-key: ${SECRET_KEY}
-    access-token-expire: 432000
-    refresh-token-expire: 1209600000
+#    access-token-expire: 432000
+#    refresh-token-expire: 1209600000
 
   datasource:
     url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8

@@ -1,4 +1,4 @@
-package com.sideProject.PlanIT.domain.product.entity.ENUM;
+package com.sideProject.PlanIT.domain.product.entity.enums;
 
 public enum ProductType {
     // PT

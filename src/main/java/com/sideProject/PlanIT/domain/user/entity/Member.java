@@ -1,8 +1,7 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
-import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
