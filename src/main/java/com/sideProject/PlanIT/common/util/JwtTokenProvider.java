@@ -5,21 +5,22 @@ import com.sideProject.PlanIT.domain.user.entity.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     private final JwtConfig jwtConfig;
     private final RedisUtil redisUtil;
 
-//    @Value("${jwt.access-token-expire}")
-    private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 30 * 1000L; //5분
-//    @Value("${jwt.refresh-token-expire}")
-    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 15 * 24 * 60 * 60 * 1000L; //15일
+    @Value("${spring.jwt.access-token-expire}")
+    private Long ACCESS_TOKEN_EXPIRE_LENGTH;
+    @Value("${spring.jwt.refresh-token-expire}")
+    private Long REFRESH_TOKEN_EXPIRE_LENGTH;
 
     public String createAccessToken(Member member) {
         Date now = new Date();

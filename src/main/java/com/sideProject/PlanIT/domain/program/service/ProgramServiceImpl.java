@@ -369,39 +369,44 @@ public class ProgramServiceImpl implements ProgramService {
         }
     }
 
-    //조건에 맞는 Registration list 조회
     @Override
     public Page<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option, Pageable pageable) {
-        Member admin = memberRepository.findById(adminId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
-        );
-
-        if(admin.getRole() != MemberRole.ADMIN) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-        }
-
-        Page<Registration> registration = findRegistration(option,pageable);
-
-        if(registration.isEmpty()) {
-            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
-        }
-
-        return registration.map(FindRegistrationResponse::of);
+        // 회원 검증 및 권한 확인
+        Member admin = validateMemberAndAuthority(adminId, MemberRole.ADMIN);
+        // Registration 조회 및 변환
+        return findAndConvertRegistrations(option, pageable, null);
     }
 
     @Override
     public Page<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable) {
-        Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
-        );
+        // 회원 검증
+        Member member = validateMemberAndAuthority(userId, null);
+        // Registration 조회 및 변환
+        return findAndConvertRegistrations(option, pageable, member);
+    }
 
-        Page<Registration> registration = findRegistrationByUser(member, option ,pageable);
+    private Member validateMemberAndAuthority(long memberId, MemberRole requiredRole) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND));
+        if (requiredRole != null && member.getRole() != requiredRole) {
+            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
+        return member;
+    }
 
-        if(registration.isEmpty()) {
-            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
+    private Page<FindRegistrationResponse> findAndConvertRegistrations(RegistrationSearchStatus option, Pageable pageable, Member member) {
+        Page<Registration> registrations;
+        if (member == null) {
+            registrations = findRegistration(option, pageable);
+        } else {
+            registrations = findRegistrationByUser(member, option, pageable);
         }
 
-        return registration.map(FindRegistrationResponse::of);
+        if (registrations.isEmpty()) {
+            throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
+        }
+
+        return registrations.map(FindRegistrationResponse::of);
     }
 
     //todo : 리팩토링 여부 생각, INVALID 조회 추가
