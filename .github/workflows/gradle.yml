@@ -41,6 +41,8 @@ jobs:
         echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
         echo "FILE_STORAGE_DIR=${{ secrets.FILE_PATH }}" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "ACCESS_EXPIRE=${{ secrets.ACCESS_EXPIRE }}" >> .env
+        echo "REFRESH_EXPIRE=${{ secrets.REFRESH_EXPIRE }}" >> .env
       shell: bash
 
     # Gradle build
