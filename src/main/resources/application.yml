@@ -1,15 +1,15 @@
 # default
 spring:
   profiles:
-    default: prod # 기본 환경을 dev로
+    default: prod # 기본 환경을 prod로
 
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
 
   jwt:
     secret-key: ${SECRET_KEY}
-#    access-token-expire: 432000
-#    refresh-token-expire: 1209600000
+    access-token-expire: ${ACCESS_EXPIRE}
+    refresh-token-expire: ${REFRESH_EXPIRE}
 
   datasource:
     url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
