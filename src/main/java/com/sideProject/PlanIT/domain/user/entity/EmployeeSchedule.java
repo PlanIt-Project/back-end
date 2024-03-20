@@ -1,6 +1,6 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-import com.sideProject.PlanIT.domain.user.entity.ENUM.ScheduleStatus;
+import com.sideProject.PlanIT.domain.user.entity.enums.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

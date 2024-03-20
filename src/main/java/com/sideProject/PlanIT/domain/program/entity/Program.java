@@ -2,7 +2,7 @@ package com.sideProject.PlanIT.domain.program.entity;
 
 import com.sideProject.PlanIT.common.baseentity.BaseEntity;
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import jakarta.persistence.*;

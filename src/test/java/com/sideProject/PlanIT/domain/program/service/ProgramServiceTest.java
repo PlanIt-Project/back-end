@@ -1,23 +1,23 @@
 package com.sideProject.PlanIT.domain.program.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
-import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
+import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.entity.Member;
@@ -29,6 +29,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,13 +40,14 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus.EXPIRED;
-import static com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus.IN_PROGRESS;
+import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.EXPIRED;
+import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.IN_PROGRESS;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("dev")
 class ProgramServiceTest {
 
     @Autowired
@@ -111,6 +116,7 @@ class ProgramServiceTest {
             Period periodOfTenDays = Period.ofMonths(1);
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member = initMember("tester1",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             RegistrationRequest request = RegistrationRequest.builder()
                     .productId(product.getId())
@@ -119,12 +125,12 @@ class ProgramServiceTest {
 
             //when
             RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
-            List<Program> programs = programRepository.findByMemberId(member.getId());
+            Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
             List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
 
             //then
             assertThat(result.getMessage()).isEqualTo("회원권 등록이 완료되었습니다.");
-            assertThat(programs).hasSize(1);
+            assertThat(programs.getContent()).hasSize(1);
             assertThat(registrations).hasSize(1);
         }
 
@@ -136,6 +142,8 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             RegistrationRequest request = RegistrationRequest.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
@@ -143,12 +151,12 @@ class ProgramServiceTest {
 
             //when
             RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
-            List<Program> programs = programRepository.findByMemberId(member.getId());
+            Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
             List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
 
             //then
             assertThat(result.getMessage()).isEqualTo("PT권 등록이 요청되었습니다.");
-            assertThat(programs).hasSize(0);
+            assertThat(programs.getContent()).hasSize(0);
             assertThat(registrations).hasSize(1);
         }
     }
@@ -650,6 +658,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Member member3 = Member.builder()
                     .name("admin")
                     .email("admin@admin.com")
@@ -730,11 +740,11 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL);
+            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("startAt","endAt","status")
+            assertThat(results1.getContent().size()).isEqualTo(3);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-04-01",IN_PROGRESS)
@@ -752,6 +762,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Member member3 = Member.builder()
                     .name("admin")
                     .email("admin@admin.com")
@@ -832,10 +844,10 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL);
+            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(3);
+            assertThat(results1.getContent().size()).isEqualTo(3);
             assertThat(results1).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
@@ -847,6 +859,7 @@ class ProgramServiceTest {
         @Test
         void findAllProgramNoExistAllProgram(){
             //given
+            Pageable pageable = PageRequest.of(0, 10);
 
             Member member3 = Member.builder()
                     .name("admin")
@@ -862,7 +875,7 @@ class ProgramServiceTest {
             //when
 
             //then
-            assertThatThrownBy(() -> programService.find(admin.getId(), ProgramSearchStatus.ALL))
+            assertThatThrownBy(() -> programService.find(admin.getId(), ProgramSearchStatus.ALL,pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다");
         }
@@ -875,6 +888,8 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer2 = initTrainer("employee2");
             Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Member member3 = Member.builder()
                     .name("admin")
@@ -912,7 +927,7 @@ class ProgramServiceTest {
             //when
 
             //then
-            assertThatThrownBy(() -> programService.find(admin.getId(), ProgramSearchStatus.VALID))
+            assertThatThrownBy(() -> programService.find(admin.getId(), ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다");
         }
@@ -923,10 +938,12 @@ class ProgramServiceTest {
             //given
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             //when
 
             //then
-            assertThatThrownBy(() -> programService.find(member2.getId() + 1, ProgramSearchStatus.VALID))
+            assertThatThrownBy(() -> programService.find(member2.getId() + 1, ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("존재하지 않는 회원입니다.");
         }
@@ -936,11 +953,12 @@ class ProgramServiceTest {
         void findInProgressProgramNotAdmin(){
             //given
             Member member2 = initMember("tester2",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when
 
             //then
-            assertThatThrownBy(() -> programService.find(member2.getId(), ProgramSearchStatus.VALID))
+            assertThatThrownBy(() -> programService.find(member2.getId(), ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("권한이 없습니다.");
         }
@@ -959,6 +977,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration = Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1029,17 +1049,17 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID);
-            List<ProgramResponse> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.INVALID);
+            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID, pageable);
+            Page<ProgramResponse> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.INVALID, pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(2);
-            assertThat(results1).extracting("startAt","endAt","status")
+            assertThat(results1.getContent().size()).isEqualTo(2);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS)
                     );
-            assertThat(results2.size()).isEqualTo(1);
-            assertThat(results2).extracting("startAt","endAt","status")
+            assertThat(results2.getContent().size()).isEqualTo(1);
+            assertThat(results2.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-04-01",IN_PROGRESS));
         }
 
@@ -1053,6 +1073,8 @@ class ProgramServiceTest {
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration = Registration.builder()
                     .product(product)
@@ -1124,17 +1146,17 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.INVALID);
-            List<ProgramResponse> results2 = programService.findByUser(trainer2.getMember().getId(), ProgramSearchStatus.INVALID);
+            Page<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
+            Page<ProgramResponse> results2 = programService.findByUser(trainer2.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(2);
-            assertThat(results1).extracting("startAt","endAt","status")
+            assertThat(results1.getContent().size()).isEqualTo(2);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS)
                     );
-            assertThat(results2.size()).isEqualTo(1);
-            assertThat(results2).extracting("startAt","endAt","status")
+            assertThat(results2.getContent().size()).isEqualTo(1);
+            assertThat(results2.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-04-01",IN_PROGRESS));
         }
 
@@ -1149,6 +1171,8 @@ class ProgramServiceTest {
             Employee trainer = initTrainer("employee1");
             Employee trainer2 = initTrainer("employee2");
             Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration = Registration.builder()
                     .product(product)
@@ -1220,11 +1244,11 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.ALL);
+            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("startAt","endAt","status")
+            assertThat(results1.getContent().size()).isEqualTo(3);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-04-01",EXPIRED)
@@ -1241,6 +1265,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration = Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1311,11 +1337,11 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            List<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL);
+            Page<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL,pageable);
 
             //then
-            assertThat(results1.size()).isEqualTo(3);
-            assertThat(results1).extracting("startAt","endAt","status")
+            assertThat(results1.getContent().size()).isEqualTo(3);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-04-01",EXPIRED)
@@ -1327,11 +1353,12 @@ class ProgramServiceTest {
         void findByEmployeeNoExistProgram(){
             //given
             Employee trainer = initTrainer("employee1");
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when
 
             //then
-            assertThatThrownBy(() -> programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL))
+            assertThatThrownBy(() -> programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL,pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다.");
         }
@@ -1346,6 +1373,8 @@ class ProgramServiceTest {
 
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration3 = Registration.builder()
                     .product(product)
                     .member(member2)
@@ -1372,7 +1401,7 @@ class ProgramServiceTest {
             //when
 
             //then
-            assertThatThrownBy(() -> programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.VALID))
+            assertThatThrownBy(() -> programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.VALID,pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다.");
         }
@@ -1382,11 +1411,12 @@ class ProgramServiceTest {
         void findByMemberNoExistProgram(){
             //given
             Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when
 
             //then
-            assertThatThrownBy(() -> programService.findByUser(member1.getId(), ProgramSearchStatus.ALL))
+            assertThatThrownBy(() -> programService.findByUser(member1.getId(), ProgramSearchStatus.ALL, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다.");
         }
@@ -1399,6 +1429,7 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Employee trainer = initTrainer("employee1");
             Member member2 = initMember("tester2",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration3 = Registration.builder()
                     .product(product)
@@ -1426,7 +1457,7 @@ class ProgramServiceTest {
             //when
 
             //then
-            assertThatThrownBy(() -> programService.findByUser(member2.getId(), ProgramSearchStatus.VALID))
+            assertThatThrownBy(() -> programService.findByUser(member2.getId(), ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램을 찾을 수 없습니다.");
         }
@@ -1444,6 +1475,8 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration1= Registration.builder()
                     .product(product)
@@ -1505,19 +1538,19 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL);
-            List<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL, pageable);
+            Page<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL, pageable);
 
             //then
-            assertThat(result1).hasSize(4);
-            assertThat(result1).extracting("totalPrice","discount","status")
+            assertThat(result1.getContent()).hasSize(4);
+            assertThat(result1.getContent()).extracting("totalPrice","discount","status")
                     .contains(tuple(10000,0,RegistrationStatus.DECLINED),
                             tuple(20000,0,RegistrationStatus.ACCEPTED),
                             tuple(30000,0,RegistrationStatus.PENDING),
                             tuple(40000,0,RegistrationStatus.REFUND)
                     );
-            assertThat(result2).hasSize(1);
-            assertThat(result2).extracting("totalPrice","discount","status")
+            assertThat(result2.getContent()).hasSize(1);
+            assertThat(result2.getContent()).extracting("totalPrice","discount","status")
                     .contains(tuple(40000,0,RegistrationStatus.PENDING)
                     );
 //
@@ -1542,6 +1575,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration1= Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1602,8 +1637,8 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY);
-            List<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY, pageable);
+            Page<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
 //            assertThat(result1).hasSize(2);
@@ -1616,14 +1651,14 @@ class ProgramServiceTest {
 //            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
 //                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
 //                    );
-            assertThat(result1).hasSize(2);
-            assertThat(result1).extracting("totalPrice","discount","status")
+            assertThat(result1.getContent()).hasSize(2);
+            assertThat(result1.getContent()).extracting("totalPrice","discount","status")
                     .contains(
                             tuple(30000,0,RegistrationStatus.PENDING),
                             tuple(40000,0,RegistrationStatus.PENDING)
                     );
-            assertThat(result2).hasSize(1);
-            assertThat(result2).extracting("totalPrice","discount","status")
+            assertThat(result2.getContent()).hasSize(1);
+            assertThat(result2.getContent()).extracting("totalPrice","discount","status")
                     .contains(tuple(40000,0,RegistrationStatus.PENDING)
                     );
         }
@@ -1633,9 +1668,10 @@ class ProgramServiceTest {
         void findRegistrationNoExist(){
             //given
             Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL))
+            assertThatThrownBy(() -> programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
@@ -1647,6 +1683,9 @@ class ProgramServiceTest {
             Period periodOfTenDays = Period.ofMonths(1);
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration1= Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1672,7 +1711,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration2);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY))
+            assertThatThrownBy(() -> programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
@@ -1682,9 +1721,10 @@ class ProgramServiceTest {
         void findRegistrationByUserAtUnknownUser(){
             //given
             Member user = initMember("tester2",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrationsByUser(user.getId() + 1,RegistrationSearchStatus.READY))
+            assertThatThrownBy(() -> programService.findRegistrationsByUser(user.getId() + 1,RegistrationSearchStatus.READY, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("존재하지 않는 회원입니다.");
         }
@@ -1703,6 +1743,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
             Member admin = initMember("admin",MemberRole.ADMIN);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration1= Registration.builder()
                     .product(product)
@@ -1764,11 +1806,11 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.ALL);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.ALL, pageable);
 
             //then
-            assertThat(result1).hasSize(5);
-            assertThat(result1).extracting("totalPrice","discount","status")
+            assertThat(result1.getContent()).hasSize(5);
+            assertThat(result1.getContent()).extracting("totalPrice","discount","status")
                     .contains(
                             tuple(10000,0,RegistrationStatus.DECLINED),
                             tuple(20000,0,RegistrationStatus.ACCEPTED),
@@ -1787,6 +1829,8 @@ class ProgramServiceTest {
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member member2 = initMember("tester2",MemberRole.MEMBER);
             Member admin = initMember("admin",MemberRole.ADMIN);
+
+            Pageable pageable = PageRequest.of(0, 10);
 
             Registration registration1= Registration.builder()
                     .product(product)
@@ -1848,11 +1892,11 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            List<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
-            assertThat(result1).hasSize(3);
-            assertThat(result1).extracting("totalPrice","discount","status")
+            assertThat(result1.getContent()).hasSize(3);
+            assertThat(result1.getContent()).extracting("totalPrice","discount","status")
                     .contains(
                             tuple(30000,0,RegistrationStatus.PENDING),
                             tuple(40000,0,RegistrationStatus.PENDING),
@@ -1868,6 +1912,9 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
             Member member1 = initMember("tester1",MemberRole.MEMBER);
             Member admin = initMember("tester2",MemberRole.ADMIN);
+
+            Pageable pageable = PageRequest.of(0, 10);
+
             Registration registration1= Registration.builder()
                     .product(product)
                     .member(member1)
@@ -1893,7 +1940,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration2);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(),RegistrationSearchStatus.READY))
+            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(),RegistrationSearchStatus.READY,pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
@@ -1903,9 +1950,10 @@ class ProgramServiceTest {
         void adminFindRegistrationFail2(){
             //given
             Member admin = initMember("tester1",MemberRole.ADMIN);
+            Pageable pageable = PageRequest.of(0, 10);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY))
+            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
@@ -2030,7 +2078,7 @@ class ProgramServiceTest {
             //when
             assertThatThrownBy(() -> programService.suspendProgram(program.getId(), now))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage("정책상 활불 요청이 거부됩니다.");
+                    .hasMessage("정책상 정지 요청이 거부됩니다.");
         }
     }
 
@@ -2124,7 +2172,4 @@ class ProgramServiceTest {
                     .hasMessage("프로그램이 정지 상태가 아닙니다.");
         }
     }
-
-
-
 }

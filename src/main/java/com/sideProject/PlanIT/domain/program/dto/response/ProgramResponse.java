@@ -1,7 +1,7 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
