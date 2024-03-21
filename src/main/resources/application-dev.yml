@@ -13,7 +13,7 @@ spring:
     refresh-token-expire: 1209600000
 
   datasource:
-    url: jdbc:mysql://${DB_CONNECTION_URL}test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${USER_NAME}
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
