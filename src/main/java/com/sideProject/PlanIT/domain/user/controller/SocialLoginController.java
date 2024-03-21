@@ -16,6 +16,15 @@ public class SocialLoginController {
 
     private final SocialLoginService socialLoginService;
 
+    @GetMapping("/login/naver")
+    public ApiResponse<String> naverLoginFormURI() {
+        return ApiResponse.ok(socialLoginService.getNaverLoginURI());
+    }
+
+    @GetMapping("/login/google")
+    public ApiResponse<String> googleLoginFormURI() {
+        return ApiResponse.ok(socialLoginService.getGoogleLoginURI());
+    }
     @GetMapping("/login/oauth2/code/naver")
     public ApiResponse<JwtResponseDto> loginToNaver(@RequestParam("code") String code) throws Exception {
         return ApiResponse.ok(socialLoginService.naverSocialLogin(code));

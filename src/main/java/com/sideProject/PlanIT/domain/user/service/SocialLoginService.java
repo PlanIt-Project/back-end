@@ -28,6 +28,8 @@ public class SocialLoginService {
     private String NAVER_CLIENT_ID;
     @Value("${naver.client-secret}")
     private String NAVER_CLIENT_SECRET;
+    @Value("${naver.login-uri}")
+    private String NAVER_LOGIN_URI;
     @Value("${naver.redirect-uri}")
     private String NAVER_REDIRECT_URI;
 
@@ -36,6 +38,8 @@ public class SocialLoginService {
     private String GOOGLE_CLIENT_ID;
     @Value("${google.client-secret}")
     private String GOOGLE_CLIENT_SECRET;
+    @Value("${google.login-uri}")
+    private String GOOGLE_LOGIN_URI;
     @Value("${google.redirect-uri}")
     private String GOOGLE_REDIRECT_URI;
 
@@ -47,6 +51,21 @@ public class SocialLoginService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
+    public String getNaverLoginURI() {
+        return NAVER_LOGIN_URI +
+                "reponse_type=code" +
+                "&client_id=" + NAVER_CLIENT_ID +
+                "&redirect_uri=" + NAVER_REDIRECT_URI;
+    }
+
+    public String getGoogleLoginURI() {
+        return GOOGLE_LOGIN_URI +
+                "client_id=" + GOOGLE_CLIENT_ID +
+                "&redirect_uri=" + GOOGLE_REDIRECT_URI +
+                "&response_type=code" +
+                "&scope=email profile";
+    }
 
     public JwtResponseDto naverSocialLogin(String code) throws Exception {
         Member loginMember = getNaverUserInfoWithToken(getTokenToNaver(code));
