@@ -1,7 +1,7 @@
 # default
 spring:
   profiles:
-    default: dev # 기본 환경을 dev로
+    default: prod # 기본 환경을 prod로
 
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
