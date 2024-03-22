@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/file")
 public class FileController {
     @Autowired
     FileService fileService;
 
-    @PostMapping("/file")
+    @PostMapping
     public ApiResponse<String> saveFile(@ModelAttribute NoticeRequestDto noticeRequestDto) {
         return ApiResponse.ok(fileService.saveFile(noticeRequestDto.getImage()));
     }
-    @GetMapping("/file/{file_name:.+}")
+    @GetMapping("/{file_name:.+}")
     public ResponseEntity<?> sendFile(@PathVariable String file_name, HttpServletRequest request) {
         Resource resource = fileService.sendFile(file_name);
 
