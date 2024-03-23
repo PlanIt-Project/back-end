@@ -1,7 +1,10 @@
 package com.sideProject.PlanIT.domain.program.entity;
 
 import com.sideProject.PlanIT.common.baseentity.BaseEntity;
+import com.sideProject.PlanIT.common.response.CustomException;
+import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.Product;
+import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
@@ -13,6 +16,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+
+import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.EXPIRED;
 
 @Entity
 @Getter
@@ -116,5 +121,25 @@ public class Program extends BaseEntity {
         this.resumeAt = resumeAt;
         this.endAt = endAt;
         this.status = ProgramStatus.IN_PROGRESS;
+    }
+
+    public void reservation() {
+        if(this.remainedNumber == 0) {
+            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+        }else if(this.remainedNumber ==1 ){
+            this.status = ProgramStatus.EXPIRED;
+        }
+        this.remainedNumber--;
+    }
+
+    //todo : 에약 취소 경우 추가
+    public void cancelReservation() {
+        if(this.product.getType() != ProductType.PT) {
+            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+        }
+        if(this.remainedNumber+1 > this.product.getNumber()) {
+            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+        }
+        this.remainedNumber++;
     }
 }

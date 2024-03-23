@@ -5,25 +5,43 @@ spring:
       on-profile : dev # 기본 환경을 dev로
 
   fileStorage:
-    dir: ${FILE_STORAGE_DIR}
+    dir: /Users/gimmunjin/planit/back-end
 
   jwt:
-    secret-key: ${SECRET_KEY}
+    secret-key: test
     access-token-expire: 432000
     refresh-token-expire: 1209600000
 
   datasource:
-    url: jdbc:mysql://${DB_CONNECTION_URL}test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${USER_NAME}
-    password: ${PASSWORD}
+    url: jdbc:mysql://localhost/PlanIttest?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1543
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
+  mvc:
+    cors:
+      allowed-origins: "*"
+
+  naver:
+    client-id: nwkzgWWSg9PWWFHH3FAe
+    client-secret: kjzbpnKdOe
+    login-uri: https://nid.naver.com/oauth2.0/authorize?response_type=code&
+    redirect-uri: http://localhost:8080/login/oauth2/code/naver
+
+  google:
+    client-id: 696929219368-0niv1eh5lf1eji5qa2d1vgucbpkk13g2
+    client-secret: GOCSPX—81A-qgfElvSlRZG6IAcThevpQO
+    login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
+    redirect-uri: http://localhost:8080/login/oauth2/code/google
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD
