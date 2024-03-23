@@ -24,23 +24,23 @@ import java.time.LocalDate;
 public class SocialLoginService {
 
     // Kakao 정보
-    @Value("${naver.client-id}")
+    @Value("${spring.naver.client-id}")
     private String NAVER_CLIENT_ID;
-    @Value("${naver.client-secret}")
+    @Value("${spring.naver.client-secret}")
     private String NAVER_CLIENT_SECRET;
-    @Value("${naver.login-uri}")
+    @Value("${spring.naver.login-uri}")
     private String NAVER_LOGIN_URI;
-    @Value("${naver.redirect-uri}")
+    @Value("${spring.naver.redirect-uri}")
     private String NAVER_REDIRECT_URI;
 
     // Google 정보
-    @Value("${google.client-id}")
+    @Value("${spring.google.client-id}")
     private String GOOGLE_CLIENT_ID;
-    @Value("${google.client-secret}")
+    @Value("${spring.google.client-secret}")
     private String GOOGLE_CLIENT_SECRET;
-    @Value("${google.login-uri}")
+    @Value("${spring.google.login-uri}")
     private String GOOGLE_LOGIN_URI;
-    @Value("${google.redirect-uri}")
+    @Value("${spring.google.redirect-uri}")
     private String GOOGLE_REDIRECT_URI;
 
     private final static String NAVER_API_URI = "https://openapi.naver.com";
