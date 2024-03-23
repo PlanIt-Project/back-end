@@ -31,17 +31,17 @@ spring:
       allowed-origins: "*"
 
 
-naver:
-  client-id: ${NAVER_CLIENT_ID}
-  client-secret: ${NAVER_CLIENT_SECRET}
-  login-uri: https://nid.naver.com/oauth2.0/authorize?response_type=code&
-  redirect-uri: http://localhost:8080/login/oauth2/code/naver
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+    login-uri: https://nid.naver.com/oauth2.0/authorize?response_type=code&
+    redirect-uri: http://localhost:8080/login/oauth2/code/naver
 
-google:
-  client-id: ${GOOGLE_CLIENT_ID}
-  client-secret: ${GOOGLE_CLIENT_SECRET}
-  login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
-  redirect-uri: http://localhost:8080/login/oauth2/code/google
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
+    redirect-uri: http://localhost:8080/login/oauth2/code/google
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD

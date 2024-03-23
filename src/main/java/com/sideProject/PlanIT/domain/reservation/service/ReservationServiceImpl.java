@@ -120,6 +120,7 @@ public class ReservationServiceImpl implements ReservationService {
         return "ok";
     }
 
+
     @Override
     public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(LocalDate date, Long userId) {
         LocalDateTime startOfWeek = calStartOfWeek(date);
@@ -161,6 +162,8 @@ public class ReservationServiceImpl implements ReservationService {
         return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
     }
 
+
+    //todo: 취소 불가 시간
     @Override
     @Transactional
     public String cancel(Long userId, Long reservationId) {
