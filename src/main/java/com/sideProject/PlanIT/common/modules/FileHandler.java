@@ -34,22 +34,24 @@ public class FileHandler {
         }
     }
 
-    public byte[] loadImage(String path) throws IOException {
-        String allPath = fileStorageDir +"images"+ path;
-        log.info(allPath);
-        File imageFile = new File(allPath);
-        if (imageFile.exists()) {
-            FileInputStream fileInputStream = new FileInputStream(imageFile);
-            byte[] imageBytes = IOUtils.toByteArray(fileInputStream);
-            fileInputStream.close();
-            return imageBytes;
-        } else{
-            throw new CustomException("이미지가 존재하지 않습니다.", ErrorCode.IMAGE_NOT_FOUND);
-        }
+    public byte[] loadImage(String imageName) throws IOException {
+        String allPath = fileStorageDir + File.separator + imageName;
+        return readFileBytes(allPath);
     }
 
-    public MultipartFile sendFile(String dir) {
-        //todo: 파일 전송
-        return null;
+    public byte[] loadFile(String fileName) throws IOException {
+        String allPath = fileStorageDir + File.separator + fileName;
+        return readFileBytes(allPath);
+    }
+
+    private byte[] readFileBytes(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (file.exists()) {
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
+                return IOUtils.toByteArray(fileInputStream);
+            }
+        } else {
+            throw new CustomException("파일이 존재하지 않습니다.", ErrorCode.FILE_NOT_FOUND);
+        }
     }
 }
