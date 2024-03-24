@@ -1,6 +1,6 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
-import com.sideProject.PlanIT.domain.user.entity.ENUM.ScheduleStatus;
+import com.sideProject.PlanIT.domain.user.entity.enums.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class EmployeeSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Id;
+    private Long id;
 
     @Column
     private LocalDate date;

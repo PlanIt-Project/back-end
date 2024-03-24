@@ -1,7 +1,7 @@
 package com.sideProject.PlanIT.domain.program.dto.request;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.user.entity.Member;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -2,37 +2,39 @@ package com.sideProject.PlanIT.domain.program.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.product.entity.ENUM.ProductType;
+import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
 import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramSearchStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.ProgramStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationSearchStatus;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
-import com.sideProject.PlanIT.domain.user.entity.ENUM.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * 프로그램 관련 Service
@@ -160,6 +162,42 @@ public class ProgramServiceImpl implements ProgramService {
 
 
     @Override
+    public Long suspendProgram(Long id, LocalDate now) {
+        Program program = programRepository.findById(id).orElseThrow(() ->
+                new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+        );
+
+        if(program.getSuspendAt() != null || program.getProduct().getType().equals(ProductType.PT)) {
+            throw new CustomException("정책상 정지 요청이 거부됩니다.", ErrorCode.SUSPEND_REQUEST_DENIED);
+        }
+
+        program.suspendProgram(now);
+        Program result = programRepository.save(program);
+
+        return result.getId();
+    }
+
+    @Override
+    public Long resumeProgram(Long id, LocalDate now) {
+        Program program = programRepository.findById(id).orElseThrow(() ->
+                new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+        );
+
+        if(program.getStatus() != ProgramStatus.SUSPEND) {
+            throw new CustomException("프로그램이 정지 상태가 아닙니다.", ErrorCode.NOT_SUSPEND_PROGRAM);
+        }
+
+        Period periodBetween = Period.between(program.getSuspendAt(), now);
+        LocalDate endAt = program.getEndAt().plus(periodBetween);
+
+        program.resumeProgram(now,endAt);
+        Program result = programRepository.save(program);
+
+        return result.getId();
+    }
+
+    //프로그램이 이미 존재하면 종료일 다음날 기준으로 추가
+    @Override
     public Long approve(Long registrationId, Long trainerId, LocalDateTime localDateTime) {
         Registration registration = getRegistrationById(registrationId);
 
@@ -187,11 +225,11 @@ public class ProgramServiceImpl implements ProgramService {
 
         Product product = registration.getProduct();
 
-        //회원궝 종료 일자 계산
+        //회원권 종료 일자 계산
         LocalDate startAt = registration.getRegistrationAt().toLocalDate();
         LocalDate endAt = null;
-        if(Integer.parseInt(product.getPeriod()) > 0) {
-            endAt = startAt.plusDays(Integer.parseInt(product.getPeriod()));
+        if(isPeriodGreaterThanZero(product.getPeriod())) {
+            endAt = startAt.plus(product.getPeriod()).minusDays(1);
         }
 
         Program program = Program.builder()
@@ -206,6 +244,18 @@ public class ProgramServiceImpl implements ProgramService {
                 .build();
 
         return programRepository.save(program).getId();
+    }
+
+    private static boolean isPeriodGreaterThanZero(Period period) {
+        // 전체 기간을 월로 변환하여 검사 (년과 월을 고려)
+        if (period.toTotalMonths() > 0) {
+            return true;
+        }
+        // 월이 0인 경우, 일수로 판단
+        else if (period.getDays() > 0) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -224,7 +274,7 @@ public class ProgramServiceImpl implements ProgramService {
      * @return List<ProgramResponse>
      */
     @Override
-    public List<ProgramResponse> find(long adminId, ProgramSearchStatus option) {
+    public Page<ProgramResponse> find(long adminId, ProgramSearchStatus option, Pageable pageable) {
         Member admin = memberRepository.findById(adminId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -233,118 +283,150 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
 
-        List<Program> programs = findProgram(option);
+        Page<Program> programs = findProgram(option,pageable);
 
         if(programs.isEmpty()) {
             throw new CustomException("프로그램을 찾을 수 없습니다",ErrorCode.PROGRAM_NOT_FOUND);
         }
 
-        return programs.stream().map(ProgramResponse::of).toList();
+        return programs.map(ProgramResponse::of);
     }
 
     @Override
-    public List<ProgramResponse> findByUser(long userId, ProgramSearchStatus option) {
+    public Page<ProgramResponse> findByUser(long userId, ProgramSearchStatus option, Pageable pageable) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         //todo : 유저가 어드민 일 때 유저에 따라 조회하는거 구현
-        List<Program> programs = null;
+        Page<Program> programs = null;
         if(member.getRole() == MemberRole.MEMBER) {
-            programs = findProgramByUser(member, option);
+            programs = findProgramByUser(member, option,pageable);
         } else if(member.getRole() == MemberRole.TRAINER) {
-            programs = findProgramByEmploy(member, option);
+            programs = findProgramByEmploy(member, option,pageable);
         }
 
-        if(programs.isEmpty()) {
+        if(programs == null || programs.isEmpty()) {
             throw new CustomException("프로그램을 찾을 수 없습니다.",ErrorCode.PROGRAM_NOT_FOUND);
         }
 
-        return programs.stream().map(ProgramResponse::of).toList();
+        return programs.map(ProgramResponse::of);
     }
 
-    private List<Program> findProgramByEmploy(Member member, ProgramSearchStatus option) {
+    public ProgramResponse findByProgramId(long programId, long userId) {
+        Member member = memberRepository.findById(userId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Program programs = programRepository.findById(programId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        if(member.getRole().equals(MemberRole.TRAINER)) {
+            Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                    new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+            );
+            if(Objects.equals(programs.getEmployee().getId(), employee.getId())) {
+                throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+            }
+        }
+
+        if(Objects.equals(programs.getMember().getId(), member.getId())) {
+            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
+
+        return ProgramResponse.of(programs);
+    }
+
+    private Page<Program> findProgramByEmploy(Member member, ProgramSearchStatus option,Pageable pageable) {
         log.info("findEmployeeByMemberId = {}" , member.getId());
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(()->
             new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
-            return programRepository.findByEmployeeId(employee.getId());
+            return programRepository.findByEmployeeId(employee.getId(),pageable);
         } else {
-            return programRepository.findByEmployeeIdAndStatus(employee.getId(), ProgramStatus.IN_PROGRESS);
+            return programRepository.findByEmployeeIdAndStatus(employee.getId(), ProgramStatus.IN_PROGRESS,pageable);
         }
     }
-    private List<Program> findProgramByUser(Member member, ProgramSearchStatus option) {
+    private Page<Program> findProgramByUser(Member member, ProgramSearchStatus option,Pageable pageable) {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
-            return programRepository.findByMemberId(member.getId());
+            return programRepository.findByMemberId(member.getId(),pageable);
         } else {
-            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS);
+            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS,pageable);
         }
     }
 
-    private List<Program> findProgram(ProgramSearchStatus option) {
+    private Page<Program> findProgram(ProgramSearchStatus option,Pageable pageable) {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
-            return programRepository.findAll();
+            return programRepository.findAll(pageable);
+        } else if(option == ProgramSearchStatus.VALID) {
+            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS,pageable);
         } else {
-            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS);
+            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS, pageable);
         }
     }
 
-    //조건에 맞는 Registration list 조회
     @Override
-    public List<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option) {
-        Member admin = memberRepository.findById(adminId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
-        );
+    public Page<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option, Pageable pageable) {
+        // 회원 검증 및 권한 확인
+        Member admin = validateMemberAndAuthority(adminId, MemberRole.ADMIN);
+        // Registration 조회 및 변환
+        return findAndConvertRegistrations(option, pageable, null);
+    }
 
-        if(admin.getRole() != MemberRole.ADMIN) {
+    @Override
+    public Page<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable) {
+        // 회원 검증
+        Member member = validateMemberAndAuthority(userId, null);
+        // Registration 조회 및 변환
+        return findAndConvertRegistrations(option, pageable, member);
+    }
+
+    private Member validateMemberAndAuthority(long memberId, MemberRole requiredRole) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND));
+        if (requiredRole != null && member.getRole() != requiredRole) {
             throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
-
-        List<Registration> registration = findRegistration(option);
-
-        if(registration.isEmpty()) {
-            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
-        }
-
-        return registration.stream().map(FindRegistrationResponse::of).toList();
+        return member;
     }
 
-    @Override
-    public List<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option) {
-        Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
-        );
-
-        List<Registration> registration = findRegistrationByUser(member, option);
-
-        if(registration.isEmpty()) {
-            throw new CustomException("조건을 만족하는 Registration이 없습니다.",ErrorCode.REGISTRATION_NOT_FOUND);
+    private Page<FindRegistrationResponse> findAndConvertRegistrations(RegistrationSearchStatus option, Pageable pageable, Member member) {
+        Page<Registration> registrations;
+        if (member == null) {
+            registrations = findRegistration(option, pageable);
+        } else {
+            registrations = findRegistrationByUser(member, option, pageable);
         }
 
-        return registration.stream().map(FindRegistrationResponse::of).toList();
+        if (registrations.isEmpty()) {
+            throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
+        }
+
+        return registrations.map(FindRegistrationResponse::of);
     }
 
-    //리팩토링 여부 생각
-    private List<Registration> findRegistrationByUser(Member member, RegistrationSearchStatus option) {
+    //todo : 리팩토링 여부 생각, INVALID 조회 추가
+    private Page<Registration> findRegistrationByUser(Member member, RegistrationSearchStatus option, Pageable pageable) {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == RegistrationSearchStatus.ALL) {
-            return registrationRepository.findByMemberId(member.getId());
+            return registrationRepository.findByMemberId(member.getId(), pageable);
         } else {
             //PENDING인 상태 조회
-            return registrationRepository.findByMemberIdAndStatus(member.getId(),RegistrationStatus.PENDING);
+            return registrationRepository.findByMemberIdAndStatus(member.getId(),RegistrationStatus.PENDING, pageable);
         }
     }
 
-    private List<Registration> findRegistration(RegistrationSearchStatus option) {
+    private Page<Registration> findRegistration(RegistrationSearchStatus option, Pageable pageable) {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         log.info("{} = option", option);
         if(option == RegistrationSearchStatus.ALL) {
-            return registrationRepository.findAll();
+            return registrationRepository.findAll(pageable);
         } else {
-            return registrationRepository.findByStatus(RegistrationStatus.PENDING);
+            return registrationRepository.findByStatus(RegistrationStatus.PENDING, pageable);
         }
     }
 }

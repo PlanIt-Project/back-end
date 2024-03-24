@@ -1,8 +1,7 @@
 package com.sideProject.PlanIT.domain.program.entity;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.ENUM.RegistrationStatus;
-import com.sideProject.PlanIT.domain.user.entity.Employee;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 public class Registration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column
     private LocalDateTime registrationAt;
