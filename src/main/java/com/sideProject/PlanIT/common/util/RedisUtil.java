@@ -13,10 +13,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisUtil {
 
-    @Value("${email.redis-timeLimit}")
+    @Value("${spring.email.redis-timeLimit}")
     private Long emailExpire;
 
-    @Value("${jwt.refresh-token-expire}")
+    @Value("${spring.jwt.refresh-token-expire}")
     private Long refreshExpire;
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -29,8 +29,8 @@ public class RedisUtil {
     public void setRefreshToken(String refreshToken, Long member_id)
     {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        redisTemplate.delete(refreshToken);
-        valueOperations.set(refreshToken, member_id.toString(), refreshExpire);
+        deleteByValue(member_id.toString());
+        valueOperations.set(refreshToken, member_id.toString(), Duration.ofMillis(refreshExpire));
     }
 
     public String getData(String key) {
