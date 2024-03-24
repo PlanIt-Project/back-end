@@ -34,11 +34,6 @@ public class FileHandler {
         }
     }
 
-    public byte[] loadImage(String imageName) throws IOException {
-        String allPath = fileStorageDir + File.separator + imageName;
-        return readFileBytes(allPath);
-    }
-
     public byte[] loadFile(String fileName) throws IOException {
         String allPath = fileStorageDir + File.separator + fileName;
         return readFileBytes(allPath);

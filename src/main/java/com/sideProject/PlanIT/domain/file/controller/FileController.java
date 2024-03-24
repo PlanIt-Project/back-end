@@ -22,7 +22,7 @@ public class FileController {
     @GetMapping("/image/{image_name}")
     public ResponseEntity<byte[]> loadImage(@PathVariable String image_name) {
         try {
-            byte[] imageBytes = fileHandler.loadImage(image_name);
+            byte[] imageBytes = fileHandler.loadFile(image_name);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
