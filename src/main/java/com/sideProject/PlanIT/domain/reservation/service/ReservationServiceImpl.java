@@ -141,6 +141,7 @@ public class ReservationServiceImpl implements ReservationService {
             reservations = reservationRepository.findByMemberAndDateTimeBetween(member,startOfWeek,endOfWeek);
         }
 
+
         return reservations.stream()
                 .map(ReservationResponse::of)
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
