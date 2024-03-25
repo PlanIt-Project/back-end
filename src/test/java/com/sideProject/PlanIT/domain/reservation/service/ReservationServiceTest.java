@@ -123,7 +123,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times ,trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -162,7 +162,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -200,7 +200,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");

@@ -12,11 +12,10 @@ public enum ErrorCode {
     ALREADY_APPROVE_PROGRAM(400, "이미 등록된 프로그램입니다."),
     ALREADY_EXIST_EMAIL(400, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(400, "비밀번호가 틀렸습니다."),
+    INVALID_EMAIL_AUTH(400, "인증번호가 틀렸습니다."),
     NOT_PT(400, "PT이용권이 아닙니다."),
     NOT_YOUR_TRAINER(400, "예약 가능한 트레이너가 아닙니다."),
     ALREADY_RESERVATION(400, "이미 예약 되어있습니다."),
-
-
 
     //401
     INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),

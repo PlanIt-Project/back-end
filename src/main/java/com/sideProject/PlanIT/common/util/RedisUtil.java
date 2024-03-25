@@ -1,20 +1,36 @@
 package com.sideProject.PlanIT.common.util;
 
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisUtil {
+
+    @Value("${spring.email.redis-timeLimit}")
+    private Long emailExpire;
+
+    @Value("${spring.jwt.refresh-token-expire}")
+    private Long refreshExpire;
+
     private final RedisTemplate<String, String> redisTemplate;
 
+
+    public void setMailValidation(String email, String validationCode) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(email, validationCode, Duration.ofMillis(emailExpire));
+    }
     public void setRefreshToken(String refreshToken, Long member_id)
     {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        redisTemplate.delete(refreshToken);
-        valueOperations.set(refreshToken, member_id.toString());
+        deleteByValue(member_id.toString());
+        valueOperations.set(refreshToken, member_id.toString(), Duration.ofMillis(refreshExpire));
     }
 
     public String getData(String key) {

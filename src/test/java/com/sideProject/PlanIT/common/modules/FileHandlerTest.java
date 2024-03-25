@@ -1,31 +1,30 @@
-package com.sideProject.PlanIT.domain.file.service.FileServiceTest;
+package com.sideProject.PlanIT.common.modules;
 
-import com.sideProject.PlanIT.domain.file.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.UUID;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("dev")
-public class FileServiceTest {
+@ActiveProfiles("prod")
+public class FileHandlerTest {
 
     @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;
 
     @Autowired
-    FileService fileService;
+    FileHandler fileHandler;
 
     @Test
     @DisplayName("파일을 저장합니다")
@@ -50,7 +49,7 @@ public class FileServiceTest {
         }
 
         // when
-        String fileName = fileService.saveFile(multipartFile);
+        String fileName = fileHandler.saveFile(multipartFile);
 
         // then
         File savedFile = new File(fileStorageDir + File.separator + fileName);
@@ -59,7 +58,7 @@ public class FileServiceTest {
 
     @Test
     @DisplayName("저장된 파일을 가져옵니다")
-    void downloadFile() {
+    void downloadFile() throws IOException {
         // given
         File testFile = new File(fileStorageDir + "test.txt");
 
@@ -90,11 +89,13 @@ public class FileServiceTest {
         }
 
         // when
-        Resource resource = fileService.sendFile(fileName);
+        byte[] fileBytes = fileHandler.loadFile(fileName);
 
         // then
-        assertThat(resource.exists()).isTrue();
-        assertThat(resource.isReadable()).isTrue();
+        assertThat(fileBytes).isNotNull();
+
+        String fileContent = new String(fileBytes);
+        assertThat(fileContent).isEqualTo("Hello, World!");
     }
 
 

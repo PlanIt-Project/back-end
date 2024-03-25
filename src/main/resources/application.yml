@@ -17,7 +17,7 @@ spring:
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -30,7 +30,6 @@ spring:
     cors:
       allowed-origins: "*"
 
-
   naver:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}
@@ -42,6 +41,10 @@ spring:
     client-secret: ${GOOGLE_CLIENT_SECRET}
     login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
     redirect-uri: http://localhost:8080/login/oauth2/code/google
+
+  email:
+    app-key: ${EMAIL_APP_KEY}
+    redis-timeLimit: 300000
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD
