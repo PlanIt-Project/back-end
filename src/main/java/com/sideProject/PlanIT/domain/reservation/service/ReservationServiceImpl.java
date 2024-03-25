@@ -42,11 +42,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public String changeAvailability(List<LocalDateTime> reservedTimes, Long employeeId, Long userId) {
+    public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+        Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                 new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
 

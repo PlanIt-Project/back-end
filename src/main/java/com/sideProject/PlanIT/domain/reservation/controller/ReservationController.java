@@ -23,16 +23,14 @@ import java.util.Map;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PutMapping("/change/{employeeId}")
+    @PutMapping("/change")
     public ApiResponse<String> changeAvailability(
             Principal principal,
-            @RequestBody ChangeReservationRequest request,
-            @PathVariable("employeeId") Long employeeId
+            @RequestBody ChangeReservationRequest request
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
                         request.getReservedTimes(),
-                        employeeId,
                         Long.valueOf(principal.getName())
                 )
         );
