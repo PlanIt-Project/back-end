@@ -7,13 +7,10 @@ import com.sideProject.PlanIT.domain.user.dto.member.request.EmailValidationRequ
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -29,6 +26,7 @@ public class EmailService {
         if (!emailValidationRequestDto.getValidCode().equals(redisUtil.getData(emailValidationRequestDto.getEmail()))) {
             throw new CustomException(ErrorCode.INVALID_EMAIL_AUTH);
         }
+        redisUtil.deleteData(emailValidationRequestDto.getEmail());
         return "인증 완료";
     }
 
