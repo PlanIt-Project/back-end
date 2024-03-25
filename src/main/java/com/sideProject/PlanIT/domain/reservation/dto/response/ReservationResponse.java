@@ -48,7 +48,6 @@ public class ReservationResponse {
         if(reservation.getStatus() == ReservationStatus.POSSIBLE) {
             return ReservationResponse.builder()
                     .id(reservation.getId())
-                    .member(MemberSemiResponseDto.of(reservation.getMember()))
                     .employee(EmployeeSemiResponseDto.of(reservation.getEmployee()))
                     .status(reservation.getStatus())
                     .build();

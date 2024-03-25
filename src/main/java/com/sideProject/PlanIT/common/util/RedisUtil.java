@@ -13,10 +13,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisUtil {
 
-    @Value("${email.redis-timeLimit}")
+    @Value("${spring.email.redis-timeLimit}")
     private Long emailExpire;
 
-    @Value("${jwt.refresh-token-expire}")
+    @Value("${spring.jwt.refresh-token-expire}")
     private Long refreshExpire;
 
     private final RedisTemplate<String, String> redisTemplate;

@@ -72,6 +72,23 @@ public class ReservationController {
         );
     }
 
+    @GetMapping("/{employeeId}")
+    public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservationByEmployee(
+            @RequestParam(value = "date", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable("employeeId") Long employeeId
+    ) {
+        if (date == null) {
+            date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
+        }
+        return ApiResponse.ok(
+                reservationService.findReservationForWeekByEmployee(
+                        date,
+                        employeeId
+                )
+        );
+    }
+
     @DeleteMapping("/{reservationId}")
     public ApiResponse<String> cancelReservation(
             @PathVariable("reservationId") Long reservationId,

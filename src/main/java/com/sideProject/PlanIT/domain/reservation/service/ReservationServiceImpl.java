@@ -61,7 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
         // 기존 예약 삭제
         List<Reservation> reservedReservations = existingReservations.stream()
                 .filter(reservation -> reservation.getStatus() == ReservationStatus.POSSIBLE)
-                .collect(Collectors.toList());
+                .toList();
         reservedReservations.forEach(reservationRepository::delete);
 
         // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
@@ -141,15 +141,26 @@ public class ReservationServiceImpl implements ReservationService {
             reservations = reservationRepository.findByMemberAndDateTimeBetween(member,startOfWeek,endOfWeek);
         }
 
-        Map<LocalDate, List<ReservationResponse>> reservationMap = reservations.stream()
+        return reservations.stream()
                 .map(ReservationResponse::of)
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
-        return reservationMap;
     }
 
     @Override
-    public List<ReservationResponse> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
-        return List.of(ReservationResponse.builder().build(), ReservationResponse.builder().build());
+    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
+        LocalDateTime startOfWeek = calStartOfWeek(date);
+        LocalDateTime endOfWeek = calEndOfWeek(date);
+
+        List<Reservation> reservations;
+        //트레이너이면
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+                new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+        reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+
+        return reservations.stream()
+                .map(ReservationResponse::of)
+                .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
     }
 
     //그 주의 월요일 00:00:00
