@@ -108,7 +108,7 @@ public class MemberServiceImpl implements MemberService {
         memberToChangePassword.changePassword(encryptedNewPassword);
         memberRepository.save(memberToChangePassword);
 
-        return "비밀 번호 변경 완료";
+        return "비밀번호 변경 완료";
     }
 
     @Override
@@ -149,12 +149,6 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException("회원이 없습니다", ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        return members.map(member -> MemberResponseDto.of(member, null));
-    }
-
-    @Override
-    public Page<MemberResponseDto> findAllMembers(Pageable pageable) {
-        Page<Member> members = memberRepository.findByRole(MemberRole.MEMBER,pageable);
         return members.map(member -> MemberResponseDto.of(member, null));
     }
 

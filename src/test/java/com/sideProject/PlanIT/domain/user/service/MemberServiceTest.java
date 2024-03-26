@@ -4,7 +4,9 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.util.JwtTokenProvider;
 import com.sideProject.PlanIT.common.util.JwtUtil;
 import com.sideProject.PlanIT.common.util.RedisUtil;
+import com.sideProject.PlanIT.domain.user.controller.enums.MemberSearchOption;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequestDto;
@@ -23,6 +25,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -65,7 +70,7 @@ public class MemberServiceTest {
         redisUtil.deleteAll();
     }
 
-    private Member initMember(String name, String password) {
+    private Member initMember(String name, String password, MemberRole memberRole) {
         Member member = Member.builder()
                 .name(name)
                 .email(name + "@naver.com")
@@ -73,7 +78,7 @@ public class MemberServiceTest {
                 .birth(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
                 .phone_number("010-0000-0000")
                 .address("서울")
-                .role(MemberRole.MEMBER)
+                .role(memberRole)
                 .build();
 
         return memberRepository.save(member);
@@ -160,7 +165,7 @@ public class MemberServiceTest {
         @Test
         void signIn() {
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             MemberSignInRequestDto memberSignInRequestDto = MemberSignInRequestDto.builder()
                     .email("test1@naver.com")
@@ -182,7 +187,7 @@ public class MemberServiceTest {
         @Test
         void signIn2() {
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberSignInRequestDto memberSignInRequestDto = MemberSignInRequestDto.builder()
@@ -200,7 +205,7 @@ public class MemberServiceTest {
         @Test
         void signIn3() {
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberSignInRequestDto memberSignInRequestDto = MemberSignInRequestDto.builder()
@@ -224,13 +229,14 @@ public class MemberServiceTest {
         void deleteMember() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
-            memberService.deleteMember(memberRepository.findByEmail("test1@naver.com").get().getId());
+            String result = memberService.deleteMember(memberRepository.findByEmail("test1@naver.com").get().getId());
 
             // then
             assertThat(memberRepository.findByEmail("test1").isPresent()).isFalse();
+            assertThat(result).isEqualTo("삭제 완료");
         }
     }
 
@@ -260,7 +266,7 @@ public class MemberServiceTest {
                     .build();
 
             // when
-            memberService.editMember(memberRepository.findByEmail("test1@naver.com").get().getId(), memberEditRequestDto);
+            String result = memberService.editMember(memberRepository.findByEmail("test1@naver.com").get().getId(), memberEditRequestDto);
 
             // then
             Member member = memberRepository.findByEmail("test1@naver.com").get();
@@ -268,6 +274,7 @@ public class MemberServiceTest {
             assertThat(member.getPhone_number()).isEqualTo("010-1234-5678");
             assertThat(member.getBirth()).isEqualTo("2001-01-01");
             assertThat(member.getAddress()).isEqualTo("경기");
+            assertThat(result).isEqualTo("수정 완료");
         }
     }
 
@@ -280,7 +287,7 @@ public class MemberServiceTest {
         void changePassword() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberChangePasswordRequestDto memberChangePasswordRequestDto = MemberChangePasswordRequestDto.builder()
@@ -288,10 +295,11 @@ public class MemberServiceTest {
                     .newPassword("test5678")
                     .newPasswordCheck("test5678")
                     .build();
-            memberService.changePassword(memberRepository.findByEmail("test1@naver.com").get().getId(), memberChangePasswordRequestDto);
+            String result = memberService.changePassword(memberRepository.findByEmail("test1@naver.com").get().getId(), memberChangePasswordRequestDto);
 
             // then
             assertThat(passwordEncoder.matches("test5678", memberRepository.findByEmail("test1@naver.com").get().getPassword())).isTrue();
+            assertThat(result).isEqualTo("비밀번호 변경 완료");
         }
 
         @DisplayName("현재 비밀번호가 틀리면 오류가 발생한다")
@@ -299,7 +307,7 @@ public class MemberServiceTest {
         void changePassword2() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberChangePasswordRequestDto memberChangePasswordRequestDto = MemberChangePasswordRequestDto.builder()
@@ -319,7 +327,7 @@ public class MemberServiceTest {
         void changePassword3() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberChangePasswordRequestDto memberChangePasswordRequestDto = MemberChangePasswordRequestDto.builder()
@@ -339,7 +347,7 @@ public class MemberServiceTest {
         void changePassword4() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberChangePasswordRequestDto memberChangePasswordRequestDto = MemberChangePasswordRequestDto.builder()
@@ -364,7 +372,7 @@ public class MemberServiceTest {
         void findMember() {
 
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
 
             // when
             MemberResponseDto memberResponseDto = memberService.findMember(memberRepository.findByEmail("test1@naver.com").get().getId());
@@ -417,19 +425,20 @@ public class MemberServiceTest {
     @DisplayName("signOutTest")
     class signOutTest {
 
-        @DisplayName("로그아웃을 하고 refresh token을 삭제합니다")
+        @DisplayName("로그아웃을 하고 refresh token을 삭제한다")
         @Test
         void signOut() {
 
             // given
-            Member member = memberRepository.save(initMember("test1", "test1234"));
+            Member member = initMember("test1", "test1234", MemberRole.MEMBER);
             String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
             // when
-            memberService.signOut(memberRepository.findByEmail("test1@naver.com").get().getId());
+            String result = memberService.signOut(memberRepository.findByEmail("test1@naver.com").get().getId());
 
             // then
             assertThat(redisUtil.isExist(refreshToken)).isFalse();
+            assertThat(result).isEqualTo("로그아웃 성공");
         }
     }
 
@@ -437,18 +446,99 @@ public class MemberServiceTest {
     @DisplayName("findTest")
     class findTest {
 
-    }
+        @DisplayName("모든 사용자를 조회한다.")
+        @Test
+        void find() {
 
-    @Nested
-    @DisplayName("findAllMembersTest")
-    class findAllMembers {
+            // given
+            initMember("test1", "test1234", MemberRole.MEMBER);
+            initMember("test2", "test1234", MemberRole.MEMBER);
+            initMember("test3", "test1234", MemberRole.MEMBER);
+            initMember("test4", "test1234", MemberRole.TRAINER);
+            initMember("test5", "test1234", MemberRole.TRAINER);
 
+            // when
+            Pageable pageable = PageRequest.of(1, 3);
+            Page<MemberResponseDto> result = memberService.find(MemberSearchOption.ALL, pageable);
+
+            // then
+            assertThat(result.getTotalElements()).isEqualTo(5);
+            assertThat(result.getTotalPages()).isEqualTo(2);
+            assertThat(result.getContent().size()).isEqualTo(2);
+        }
+
+        @DisplayName("모든 회원를 조회한다.")
+        @Test
+        void find2() {
+
+            // given
+            initMember("test1", "test1234", MemberRole.MEMBER);
+            initMember("test2", "test1234", MemberRole.MEMBER);
+            initMember("test3", "test1234", MemberRole.MEMBER);
+            initMember("test4", "test1234", MemberRole.TRAINER);
+            initMember("test5", "test1234", MemberRole.TRAINER);
+
+            // when
+            Pageable pageable = PageRequest.of(0, 3);
+            Page<MemberResponseDto> result = memberService.find(MemberSearchOption.MEMBER, pageable);
+
+            // then
+            assertThat(result.getTotalElements()).isEqualTo(3);
+            assertThat(result.getTotalPages()).isEqualTo(1);
+            assertThat(result.getContent().size()).isEqualTo(3);
+        }
+
+        @DisplayName("모든 트레이너를 조회한다.")
+        @Test
+        void find3() {
+
+            // given
+            initMember("test1", "test1234", MemberRole.MEMBER);
+            initMember("test2", "test1234", MemberRole.MEMBER);
+            initMember("test3", "test1234", MemberRole.MEMBER);
+            initMember("test4", "test1234", MemberRole.TRAINER);
+            initMember("test5", "test1234", MemberRole.TRAINER);
+
+            // when
+            Pageable pageable = PageRequest.of(0, 3);
+            Page<MemberResponseDto> result = memberService.find(MemberSearchOption.TRAINER, pageable);
+
+            // then
+            assertThat(result.getTotalElements()).isEqualTo(2);
+            assertThat(result.getTotalPages()).isEqualTo(1);
+            assertThat(result.getContent().size()).isEqualTo(2);
+        }
     }
 
     @Nested
     @DisplayName("findAllEmployeesTest")
-    class findAllEmployees {
+    class findAllEmployeesTest {
 
+        @DisplayName("전체 트레이너를 조회합니다.")
+        @Test
+        void findAllEmployees() {
+
+            // given
+            employeeRepository.save(Employee.builder()
+                    .member(initMember("test1", "test1234", MemberRole.TRAINER))
+                    .career("P1Y2M3D")
+                    .trainerMessage("test trainer messsage")
+                    .build());
+            employeeRepository.save(Employee.builder()
+                    .member(initMember("test2", "test1234", MemberRole.TRAINER))
+                    .career("P1Y2M3D")
+                    .trainerMessage("test trainer messsage")
+                    .build());
+
+            // when
+            Pageable pageable = PageRequest.of(0, 2);
+            Page<TrainerResponseDto> result = memberService.findAllEmployees(pageable);
+
+            // then
+            assertThat(result.getTotalElements()).isEqualTo(2);
+            assertThat(result.getTotalPages()).isEqualTo(1);
+            assertThat(result.getContent().size()).isEqualTo(2);
+        }
     }
 
     @Nested
@@ -459,7 +549,7 @@ public class MemberServiceTest {
         @Test
         void grantEmployee() {
             // given
-            memberRepository.save(initMember("test1", passwordEncoder.encode("test1234")));
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
             TrainerRequestDto trainerRequestDto = TrainerRequestDto.builder()
                     .career("P1Y2M3D")
                     .trainerMessage("test trainer message")

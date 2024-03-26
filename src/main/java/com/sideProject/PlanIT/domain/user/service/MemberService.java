@@ -23,7 +23,6 @@ public interface MemberService {
     MemberResponseDto findMember(Long member_id);
     String signOut(Long member_id);
     Page<MemberResponseDto> find(MemberSearchOption option, Pageable pageable);
-    Page<MemberResponseDto> findAllMembers(Pageable pageable);
     Page<TrainerResponseDto> findAllEmployees(Pageable pageable);
     String grantEmployeeAuth(Long member_id, TrainerRequestDto trainerRequestDto);
 }
