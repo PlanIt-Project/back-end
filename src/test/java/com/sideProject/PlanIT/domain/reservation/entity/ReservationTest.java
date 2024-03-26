@@ -135,4 +135,55 @@ class ReservationTest {
                 .hasMessage("예약 null은 예약할 수 없습니다.");
     }
 
+    @DisplayName("예약을 취소할 수 있다.")
+    @Test
+    void cancelTes1(){
+        //given
+        Member member = initMember("test",MemberRole.MEMBER);
+        Employee trainer = initTrainer("trainer");
+        Program program = Program.builder()
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+        Reservation reservation = Reservation.builder()
+                .reservedTime(now)
+                .employee(trainer)
+                .status(ReservationStatus.RESERVED)
+                .classTime(LocalTime.of(1,0))
+                .build();
+
+        LocalDateTime reservationTime = now.minusMinutes(10);
+        //when
+        reservation.cancel(reservationTime);
+
+        //then
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.POSSIBLE);
+        assertThat(reservation.getMember()).isEqualTo(null);
+    }
+
+    @DisplayName("예약 취소 시간이 예약 시간 10분 이내이면 예외가 발생한다.")
+    @Test
+    void cancelTest2(){
+        //given
+        Member member = initMember("test",MemberRole.MEMBER);
+        Employee trainer = initTrainer("trainer");
+        Program program = Program.builder()
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+        Reservation reservation = Reservation.builder()
+                .reservedTime(now)
+                .employee(trainer)
+                .status(ReservationStatus.RESERVED)
+                .classTime(LocalTime.of(1,0))
+                .build();
+
+        LocalDateTime reservationTime = now.minusMinutes(9);
+        //when//then
+
+        assertThatThrownBy(() -> reservation.cancel(reservationTime))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("예약 null은 예약 취소시간이 지났습니다.");
+    }
+
 }
