@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+//todo: 프론트와 협의 후 수정 및 api 엔드 포인트 변경
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")

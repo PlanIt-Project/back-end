@@ -37,6 +37,8 @@ import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
+//todo: pagealbe 관련 개수 외에 실제 데이터 검증
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("prod")
