@@ -43,9 +43,9 @@ spring:
     login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
     redirect-uri: http://localhost:8080/login/oauth2/code/google
 
-email:
-  app-key: ${EMAIL_APP_KEY}
-  redis-timeLimit: 300000
+  email:
+    app-key: ${EMAIL_APP_KEY}
+    redis-timeLimit: 300000
 
 # 환경변수 설정
 # - DB USER_NAME, PASSWORD

@@ -10,7 +10,7 @@ import java.util.Properties;
 
 @Configuration
 public class EmailConfig {
-    @Value("${email.app-key}")
+    @Value("${spring.email.app-key}")
     private String appKey;
     @Bean
     public JavaMailSender mailSender() {

@@ -3,6 +3,7 @@ package com.sideProject.PlanIT.common.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisUtil {
 
-    @Value("${email.redis-timeLimit}")
+    @Value("${spring.email.redis-timeLimit}")
     private Long emailExpire;
 
-    @Value("${jwt.refresh-token-expire}")
+    @Value("${spring.jwt.refresh-token-expire}")
     private Long refreshExpire;
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -30,7 +31,7 @@ public class RedisUtil {
     {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         redisTemplate.delete(refreshToken);
-        valueOperations.set(refreshToken, member_id.toString(), refreshExpire);
+        valueOperations.set(refreshToken, member_id.toString(), Duration.ofMillis(refreshExpire));
     }
 
     public String getData(String key) {
@@ -53,6 +54,13 @@ public class RedisUtil {
             if (value.equals(storedValue)) {
                 redisTemplate.delete(key);
             }
+        });
+    }
+
+    public void deleteAll() {
+        redisTemplate.execute((RedisCallback<Object>) connection -> {
+            connection.serverCommands().flushDb();
+            return null;
         });
     }
 }
