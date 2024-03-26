@@ -1,16 +1,15 @@
-# default
 spring:
   profiles:
     active:
-      on-profile : prod # 기본 환경을 dev로
+      on-profile: prod # 기본 환경을 prod로
 
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
 
   jwt:
     secret-key: ${SECRET_KEY}
-    access-token-expire: 50000
-    refresh-token-expire: 1209600000
+    access-token-expire: ${ACCESS_EXPIRE}
+    refresh-token-expire: ${REFRESH_EXPIRE}
 
   datasource:
     url: jdbc:mysql://${DB_CONNECTION_URL}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -22,4 +21,28 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
+  mvc:
+    cors:
+      allowed-origins: "*"
+
+
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+    login-uri: https://nid.naver.com/oauth2.0/authorize?response_type=code&
+    redirect-uri: http://localhost:8080/login/oauth2/code/naver
+
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    login-uri: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?
+    redirect-uri: http://localhost:8080/login/oauth2/code/google
+
+  email:
+    app-key: ${EMAIL_APP_KEY}
+    redis-timeLimit: 300000
