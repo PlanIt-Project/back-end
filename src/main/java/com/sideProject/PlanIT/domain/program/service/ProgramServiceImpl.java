@@ -318,7 +318,7 @@ public class ProgramServiceImpl implements ProgramService {
         );
 
         Program programs = programRepository.findById(programId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(programId + "은 존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
 
         if(member.getRole().equals(MemberRole.TRAINER)) {
@@ -400,10 +400,6 @@ public class ProgramServiceImpl implements ProgramService {
             registrations = findRegistration(option, pageable);
         } else {
             registrations = findRegistrationByUser(member, option, pageable);
-        }
-
-        if (registrations.isEmpty()) {
-            throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
         return registrations.map(FindRegistrationResponse::of);

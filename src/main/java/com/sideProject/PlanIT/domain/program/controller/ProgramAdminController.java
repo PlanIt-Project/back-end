@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -34,6 +36,7 @@ public class ProgramAdminController {
             @PageableDefault(size = 10) Pageable pageable,
             Principal principal) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         Long id = Long.parseLong(principal.getName());
 
         return ApiResponse.ok(

@@ -47,7 +47,8 @@ public class ReservationController {
                 reservationService.reservation(
                         reservationId,
                         Long.valueOf(principal.getName()),
-                        request.getProgramId()
+                        request.getProgramId(),
+                        now
                 )
         );
     }
@@ -92,10 +93,13 @@ public class ReservationController {
             @PathVariable("reservationId") Long reservationId,
             Principal principal
     ) {
+        LocalDateTime now = LocalDateTime.now();
+
         return ApiResponse.ok(
                 reservationService.cancel(
                         Long.valueOf(principal.getName()),
-                        reservationId
+                        reservationId,
+                        now
                 )
         );
     }

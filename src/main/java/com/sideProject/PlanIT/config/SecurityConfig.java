@@ -62,7 +62,6 @@ public class SecurityConfig {
                         .requestMatchers("/member/signin", "/member/signup", "member/refresh", "/email/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
-//                                .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 

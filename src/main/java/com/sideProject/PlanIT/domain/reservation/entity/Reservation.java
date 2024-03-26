@@ -1,5 +1,7 @@
 package com.sideProject.PlanIT.domain.reservation.entity;
 
+import com.sideProject.PlanIT.common.response.CustomException;
+import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
@@ -19,6 +21,8 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Reservation {
+    private static final int RESERVATION_THRESHOLD_MINUTES = 10;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -56,16 +60,40 @@ public class Reservation {
         this.status = status;
         this.employee = employee;
     }
+    public void reservation(Program program, Member member, LocalDateTime now) {
+        ensureReservationIsPossible(now);
 
-    public void reservation(Program program, Member member) {
         this.member = member;
         this.program = program;
         this.status = ReservationStatus.RESERVED;
     }
 
-    public void cancel() {
+    public void cancel(LocalDateTime now) {
+        ensureCancellationIsPossible(now);
+
         this.program = null;
         this.member = null;
         this.status = ReservationStatus.POSSIBLE;
     }
+
+    private void ensureReservationIsPossible(LocalDateTime now) {
+        if (status != ReservationStatus.POSSIBLE) {
+            throw new CustomException("예약 " + id + "은 예약할 수 없습니다.", ErrorCode.ALREADY_RESERVATION);
+        }
+
+        if (isPastReservationThreshold(now)) {
+            throw new CustomException("예약 " + id + "은 예약 가능 시간이 지났습니다.", ErrorCode.INVALID_RESERVATION_TIME);
+        }
+    }
+
+    private void ensureCancellationIsPossible(LocalDateTime now) {
+        if (isPastReservationThreshold(now)) {
+            throw new CustomException("예약 " + id + "은 예약 취소시간이 지났습니다.", ErrorCode.INVALID_RESERVATION_TIME);
+        }
+    }
+
+    private boolean isPastReservationThreshold(LocalDateTime now) {
+        return now.isAfter(reservedTime.minusMinutes(RESERVATION_THRESHOLD_MINUTES));
+    }
+
 }

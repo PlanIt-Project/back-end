@@ -19,6 +19,7 @@ public enum ErrorCode {
     NOT_YOUR_TRAINER(400, "예약 가능한 트레이너가 아닙니다."),
     ALREADY_RESERVATION(400, "이미 예약 되어있습니다."),
     SAME_PASSWORD(400, "변경 비밀번호가 같습니다."),
+    INVALID_RESERVATION_TIME(400, "예약 가능한 시간이 아닙니다."),
 
     //401
     INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),

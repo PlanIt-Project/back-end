@@ -124,6 +124,10 @@ public class Program extends BaseEntity {
     }
 
     public void reservation() {
+        if(this.product.getType() != ProductType.PT) {
+            throw new CustomException("program " + this.id + " 은 PT권이 아닙니다.", ErrorCode.NOT_PT);
+        }
+
         if(this.remainedNumber == 0) {
             throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
         }else if(this.remainedNumber ==1 ){

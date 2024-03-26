@@ -82,10 +82,9 @@ public class ReservationServiceImpl implements ReservationService {
         return "ok";
     }
 
-    //todo: 현재 시간에 따라 예약 가능 여부 체크
     @Override
     @Transactional
-    public String reservation(Long reservationId, Long userId, Long programId) {
+    public String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -96,25 +95,17 @@ public class ReservationServiceImpl implements ReservationService {
                 new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
 
-        //todo : entity 역할로 넘기기
-        if(reservation.getStatus() != ReservationStatus.POSSIBLE) {
-            throw new CustomException("예약 " + reservationId + "은 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
-        }
-
-        if(program.getProduct().getType() != ProductType.PT) {
-            throw new CustomException("program " + programId + " 은 PT권이 아닙니다.", ErrorCode.NOT_PT);
-        }
-
         if(!Objects.equals(program.getEmployee().getId(), reservation.getEmployee().getId())) {
             throw new CustomException("유저 " + userId + "은 해당 트레이너에 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
         }
 
         //프로그램 상태 변경
         program.reservation();
-        programRepository.save(program);
 
         //프로그램 예약
-        reservation.reservation(program,member);
+        reservation.reservation(program,member,now);
+
+        programRepository.save(program);
         reservationRepository.save(reservation);
 
         return "ok";
@@ -174,11 +165,9 @@ public class ReservationServiceImpl implements ReservationService {
         return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
     }
 
-
-    //todo: 취소 불가 시간
     @Override
     @Transactional
-    public String cancel(Long userId, Long reservationId) {
+    public String cancel(Long userId, Long reservationId, LocalDateTime now) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() ->
             new CustomException("예약 " + reservationId + "은 없는 예약입니다.",ErrorCode.RESERVATION_NOT_FOUND)
         );
@@ -193,7 +182,7 @@ public class ReservationServiceImpl implements ReservationService {
         programRepository.save(program);
 
         //예약 취소
-        reservation.cancel();
+        reservation.cancel(now);
         reservationRepository.save(reservation);
 
         return "ok";
