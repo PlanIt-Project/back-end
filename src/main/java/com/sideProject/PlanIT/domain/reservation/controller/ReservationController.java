@@ -72,7 +72,7 @@ public class ReservationController {
     }
 
     @GetMapping("/trainer/{employeeId}")
-    public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservationByEmployee(
+    public ApiResponse<List<ReservationResponse>> findReservationByEmployee(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable("employeeId") Long employeeId

@@ -11,6 +11,6 @@ public interface ReservationService {
     String changeAvailability(List<LocalDateTime> times, Long userId);
     String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now);
     Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(LocalDate day, Long id);
-    Map<LocalDate, List<ReservationResponse>> findReservationForWeekByEmployee(LocalDate day, Long id);
+    List<ReservationResponse> findReservationForWeekByEmployee(LocalDate day, Long id);
     String cancel(Long userId, Long reservationId, LocalDateTime now);
 }

@@ -139,7 +139,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
+    public List<ReservationResponse> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
         LocalDateTime startOfWeek = calStartOfWeek(date);
         LocalDateTime endOfWeek = calEndOfWeek(date);
 
@@ -152,7 +152,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         return reservations.stream()
                 .map(ReservationResponse::of)
-                .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
+                .toList();
     }
 
     //그 주의 월요일 00:00:00
@@ -163,6 +163,16 @@ public class ReservationServiceImpl implements ReservationService {
     //그 주의 일요일 23:59:59
     private LocalDateTime calEndOfWeek(LocalDate date) {
         return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
+    }
+
+    //그 주의 월요일 00:00:00
+    private LocalDateTime calStartOfDay(LocalDate date) {
+        return date.atStartOfDay();
+    }
+
+    //그 주의 일요일 23:59:59
+    private LocalDateTime calEndOfDay(LocalDate date) {
+        return date.atTime(LocalTime.MAX);
     }
 
     @Override
