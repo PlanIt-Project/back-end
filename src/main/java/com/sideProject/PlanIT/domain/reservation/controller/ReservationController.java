@@ -47,7 +47,8 @@ public class ReservationController {
                 reservationService.reservation(
                         reservationId,
                         Long.valueOf(principal.getName()),
-                        request.getProgramId()
+                        request.getProgramId(),
+                        now
                 )
         );
     }
@@ -71,7 +72,7 @@ public class ReservationController {
     }
 
     @GetMapping("/trainer/{employeeId}")
-    public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservationByEmployee(
+    public ApiResponse<List<ReservationResponse>> findReservationByEmployee(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable("employeeId") Long employeeId
@@ -92,10 +93,13 @@ public class ReservationController {
             @PathVariable("reservationId") Long reservationId,
             Principal principal
     ) {
+        LocalDateTime now = LocalDateTime.now();
+
         return ApiResponse.ok(
                 reservationService.cancel(
                         Long.valueOf(principal.getName()),
-                        reservationId
+                        reservationId,
+                        now
                 )
         );
     }

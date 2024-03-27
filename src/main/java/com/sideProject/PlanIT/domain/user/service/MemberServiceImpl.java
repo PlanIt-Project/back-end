@@ -13,17 +13,18 @@ import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignInRequest
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberSignUpRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.JwtResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
+import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+//todo: transactional 공부 후 추가
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +39,11 @@ public class MemberServiceImpl implements MemberService {
     public Member signUp(MemberSignUpRequestDto memberSignUpRequestDto) {
         memberRepository.findByEmail(memberSignUpRequestDto.getEmail())
                 .ifPresent( user1 -> {
-                    throw new CustomException("이메일이 이미 존재합니다.", ErrorCode.ALREADY_EXIST_EMAIL);
+                    throw new CustomException(ErrorCode.ALREADY_EXIST_EMAIL);
                 });
-
+        if (memberSignUpRequestDto.getPassword() == null) {
+            throw new CustomException(ErrorCode.NO_EXIST_PASSWORD);
+        }
         String encryptedPassword = passwordEncoder.encode(memberSignUpRequestDto.getPassword());
         return memberRepository.save(Member.builder()
                         .email(memberSignUpRequestDto.getEmail())
@@ -75,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String editMember(Long member_id, MemberEditRequestDto memberEditRequestDto) {
         Member memberToEdit = memberRepository.findById(member_id).orElseThrow(() ->
-                new IllegalArgumentException("no extist id"));
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 
         memberToEdit.update(memberEditRequestDto);
@@ -87,21 +90,25 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String changePassword(Long member_id, MemberChangePasswordRequestDto memberChangePasswordRequestDto) {
         Member memberToChangePassword = memberRepository.findById(member_id).orElseThrow(() ->
-                new IllegalArgumentException("no exist id"));
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (!passwordEncoder.matches(memberChangePasswordRequestDto.getCurrentPassword(), memberToChangePassword.getPassword())) {
-            throw new CustomException("현재 비밀번호가 일치하지 않습니다.", ErrorCode.INVALID_PASSWORD);
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         if (!memberChangePasswordRequestDto.getNewPassword().equals(memberChangePasswordRequestDto.getNewPasswordCheck())) {
-            throw new CustomException("변경할 비밀번호가 일치하지 않습니다.", ErrorCode.INVALID_PASSWORD);
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        if (passwordEncoder.matches(memberChangePasswordRequestDto.getNewPassword(), memberToChangePassword.getPassword())) {
+            throw new CustomException(ErrorCode.SAME_PASSWORD);
         }
 
         String encryptedNewPassword = passwordEncoder.encode(memberChangePasswordRequestDto.getNewPassword());
         memberToChangePassword.changePassword(encryptedNewPassword);
         memberRepository.save(memberToChangePassword);
 
-        return "비밀 번호 변경 완료";
+        return "비밀번호 변경 완료";
     }
 
     @Override
@@ -146,12 +153,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Page<MemberResponseDto> findAllMembers(Pageable pageable) {
-        Page<Member> members = memberRepository.findByRole(MemberRole.MEMBER,pageable);
-        return members.map(member -> MemberResponseDto.of(member, null));
-    }
-
-    @Override
     public Page<TrainerResponseDto> findAllEmployees(Pageable pageable) {
         Page<Employee> employees = employeeRepository.findAll(pageable);
         return employees.map(TrainerResponseDto::of);
@@ -160,7 +161,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String grantEmployeeAuth(Long member_id, TrainerRequestDto trainerRequestDto) {
         Member memberToEmployee = memberRepository.findById(member_id).orElseThrow(() ->
-                new IllegalArgumentException("no exist id"));
+                new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         memberToEmployee.grantEmployeeAuth();
         memberRepository.save(memberToEmployee);
 

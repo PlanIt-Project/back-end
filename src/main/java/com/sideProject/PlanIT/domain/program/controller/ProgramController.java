@@ -2,8 +2,8 @@ package com.sideProject.PlanIT.domain.program.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
-import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
+import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
@@ -44,10 +44,8 @@ public class ProgramController {
         );
     }
 
-
-    //어드민이 유저 id로 검색
     @GetMapping("/{id}")
-    public ApiResponse<ProgramResponse> find(
+    public ApiResponse<ProgramResponse> findById(
             @PathVariable("id") Long id,
             Principal principal) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.

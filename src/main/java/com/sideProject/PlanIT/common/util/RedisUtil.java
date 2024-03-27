@@ -3,6 +3,7 @@ package com.sideProject.PlanIT.common.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,13 @@ public class RedisUtil {
             if (value.equals(storedValue)) {
                 redisTemplate.delete(key);
             }
+        });
+    }
+
+    public void deleteAll() {
+        redisTemplate.execute((RedisCallback<Object>) connection -> {
+            connection.serverCommands().flushDb();
+            return null;
         });
     }
 }

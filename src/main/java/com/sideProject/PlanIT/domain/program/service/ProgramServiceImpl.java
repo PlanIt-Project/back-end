@@ -317,24 +317,32 @@ public class ProgramServiceImpl implements ProgramService {
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
-        Program programs = programRepository.findById(programId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        Program program = programRepository.findById(programId).orElseThrow(() ->
+                new CustomException(programId + "은 존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
 
         if(member.getRole().equals(MemberRole.TRAINER)) {
-            Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
-                    new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
-            );
-            if(Objects.equals(programs.getEmployee().getId(), employee.getId())) {
-                throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-            }
+            validTrainerAccess(member,program);
+        } else if(member.getRole().equals(MemberRole.MEMBER)){
+            validMemberAccess(member,program);
         }
 
-        if(Objects.equals(programs.getMember().getId(), member.getId())) {
+        return ProgramResponse.of(program);
+    }
+
+    private void validTrainerAccess(Member member, Program program) {
+        Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+        );
+        if(Objects.equals(program.getEmployee().getId(), employee.getId())) {
             throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
+    }
 
-        return ProgramResponse.of(programs);
+    private void validMemberAccess(Member member, Program program) {
+        if(Objects.equals(program.getMember().getId(), member.getId())) {
+            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
     }
 
     private Page<Program> findProgramByEmploy(Member member, ProgramSearchStatus option,Pageable pageable) {
@@ -353,8 +361,10 @@ public class ProgramServiceImpl implements ProgramService {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByMemberId(member.getId(),pageable);
+        } else if (option == ProgramSearchStatus.VALID) {
+            return programRepository.findByMemberIdAndStatusIn(member.getId(), ProgramStatus.forValid(),pageable);
         } else {
-            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS,pageable);
+            return programRepository.findByMemberIdAndStatusIn(member.getId(), ProgramStatus.forUnValid(),pageable);
         }
     }
 
@@ -363,9 +373,9 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findAll(pageable);
         } else if(option == ProgramSearchStatus.VALID) {
-            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS,pageable);
+            return programRepository.findByStatusIn(ProgramStatus.forValid(),pageable);
         } else {
-            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS, pageable);
+            return programRepository.findByStatusIn(ProgramStatus.forUnValid(), pageable);
         }
     }
 
@@ -402,7 +412,7 @@ public class ProgramServiceImpl implements ProgramService {
             registrations = findRegistrationByUser(member, option, pageable);
         }
 
-        if (registrations.isEmpty()) {
+        if (registrations == null || registrations.isEmpty()) {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
