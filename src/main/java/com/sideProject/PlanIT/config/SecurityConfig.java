@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .exceptionHandling((exceptionHandling) ->
                         exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                        .requestMatchers("/member/signin", "/member/signup", "member/refresh", "/email/**").permitAll()
+                        .requestMatchers("/member/signin", "/member/signup", "/member/refresh", "/member/email/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
 //                                .anyRequest().permitAll()
