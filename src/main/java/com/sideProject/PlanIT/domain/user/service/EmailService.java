@@ -40,9 +40,21 @@ public class EmailService {
                         "<br><br>" +
                         "인증 번호는 [" + authNumber + "]입니다." +
                         "<br>" +
-                        "인증번호를 입력해주세요"; //이메일 내용 삽입
+                        "인증번호를 입력해주세요";
         mailSend(setFrom, toMail, title, content);
         redisUtil.setMailValidation(email, String.valueOf(authNumber));
+        return "이메일 전송 완료";
+    }
+
+    public String memberShipEmail(String email, String expireTime) {
+        String setFrom = "planitvalidation@gmail.com";
+        String toMail = email;
+        String title = "[PlanIT] 회원권 만료 예정 알림입니다!.";
+        String content =
+                "PlanIT를 이용해주시는 감사한 고객님께 안내 말씀 드립니다." +
+                        "<br><br>" +
+                        "고객님께서 이용 중이신 회원권의 만료 기간이 " + expireTime + "남았습니다.";
+        mailSend(setFrom, toMail, title, content);
         return "이메일 전송 완료";
     }
 
