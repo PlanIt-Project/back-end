@@ -20,9 +20,9 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     //status가 IN_PROGRESS인 모든 프로그램 조회
     Page<Program> findByMemberId(Long memberId, Pageable pageable);
     Page<Program> findByEmployeeId(Long employeeId, Pageable pageable);
-    Page<Program> findByMemberIdAndStatus(Long memberId, ProgramStatus status, Pageable pageable);
+    Page<Program> findByMemberIdAndStatusIn(Long memberId, List<ProgramStatus> status, Pageable pageable);
     Page<Program> findByEmployeeIdAndStatus(Long employeeId,ProgramStatus status, Pageable pageable);
-    Page<Program> findByStatus(ProgramStatus status, Pageable pageable);
+    Page<Program> findByStatusIn(List<ProgramStatus> status, Pageable pageable);
 
     @Query("SELECT p FROM Program p JOIN p.product pr WHERE p.endAt = ?1 AND pr.type = ?2")
     List<Program> findMembershipProgramsByEndAtAndProductType(LocalDate endAt, ProductType productType);

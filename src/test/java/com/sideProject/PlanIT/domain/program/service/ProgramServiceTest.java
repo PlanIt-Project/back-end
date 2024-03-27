@@ -40,8 +40,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.EXPIRED;
-import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.IN_PROGRESS;
+import static com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -1049,8 +1048,8 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID, pageable);
-            Page<ProgramResponse> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.INVALID, pageable);
+            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.VALID, pageable);
+            Page<ProgramResponse> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.VALID, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(2);
@@ -1252,6 +1251,147 @@ class ProgramServiceTest {
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-04-01",EXPIRED)
+                    );
+        }
+
+        @DisplayName("유저의 유효하지 않은 프로그램을 조회할 수 있다.")
+        @Test
+        void findInvalidProgramByUser(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Employee trainer2 = initTrainer("employee2");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(ProgramStatus.REFUND)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            Registration registration2 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration2 = registrationRepository.save(registration2);
+
+            Program program2 = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration2)
+                    .product(saveRegistration2.getProduct())
+                    .member(saveRegistration2.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-03-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program2);
+
+            Registration registration3 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration3 = registrationRepository.save(registration3);
+
+            Program program3 = Program.builder()
+                    .employee(trainer2)
+                    .registration(saveRegistration3)
+                    .product(saveRegistration3.getProduct())
+                    .member(saveRegistration3.getMember())
+                    .status(EXPIRED)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-04-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program3);
+
+            Registration registration4 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration4 = registrationRepository.save(registration4);
+
+            Program program4 = Program.builder()
+                    .employee(trainer2)
+                    .registration(saveRegistration4)
+                    .product(saveRegistration4.getProduct())
+                    .member(saveRegistration4.getMember())
+                    .status(ProgramStatus.NOT_STARTED)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-04-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program4);
+
+            Registration registration5 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration5 = registrationRepository.save(registration5);
+
+            Program program5 = Program.builder()
+                    .employee(trainer2)
+                    .registration(saveRegistration5)
+                    .product(saveRegistration5.getProduct())
+                    .member(saveRegistration5.getMember())
+                    .status(SUSPEND)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-04-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program5);
+
+
+            //when
+            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID, pageable);
+
+            //then
+            assertThat(results1.getContent().size()).isEqualTo(4);
+            assertThat(results1.getContent()).extracting("startAt","endAt","status")
+                    .contains(tuple("2000-01-01","2000-02-01",ProgramStatus.REFUND),
+                            tuple("2000-01-01","2000-04-01",EXPIRED),
+                            tuple("2000-01-01","2000-04-01",NOT_STARTED),
+                            tuple("2000-01-01","2000-04-01",SUSPEND)
                     );
         }
 
@@ -1553,18 +1693,6 @@ class ProgramServiceTest {
             assertThat(result2.getContent()).extracting("totalPrice","discount","status")
                     .contains(tuple(40000,0,RegistrationStatus.PENDING)
                     );
-//
-//            assertThat(result1).hasSize(4);
-//            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
-//                    .contains(tuple("tester1",member1.getId(),10000,0,RegistrationStatus.DECLINED),
-//                            tuple("tester1",member1.getId(),20000,0,RegistrationStatus.ACCEPTED),
-//                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-//                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.REFUND)
-//                    );
-//            assertThat(result2).hasSize(1);
-//            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
-//                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
-//                    );
         }
         @DisplayName("유저의 승인대기 중 인 registration을 조회 가능하다.")
         @Test
@@ -1641,16 +1769,6 @@ class ProgramServiceTest {
             Page<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
-//            assertThat(result1).hasSize(2);
-//            assertThat(result1).extracting("member","memberId","totalPrice","discount","status")
-//                    .contains(
-//                            tuple("tester1",member1.getId(),30000,0,RegistrationStatus.PENDING),
-//                            tuple("tester1",member1.getId(),40000,0,RegistrationStatus.PENDING)
-//                    );
-//            assertThat(result2).hasSize(1);
-//            assertThat(result2).extracting("member","memberId","totalPrice","discount","status")
-//                    .contains(tuple("tester2",member2.getId(),40000,0,RegistrationStatus.PENDING)
-//                    );
             assertThat(result1.getContent()).hasSize(2);
             assertThat(result1.getContent()).extracting("totalPrice","discount","status")
                     .contains(
@@ -1663,7 +1781,7 @@ class ProgramServiceTest {
                     );
         }
 
-        @DisplayName("실패 : registration이 없을때 조회를 하면 예외가 발생한다.")
+        @DisplayName("실패 : registration이 없으면 빈 객체가 온다.")
         @Test
         void findRegistrationNoExist(){
             //given
@@ -2000,7 +2118,7 @@ class ProgramServiceTest {
 
             //then
             assertThat(result).isEqualTo(program.getId());
-            assertThat(program1.getStatus()).isEqualTo(ProgramStatus.SUSPEND);
+            assertThat(program1.getStatus()).isEqualTo(SUSPEND);
             assertThat(program1.getStartAt()).isEqualTo(program.getStartAt());
             assertThat(program1.getEndAt()).isEqualTo(program.getEndAt());
             assertThat(program1.getSuspendAt()).isEqualTo(now);
@@ -2112,7 +2230,7 @@ class ProgramServiceTest {
                     .registration(saveRegistration)
                     .product(saveRegistration.getProduct())
                     .member(saveRegistration.getMember())
-                    .status(ProgramStatus.SUSPEND)
+                    .status(SUSPEND)
                     .suspendAt(stopDay)
                     .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
                     .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))

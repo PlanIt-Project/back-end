@@ -42,11 +42,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public String changeAvailability(List<LocalDateTime> reservedTimes, Long employeeId, Long userId) {
+    public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+        Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                 new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
 
@@ -61,7 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
         // 기존 예약 삭제
         List<Reservation> reservedReservations = existingReservations.stream()
                 .filter(reservation -> reservation.getStatus() == ReservationStatus.POSSIBLE)
-                .collect(Collectors.toList());
+                .toList();
         reservedReservations.forEach(reservationRepository::delete);
 
         // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
@@ -82,10 +82,9 @@ public class ReservationServiceImpl implements ReservationService {
         return "ok";
     }
 
-    //todo: 현재 시간에 따라 예약 가능 여부 체크
     @Override
     @Transactional
-    public String reservation(Long reservationId, Long userId, Long programId) {
+    public String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -96,25 +95,17 @@ public class ReservationServiceImpl implements ReservationService {
                 new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
 
-        //todo : entity 역할로 넘기기
-        if(reservation.getStatus() != ReservationStatus.POSSIBLE) {
-            throw new CustomException("예약 " + reservationId + "은 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
-        }
-
-        if(program.getProduct().getType() != ProductType.PT) {
-            throw new CustomException("program " + programId + " 은 PT권이 아닙니다.", ErrorCode.NOT_PT);
-        }
-
         if(!Objects.equals(program.getEmployee().getId(), reservation.getEmployee().getId())) {
             throw new CustomException("유저 " + userId + "은 해당 트레이너에 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
         }
 
         //프로그램 상태 변경
         program.reservation();
-        programRepository.save(program);
 
         //프로그램 예약
-        reservation.reservation(program,member);
+        reservation.reservation(program,member,now);
+
+        programRepository.save(program);
         reservationRepository.save(reservation);
 
         return "ok";
@@ -141,15 +132,27 @@ public class ReservationServiceImpl implements ReservationService {
             reservations = reservationRepository.findByMemberAndDateTimeBetween(member,startOfWeek,endOfWeek);
         }
 
-        Map<LocalDate, List<ReservationResponse>> reservationMap = reservations.stream()
+
+        return reservations.stream()
                 .map(ReservationResponse::of)
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
-        return reservationMap;
     }
 
     @Override
     public List<ReservationResponse> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
-        return List.of(ReservationResponse.builder().build(), ReservationResponse.builder().build());
+        LocalDateTime startOfWeek = calStartOfWeek(date);
+        LocalDateTime endOfWeek = calEndOfWeek(date);
+
+        List<Reservation> reservations;
+        //트레이너이면
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+                new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+        reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+
+        return reservations.stream()
+                .map(ReservationResponse::of)
+                .toList();
     }
 
     //그 주의 월요일 00:00:00
@@ -162,11 +165,19 @@ public class ReservationServiceImpl implements ReservationService {
         return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
     }
 
+    //그 주의 월요일 00:00:00
+    private LocalDateTime calStartOfDay(LocalDate date) {
+        return date.atStartOfDay();
+    }
 
-    //todo: 취소 불가 시간
+    //그 주의 일요일 23:59:59
+    private LocalDateTime calEndOfDay(LocalDate date) {
+        return date.atTime(LocalTime.MAX);
+    }
+
     @Override
     @Transactional
-    public String cancel(Long userId, Long reservationId) {
+    public String cancel(Long userId, Long reservationId, LocalDateTime now) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() ->
             new CustomException("예약 " + reservationId + "은 없는 예약입니다.",ErrorCode.RESERVATION_NOT_FOUND)
         );
@@ -181,7 +192,7 @@ public class ReservationServiceImpl implements ReservationService {
         programRepository.save(program);
 
         //예약 취소
-        reservation.cancel();
+        reservation.cancel(now);
         reservationRepository.save(reservation);
 
         return "ok";

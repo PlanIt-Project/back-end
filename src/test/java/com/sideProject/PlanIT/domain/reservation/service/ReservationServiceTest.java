@@ -123,7 +123,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times ,trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -162,7 +162,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -200,7 +200,7 @@ class ReservationServiceTest {
 
             List<LocalDateTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getId(),trainer.getMember().getId());
+            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -265,8 +265,9 @@ class ReservationServiceTest {
                     .classTime(LocalTime.of(1,0))
                     .build();
             reservationRepository.save(reservation);
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 9, 10, 0, 0);
             //when
-            String result = reservationService.reservation(reservation.getId(), member1.getId(), program.getId());
+            String result = reservationService.reservation(reservation.getId(), member1.getId(), program.getId(),reservationTime1);
             List<Reservation> reservation1 = reservationRepository.findAll();
 
             //then
@@ -323,8 +324,10 @@ class ReservationServiceTest {
                     .classTime(LocalTime.of(1,0))
                     .build();
             reservationRepository.save(reservation);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 9, 10, 0, 0);
             //when
-            String result = reservationService.reservation(reservation.getId(), member1.getId(), program.getId());
+            String result = reservationService.reservation(reservation.getId(), member1.getId(), program.getId(),reservationTime1);
             List<Reservation> reservation1 = reservationRepository.findAll();
 
             //then
@@ -382,8 +385,10 @@ class ReservationServiceTest {
                     .classTime(LocalTime.of(1,0))
                     .build();
             reservationRepository.save(reservation);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 9, 10, 0, 0);
             //when //then
-            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId()))
+            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId(),reservationTime1))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("유저 " + member1.getId()+ "은 해당 트레이너에 예약할 수 없습니다.");
         }
@@ -427,8 +432,10 @@ class ReservationServiceTest {
                     .classTime(LocalTime.of(1,0))
                     .build();
             reservationRepository.save(reservation);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 9, 10, 0, 0);
             //when //then
-            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId()))
+            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId(),reservationTime1))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("program " + program.getId()+ " 은 PT권이 아닙니다.");
         }
@@ -457,6 +464,7 @@ class ReservationServiceTest {
             Program program = Program.builder()
                     .registration(saveRegistration)
                     .product(saveRegistration.getProduct())
+                    .remainedNumber(product.getNumber())
                     .member(saveRegistration.getMember())
                     .employee(trainer)
                     .status(IN_PROGRESS)
@@ -469,14 +477,16 @@ class ReservationServiceTest {
             Reservation reservation = Reservation.builder()
                     .reservedTime(reservationTime)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
-            reservation.reservation(program,member1);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 9, 10, 0, 0);
+            reservation.reservation(program,member1,reservationTime1);
             Reservation reservation1 = reservationRepository.save(reservation);
 
             //when //then
-            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId()))
+            assertThatThrownBy(() -> reservationService.reservation(reservation.getId(), member1.getId(), program.getId(),reservationTime1))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("예약 " + reservation1.getId() + "은 예약할 수 없습니다.");
         }
@@ -522,7 +532,7 @@ class ReservationServiceTest {
             Reservation reservation1 = Reservation.builder()
                     .reservedTime(reservationTime1)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
@@ -530,7 +540,7 @@ class ReservationServiceTest {
             Reservation reservation2 = Reservation.builder()
                     .reservedTime(reservationTime2)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
@@ -538,13 +548,15 @@ class ReservationServiceTest {
             Reservation reservation3 = Reservation.builder()
                     .reservedTime(reservationTime3)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
-            reservation1.reservation(program1,member1);
-            reservation2.reservation(program1,member1);
-            reservation3.reservation(program1,member1);
+            LocalDateTime reservationTime = LocalDateTime.of(2024, 3, 16, 10, 0, 0);
+
+            reservation1.reservation(program1,member1,reservationTime);
+            reservation2.reservation(program1,member1,reservationTime);
+            reservation3.reservation(program1,member1,reservationTime);
 
             LocalDate today = LocalDate.of(2024, 3, 19);
             LocalDate today2 = LocalDate.of(2024, 3, 15);
@@ -614,7 +626,7 @@ class ReservationServiceTest {
             Reservation reservation1 = Reservation.builder()
                     .reservedTime(reservationTime1)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
@@ -622,7 +634,7 @@ class ReservationServiceTest {
             Reservation reservation2 = Reservation.builder()
                     .reservedTime(reservationTime2)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
@@ -630,13 +642,15 @@ class ReservationServiceTest {
             Reservation reservation3 = Reservation.builder()
                     .reservedTime(reservationTime3)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
-            reservation1.reservation(program1,member1);
-            reservation2.reservation(program1,member1);
-            reservation3.reservation(program1,member1);
+            LocalDateTime reservationTime = LocalDateTime.of(2024, 3, 16, 10, 0, 0);
+
+            reservation1.reservation(program1,member1,reservationTime);
+            reservation2.reservation(program1,member1,reservationTime);
+            reservation3.reservation(program1,member1,reservationTime);
 
             LocalDate today = LocalDate.of(2024, 3, 19);
             LocalDate today2 = LocalDate.of(2024, 3, 15);
@@ -704,7 +718,7 @@ class ReservationServiceTest {
             Reservation reservation1 = Reservation.builder()
                     .reservedTime(reservationTime1)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
@@ -712,12 +726,14 @@ class ReservationServiceTest {
             Reservation reservation2 = Reservation.builder()
                     .reservedTime(reservationTime2)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
-            reservation1.reservation(program1,member1);
-            reservation2.reservation(program1,member1);
+            LocalDateTime reservationTime = LocalDateTime.of(2024, 3, 17, 10, 0, 0);
+
+            reservation1.reservation(program1,member1,reservationTime);
+            reservation2.reservation(program1,member1,reservationTime);
 
             LocalDate today = LocalDate.of(2024, 3, 19);
             LocalDate today2 = LocalDate.of(2024, 3, 15);
@@ -750,9 +766,9 @@ class ReservationServiceTest {
     @Nested
     @DisplayName("CancelTest")
     class CancelTest {
-        @DisplayName("")
+        @DisplayName("예약된 예약을 취소할 수 있다.")
         @Test
-        void test(){
+        void cancel(){
             //given
             Period periodOfTenDays = Period.ofMonths(0);
             Product product = initProduct("PT 30회권", periodOfTenDays,30,ProductType.PT);
@@ -783,18 +799,22 @@ class ReservationServiceTest {
             Program program1 = programRepository.save(program);
 
             LocalDateTime reservationTime1 = LocalDateTime.of(2024, 3, 18, 10, 0, 0);
+
             Reservation reservation1 = Reservation.builder()
                     .reservedTime(reservationTime1)
                     .employee(trainer)
-                    .status(ReservationStatus.RESERVED)
+                    .status(ReservationStatus.POSSIBLE)
                     .classTime(LocalTime.of(1,0))
                     .build();
 
-            reservation1.reservation(program1,member1);
+            LocalDateTime reservationTime2 = LocalDateTime.of(2024, 3, 17, 10, 0, 0);
+            reservation1.reservation(program1,member1,reservationTime2);
+
+            LocalDateTime cancelTime = LocalDateTime.of(2024, 3, 16, 10, 30, 0);
 
             Reservation reservation = reservationRepository.save(reservation1);
             //when
-            String result = reservationService.cancel(reservation.getMember().getId(),reservation.getId());
+            String result = reservationService.cancel(reservation.getMember().getId(),reservation.getId(),cancelTime);
             Reservation resultReservation = reservationRepository.findById(reservation.getId()).orElseThrow();
             Program resultProgram = programRepository.findById(reservation.getProgram().getId()).orElseThrow();
 

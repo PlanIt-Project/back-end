@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface ReservationService {
-    String changeAvailability(List<LocalDateTime> times, Long employeeId, Long userId);
-    String reservation(Long reservationId, Long userId, Long programId);
+    String changeAvailability(List<LocalDateTime> times, Long userId);
+    String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now);
     Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(LocalDate day, Long id);
     List<ReservationResponse> findReservationForWeekByEmployee(LocalDate day, Long id);
-    String cancel(Long userId, Long reservationId);
+    String cancel(Long userId, Long reservationId, LocalDateTime now);
 }

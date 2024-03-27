@@ -17,7 +17,7 @@ spring:
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -29,7 +29,6 @@ spring:
   mvc:
     cors:
       allowed-origins: "*"
-
 
   naver:
     client-id: ${NAVER_CLIENT_ID}

@@ -23,16 +23,14 @@ import java.util.Map;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PutMapping("/change/{employeeId}")
+    @PutMapping("/change")
     public ApiResponse<String> changeAvailability(
             Principal principal,
-            @RequestBody ChangeReservationRequest request,
-            @PathVariable("employeeId") Long employeeId
+            @RequestBody ChangeReservationRequest request
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
                         request.getReservedTimes(),
-                        employeeId,
                         Long.valueOf(principal.getName())
                 )
         );
@@ -49,7 +47,8 @@ public class ReservationController {
                 reservationService.reservation(
                         reservationId,
                         Long.valueOf(principal.getName()),
-                        request.getProgramId()
+                        request.getProgramId(),
+                        now
                 )
         );
     }
@@ -72,15 +71,35 @@ public class ReservationController {
         );
     }
 
+    @GetMapping("/trainer/{employeeId}")
+    public ApiResponse<List<ReservationResponse>> findReservationByEmployee(
+            @RequestParam(value = "date", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable("employeeId") Long employeeId
+    ) {
+        if (date == null) {
+            date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
+        }
+        return ApiResponse.ok(
+                reservationService.findReservationForWeekByEmployee(
+                        date,
+                        employeeId
+                )
+        );
+    }
+
     @DeleteMapping("/{reservationId}")
     public ApiResponse<String> cancelReservation(
             @PathVariable("reservationId") Long reservationId,
             Principal principal
     ) {
+        LocalDateTime now = LocalDateTime.now();
+
         return ApiResponse.ok(
                 reservationService.cancel(
                         Long.valueOf(principal.getName()),
-                        reservationId
+                        reservationId,
+                        now
                 )
         );
     }
