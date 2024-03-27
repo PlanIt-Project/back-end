@@ -361,8 +361,10 @@ public class ProgramServiceImpl implements ProgramService {
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findByMemberId(member.getId(),pageable);
+        } else if (option == ProgramSearchStatus.VALID) {
+            return programRepository.findByMemberIdAndStatusIn(member.getId(), ProgramStatus.forValid(),pageable);
         } else {
-            return programRepository.findByMemberIdAndStatus(member.getId(), ProgramStatus.IN_PROGRESS,pageable);
+            return programRepository.findByMemberIdAndStatusIn(member.getId(), ProgramStatus.forUnValid(),pageable);
         }
     }
 
@@ -371,9 +373,9 @@ public class ProgramServiceImpl implements ProgramService {
         if(option == ProgramSearchStatus.ALL) {
             return programRepository.findAll(pageable);
         } else if(option == ProgramSearchStatus.VALID) {
-            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS,pageable);
+            return programRepository.findByStatusIn(ProgramStatus.forValid(),pageable);
         } else {
-            return programRepository.findByStatus(ProgramStatus.IN_PROGRESS, pageable);
+            return programRepository.findByStatusIn(ProgramStatus.forUnValid(), pageable);
         }
     }
 
@@ -408,6 +410,10 @@ public class ProgramServiceImpl implements ProgramService {
             registrations = findRegistration(option, pageable);
         } else {
             registrations = findRegistrationByUser(member, option, pageable);
+        }
+
+        if (registrations == null || registrations.isEmpty()) {
+            throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
         return registrations.map(FindRegistrationResponse::of);

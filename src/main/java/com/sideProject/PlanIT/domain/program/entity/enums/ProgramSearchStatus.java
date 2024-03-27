@@ -4,5 +4,4 @@ public enum ProgramSearchStatus {
     ALL,
     VALID,
     INVALID
-
 }

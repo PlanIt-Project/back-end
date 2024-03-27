@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProgramRepository extends JpaRepository<Program, Long> {
     @Query("SELECT o FROM Program o WHERE o.registration.id = :registrationId")
@@ -16,8 +18,8 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     //status가 IN_PROGRESS인 모든 프로그램 조회
     Page<Program> findByMemberId(Long memberId, Pageable pageable);
     Page<Program> findByEmployeeId(Long employeeId, Pageable pageable);
-    Page<Program> findByMemberIdAndStatus(Long memberId, ProgramStatus status, Pageable pageable);
+    Page<Program> findByMemberIdAndStatusIn(Long memberId, List<ProgramStatus> status, Pageable pageable);
     Page<Program> findByEmployeeIdAndStatus(Long employeeId,ProgramStatus status, Pageable pageable);
-    Page<Program> findByStatus(ProgramStatus status, Pageable pageable);
+    Page<Program> findByStatusIn(List<ProgramStatus> status, Pageable pageable);
 
 }
