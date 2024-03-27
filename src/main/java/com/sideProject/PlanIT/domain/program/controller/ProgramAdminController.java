@@ -56,6 +56,17 @@ public class ProgramAdminController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<ProgramResponse> find(
+            @PathVariable("id") Long id) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(loggedInUser.getName());
+
+        return ApiResponse.ok(
+                programService.findByProgramId(id,userId)
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ApiResponse<String> refund(@PathVariable("id") Long id) {
         LocalDateTime now = LocalDateTime.now();

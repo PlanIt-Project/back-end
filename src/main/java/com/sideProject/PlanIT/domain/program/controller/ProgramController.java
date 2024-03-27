@@ -45,7 +45,7 @@ public class ProgramController {
     }
 
     //어드민이 유저 id로 검색
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ApiResponse<ProgramResponse> find(
             @PathVariable("id") Long id,
             Principal principal) {

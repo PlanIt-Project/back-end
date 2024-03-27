@@ -317,24 +317,32 @@ public class ProgramServiceImpl implements ProgramService {
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
-        Program programs = programRepository.findById(programId).orElseThrow(() ->
+        Program program = programRepository.findById(programId).orElseThrow(() ->
                 new CustomException(programId + "은 존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
 
         if(member.getRole().equals(MemberRole.TRAINER)) {
-            Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
-                    new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
-            );
-            if(Objects.equals(programs.getEmployee().getId(), employee.getId())) {
-                throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-            }
+            validTrainerAccess(member,program);
+        } else if(member.getRole().equals(MemberRole.MEMBER)){
+            validMemberAccess(member,program);
         }
 
-        if(Objects.equals(programs.getMember().getId(), member.getId())) {
+        return ProgramResponse.of(program);
+    }
+
+    private void validTrainerAccess(Member member, Program program) {
+        Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+        );
+        if(Objects.equals(program.getEmployee().getId(), employee.getId())) {
             throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
+    }
 
-        return ProgramResponse.of(programs);
+    private void validMemberAccess(Member member, Program program) {
+        if(Objects.equals(program.getMember().getId(), member.getId())) {
+            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        }
     }
 
     private Page<Program> findProgramByEmploy(Member member, ProgramSearchStatus option,Pageable pageable) {
