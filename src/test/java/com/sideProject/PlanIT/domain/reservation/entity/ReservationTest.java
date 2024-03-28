@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Profile("dev")
+@Profile("test")
 class ReservationTest {
 
     private Product initProduct(String name, Period period, int number, ProductType type) {
