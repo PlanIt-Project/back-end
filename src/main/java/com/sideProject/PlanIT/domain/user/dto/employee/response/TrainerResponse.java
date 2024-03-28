@@ -22,6 +22,7 @@ public class TrainerResponse {
         this.trainerMessage = trainerMessage;
     }
 
+
     public static TrainerResponse of(Employee employee) {
         return TrainerResponse.builder()
                 .id(employee.getId())

@@ -36,7 +36,7 @@ public enum ErrorCode {
     IMAGE_NOT_FOUND(404,"이미지를 찾을 수 없습니다"),
     RESERVATION_NOT_FOUND(404,"등록되지 않은 예약입니다."),
     FILE_NOT_FOUND(404,"파일을 찾을 수 없습니다"),
-
+    TrainerSchedule_NOT_FOUND(404, "트레이너 일정을 찾을 수 없습니다"),
     NOT_SUSPEND_PROGRAM(422, "일시정지 요청이 거부되었습니다."),
     SUSPEND_REQUEST_DENIED(422, "일시정지 요청이 거부되었습니다.");
 
