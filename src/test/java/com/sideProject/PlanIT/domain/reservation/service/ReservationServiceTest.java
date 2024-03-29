@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class ReservationServiceTest {
 
     @Autowired
@@ -371,6 +371,7 @@ class ReservationServiceTest {
                     .registration(saveRegistration)
                     .product(saveRegistration.getProduct())
                     .member(saveRegistration.getMember())
+                    .remainedNumber(product.getNumber())
                     .status(IN_PROGRESS)
                     .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
                     .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
@@ -827,6 +828,103 @@ class ReservationServiceTest {
             );
             assertThat(resultProgram.getRemainedNumber()).isEqualTo(product.getNumber());
 
+        }
+    }
+
+    @Nested
+    @DisplayName("findReservationForDayByEmployeeTest")
+    class FindReservationForWeekByEmployeeTest {
+        @DisplayName("트레이너의 특정 날자 예약 정보를 얻을 수 있다.")
+        @Test
+        void findReservationForDayByEmployee(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("PT 30회권", periodOfTenDays,30,ProductType.PT);
+            Employee trainer = initTrainer("trainer");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2024-03-10 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-03-10 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .employee(trainer)
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2024-03-10", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program program1 = programRepository.save(program);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2024, 3, 19, 10, 0, 0);
+            Reservation reservation1 = Reservation.builder()
+                    .reservedTime(reservationTime1)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime2= LocalDateTime.of(2024, 3, 19, 11, 0, 0);
+            Reservation reservation2 = Reservation.builder()
+                    .reservedTime(reservationTime2)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime3 = LocalDateTime.of(2024, 3, 19, 12, 0, 0);
+            Reservation reservation3 = Reservation.builder()
+                    .reservedTime(reservationTime3)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime4 = LocalDateTime.of(2024, 3, 20, 12, 0, 0);
+            Reservation reservation4 = Reservation.builder()
+                    .reservedTime(reservationTime4)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime = LocalDateTime.of(2024, 3, 16, 10, 0, 0);
+
+            reservation1.reservation(program1,member1,reservationTime);
+
+            LocalDate today = LocalDate.of(2024, 3, 19);
+            LocalDate today2 = LocalDate.of(2024, 3, 20);
+
+            List<Reservation> reservations = List.of(reservation1,reservation2,reservation3,reservation4);
+            reservationRepository.saveAll(reservations);
+            //when
+            List<ReservationResponse> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
+            List<ReservationResponse> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
+
+
+            //then
+            assertThat(result1).hasSize(3);
+            assertThat(result1).extracting(
+                    "programId","reservationTime", "status"
+            ).contains(
+                    tuple(program1.getId(),reservationTime1, ReservationStatus.RESERVED),
+                    tuple(null,reservationTime2, ReservationStatus.POSSIBLE),
+                    tuple(null,reservationTime3, ReservationStatus.POSSIBLE)
+            );
+            assertThat(result2).hasSize(1);
+            assertThat(result2.get(0)).extracting(
+                    "programId","reservationTime", "status"
+            ).containsExactly(
+                    null,reservationTime4, ReservationStatus.POSSIBLE);
         }
     }
 }

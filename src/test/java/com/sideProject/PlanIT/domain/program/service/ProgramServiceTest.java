@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class ProgramServiceTest {
 
     @Autowired

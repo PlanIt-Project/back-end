@@ -144,6 +144,7 @@ public class Program extends BaseEntity {
         if(this.remainedNumber+1 > this.product.getNumber()) {
             throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
         }
+
         this.remainedNumber++;
     }
 }
