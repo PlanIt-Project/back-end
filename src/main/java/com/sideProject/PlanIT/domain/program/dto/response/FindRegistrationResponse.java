@@ -1,14 +1,15 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
-import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
+import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class FindRegistrationResponse {
     private Long id;
     private String registrationAt;
@@ -47,7 +48,7 @@ public class FindRegistrationResponse {
                 .status(registration.getStatus())
                 .discount(registration.getDiscount())
                 .totalPrice(registration.getTotalPrice())
-                .product(Product.toDto(registration.getProduct()))
+                .product(ProductResponseDto.of(registration.getProduct()))
                 .member(MemberSemiResponseDto.of(registration.getMember()))
                 .trainerId(registration.getTrainerId())
                 .build();

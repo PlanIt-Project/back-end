@@ -12,14 +12,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
 
     @Override
+    @Transactional
     public Product createProduct(ProductRequestDto productRequestDto) {
         return productRepository.save(Product.builder()
                         .name(productRequestDto.getName())
@@ -31,10 +34,17 @@ public class ProductServiceImpl implements ProductService{
                 .build());
     }
 
-    @Override
     public String deleteProduct(Long product_id) {
         productRepository.deleteById(product_id);
         return "삭제 성공";
+    }
+
+    @Override
+    @Transactional
+    public String stopProductSell(Long product_id) {
+        Product product = productRepository.findById(product_id).orElseThrow(() -> new CustomException("상품이 존재하지 않습니다.", ErrorCode.PRODUCT_NOT_FOUND));
+        productRepository.save(product.stopSelling());
+        return "상품 판매 중지";
     }
 
     @Override
@@ -48,7 +58,7 @@ public class ProductServiceImpl implements ProductService{
             products = productRepository.findAllBySellingType(ProductSellingType.STOP_SELLING,pageable);
         }
 
-        if(products == null) {
+        if(products == null || products.isEmpty()) {
             throw new CustomException("상품이 존재하지 않습니다.", ErrorCode.PRODUCT_NOT_FOUND);
         }
 
@@ -57,6 +67,6 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDto findProduct(Long product_id) {
-        return Product.toDto(productRepository.findById(product_id).orElseThrow(() -> new IllegalArgumentException("no exist id")));
+        return ProductResponseDto.of(productRepository.findById(product_id).orElseThrow(() -> new CustomException("상품이 존재하지 않습니다.", ErrorCode.PRODUCT_NOT_FOUND)));
     }
 }
