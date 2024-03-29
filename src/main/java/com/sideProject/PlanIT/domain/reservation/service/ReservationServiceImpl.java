@@ -95,12 +95,12 @@ public class ReservationServiceImpl implements ReservationService {
                 new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
 
+        //프로그램 상태 변경
+        program.reservation();
+
         if(!Objects.equals(program.getEmployee().getId(), reservation.getEmployee().getId())) {
             throw new CustomException("유저 " + userId + "은 해당 트레이너에 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
         }
-
-        //프로그램 상태 변경
-        program.reservation();
 
         //프로그램 예약
         reservation.reservation(program,member,now);
@@ -139,9 +139,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationResponse> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
-        LocalDateTime startOfWeek = calStartOfWeek(date);
-        LocalDateTime endOfWeek = calEndOfWeek(date);
+    public List<ReservationResponse> findReservationForDayByEmployee(LocalDate date, Long employeeId) {
+        LocalDateTime startOfWeek = calStartOfDay(date);
+        LocalDateTime endOfWeek = calEndOfDay(date);
 
         List<Reservation> reservations;
         //트레이너이면
