@@ -10,6 +10,7 @@ import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Profile;
 
@@ -57,133 +58,138 @@ class ReservationTest {
                 .member(member)
                 .build();
     }
-    @DisplayName("예약")
-    @Test
-    void reservationTest(){
-        //given
-        Member member = initMember("test",MemberRole.MEMBER);
-        Employee trainer = initTrainer("trainer");
-        Program program = Program.builder()
-                .build();
+    @DisplayName("reservation")
+    @Nested
+    class ReservationMethodTest {
 
-        LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
-        Reservation reservation = Reservation.builder()
-                .reservedTime(reservationTime)
-                .employee(trainer)
-                .status(ReservationStatus.POSSIBLE)
-                .classTime(LocalTime.of(1,0))
-                .build();
+        @DisplayName("예약")
+        @Test
+        void reservationTest(){
+            //given
+            Member member = initMember("test",MemberRole.MEMBER);
+            Employee trainer = initTrainer("trainer");
+            Program program = Program.builder()
+                    .build();
 
-        LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 49, 59);
-        //when
-        reservation.reservation(program,member,reservationTime1);
+            LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
+            Reservation reservation = Reservation.builder()
+                    .reservedTime(reservationTime)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
 
-        //then
-        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.RESERVED);
-        assertThat(reservation.getMember()).isEqualTo(member);
-    }
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 49, 59);
+            //when
+            reservation.reservation(program,member,reservationTime1);
 
-    @DisplayName("예약 가능 시간이 지나서 예약을 하면 예외가 발생한다")
-    @Test
-    void reservationTest2(){
-        //given
-        Member member = initMember("test",MemberRole.MEMBER);
-        Employee trainer = initTrainer("trainer");
-        Program program = Program.builder()
-                .build();
+            //then
+            assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.RESERVED);
+            assertThat(reservation.getMember()).isEqualTo(member);
+        }
 
-        LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
-        Reservation reservation = Reservation.builder()
-                .reservedTime(reservationTime)
-                .employee(trainer)
-                .status(ReservationStatus.POSSIBLE)
-                .classTime(LocalTime.of(1,0))
-                .build();
+        @DisplayName("예약 가능 시간이 지나서 예약을 하면 예외가 발생한다")
+        @Test
+        void reservationTest2(){
+            //given
+            Member member = initMember("test",MemberRole.MEMBER);
+            Employee trainer = initTrainer("trainer");
+            Program program = Program.builder()
+                    .build();
 
-        LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 50, 50);
-        //when
+            LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
+            Reservation reservation = Reservation.builder()
+                    .reservedTime(reservationTime)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
 
-        //then
-        assertThatThrownBy(() -> reservation.reservation(program,member,reservationTime1))
-                .isInstanceOf(CustomException.class)
-                .hasMessage("예약 null은 예약 가능 시간이 지났습니다.");
-    }
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 50, 50);
+            //when
 
-    @DisplayName("예약 되어있으면 예외가 발생한다.")
-    @Test
-    void reservationTest3(){
-        //given
-        Member member = initMember("test",MemberRole.MEMBER);
-        Employee trainer = initTrainer("trainer");
-        Program program = Program.builder()
-                .build();
+            //then
+            assertThatThrownBy(() -> reservation.reservation(program,member,reservationTime1))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("예약 null은 예약 가능 시간이 지났습니다.");
+        }
 
-        LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
-        Reservation reservation = Reservation.builder()
-                .reservedTime(reservationTime)
-                .employee(trainer)
-                .status(ReservationStatus.RESERVED)
-                .classTime(LocalTime.of(1,0))
-                .build();
+        @DisplayName("예약 되어있으면 예외가 발생한다.")
+        @Test
+        void reservationTest3(){
+            //given
+            Member member = initMember("test",MemberRole.MEMBER);
+            Employee trainer = initTrainer("trainer");
+            Program program = Program.builder()
+                    .build();
 
-        LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 50, 50);
-        //when
+            LocalDateTime reservationTime = LocalDateTime.of(2021, 1, 10, 10, 0, 0);
+            Reservation reservation = Reservation.builder()
+                    .reservedTime(reservationTime)
+                    .employee(trainer)
+                    .status(ReservationStatus.RESERVED)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
 
-        //then
-        assertThatThrownBy(() -> reservation.reservation(program,member,reservationTime1))
-                .isInstanceOf(CustomException.class)
-                .hasMessage("예약 null은 예약할 수 없습니다.");
-    }
+            LocalDateTime reservationTime1 = LocalDateTime.of(2021, 1, 10, 9, 50, 50);
+            //when
 
-    @DisplayName("예약을 취소할 수 있다.")
-    @Test
-    void cancelTes1(){
-        //given
-        Member member = initMember("test",MemberRole.MEMBER);
-        Employee trainer = initTrainer("trainer");
-        Program program = Program.builder()
-                .build();
+            //then
+            assertThatThrownBy(() -> reservation.reservation(program,member,reservationTime1))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("예약 null은 예약할 수 없습니다.");
+        }
 
-        LocalDateTime now = LocalDateTime.now();
-        Reservation reservation = Reservation.builder()
-                .reservedTime(now)
-                .employee(trainer)
-                .status(ReservationStatus.RESERVED)
-                .classTime(LocalTime.of(1,0))
-                .build();
+        @DisplayName("예약을 취소할 수 있다.")
+        @Test
+        void cancelTes1(){
+            //given
+            Member member = initMember("test",MemberRole.MEMBER);
+            Employee trainer = initTrainer("trainer");
+            Program program = Program.builder()
+                    .build();
 
-        LocalDateTime reservationTime = now.minusMinutes(10);
-        //when
-        reservation.cancel(reservationTime);
+            LocalDateTime now = LocalDateTime.now();
+            Reservation reservation = Reservation.builder()
+                    .reservedTime(now)
+                    .employee(trainer)
+                    .status(ReservationStatus.RESERVED)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
 
-        //then
-        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.POSSIBLE);
-        assertThat(reservation.getMember()).isEqualTo(null);
-    }
+            LocalDateTime reservationTime = now.minusMinutes(10);
+            //when
+            reservation.cancel(reservationTime);
 
-    @DisplayName("예약 취소 시간이 예약 시간 10분 이내이면 예외가 발생한다.")
-    @Test
-    void cancelTest2(){
-        //given
-        Member member = initMember("test",MemberRole.MEMBER);
-        Employee trainer = initTrainer("trainer");
-        Program program = Program.builder()
-                .build();
+            //then
+            assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.POSSIBLE);
+            assertThat(reservation.getMember()).isEqualTo(null);
+        }
 
-        LocalDateTime now = LocalDateTime.now();
-        Reservation reservation = Reservation.builder()
-                .reservedTime(now)
-                .employee(trainer)
-                .status(ReservationStatus.RESERVED)
-                .classTime(LocalTime.of(1,0))
-                .build();
+        @DisplayName("예약 취소 시간이 예약 시간 10분 이내이면 예외가 발생한다.")
+        @Test
+        void cancelTest2(){
+            //given
+            Member member = initMember("test",MemberRole.MEMBER);
+            Employee trainer = initTrainer("trainer");
+            Program program = Program.builder()
+                    .build();
 
-        LocalDateTime reservationTime = now.minusMinutes(9);
-        //when//then
+            LocalDateTime now = LocalDateTime.now();
+            Reservation reservation = Reservation.builder()
+                    .reservedTime(now)
+                    .employee(trainer)
+                    .status(ReservationStatus.RESERVED)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
 
-        assertThatThrownBy(() -> reservation.cancel(reservationTime))
-                .isInstanceOf(CustomException.class)
-                .hasMessage("예약 null은 예약 취소시간이 지났습니다.");
+            LocalDateTime reservationTime = now.minusMinutes(9);
+            //when//then
+
+            assertThatThrownBy(() -> reservation.cancel(reservationTime))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("예약 null은 예약 취소시간이 지났습니다.");
+        }
     }
 
 }

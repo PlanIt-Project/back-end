@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 //todo: pagealbe 관련 개수 외에 실제 데이터 검증
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 public class MemberServiceTest {
 
     @Autowired
