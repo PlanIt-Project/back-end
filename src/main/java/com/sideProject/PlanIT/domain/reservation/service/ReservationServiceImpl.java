@@ -44,15 +44,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId + "는 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
-                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+                new CustomException(member.getId() + "은 직원이 아닙니다.", ErrorCode.NO_AUTHORITY)
         );
-
-        if(!Objects.equals(member.getId(), employee.getMember().getId())) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-        }
 
         List<Reservation> existingReservations
                 = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedTimes);
@@ -86,13 +82,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId+"은 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Program program = programRepository.findById(programId).orElseThrow(() ->
-                new CustomException("존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+                new CustomException(programId+ "는 존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() ->
-                new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
+                new CustomException(reservationId + "는 존재하지 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
 
         //프로그램 상태 변경
