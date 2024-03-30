@@ -297,7 +297,7 @@ public class ProgramServiceImpl implements ProgramService {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        //todo : 유저가 어드민 일 때 유저에 따라 조회하는거 구현
+
         Page<Program> programs = null;
         if(member.getRole() == MemberRole.MEMBER) {
             programs = findProgramByUser(member, option,pageable);

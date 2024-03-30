@@ -81,7 +81,7 @@ public class ReservationController {
             date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
         }
         return ApiResponse.ok(
-                reservationService.findReservationForWeekByEmployee(
+                reservationService.findReservationForDayByEmployee(
                         date,
                         employeeId
                 )
