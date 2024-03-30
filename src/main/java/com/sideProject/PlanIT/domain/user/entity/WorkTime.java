@@ -1,5 +1,6 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
+import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,8 +19,8 @@ public class WorkTime {
     @Column(name = "id")
     private Long id;
 
-    @Column
-    private String week; // 요일
+    @Enumerated(EnumType.STRING)
+    private Week week;
 
     @Column
     LocalTime startAt;
@@ -32,7 +33,7 @@ public class WorkTime {
     Employee employee;
 
     @Builder
-    public WorkTime(String week, LocalTime startAt, LocalTime endAt, Employee employee) {
+    public WorkTime(Week week, LocalTime startAt, LocalTime endAt, Employee employee) {
         this.week = week;
         this.startAt = startAt;
         this.endAt = endAt;

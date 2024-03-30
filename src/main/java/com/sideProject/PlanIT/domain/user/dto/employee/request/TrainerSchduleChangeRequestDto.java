@@ -1,12 +1,16 @@
 package com.sideProject.PlanIT.domain.user.dto.employee.request;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+
 @Getter
-public class TrainerSchduleChageRequestDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
+public class TrainerSchduleChangeRequestDto {
     private LocalTime startAt;
     private LocalTime endAt;
 

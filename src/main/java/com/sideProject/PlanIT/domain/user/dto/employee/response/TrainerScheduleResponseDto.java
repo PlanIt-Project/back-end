@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.user.dto.employee.response;
 
 import com.sideProject.PlanIT.domain.user.entity.WorkTime;
+import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalTime;
@@ -8,11 +9,11 @@ import java.time.LocalTime;
 @Getter
 public class TrainerScheduleResponseDto {
     Long schedule_id;
-    String week;
+    Week week;
     LocalTime startAt;
     LocalTime endAt;
     @Builder
-    public TrainerScheduleResponseDto(Long schedule_id, String week, LocalTime startAt, LocalTime endAt){
+    public TrainerScheduleResponseDto(Long schedule_id, Week week, LocalTime startAt, LocalTime endAt){
         this.schedule_id = schedule_id;
         this.week = week;
         this.startAt = startAt;

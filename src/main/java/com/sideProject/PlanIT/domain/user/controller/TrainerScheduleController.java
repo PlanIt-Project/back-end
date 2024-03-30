@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
 
 import java.security.Principal;
+import java.util.List;
 
 
 @Slf4j
@@ -19,9 +20,9 @@ import java.security.Principal;
 public class TrainerScheduleController {
     private final WorktimeService worktimeservice;
     @PostMapping("/trainer")
-    public ApiResponse<?> trainerscheduleregistration(@RequestBody TrainerScheduleRequestDto request, Principal principal) {
+    public ApiResponse<?> trainerScheduleRegistration(@RequestBody List<TrainerScheduleRequestDto> request, Principal principal) {
         Long id = Long.parseLong(principal.getName());
-        return ApiResponse.ok(worktimeservice.TrainerScheduleRegistration(request,id));
+        return ApiResponse.ok(worktimeservice.trainerScheduleRegistration(request,id));
     }
 
 

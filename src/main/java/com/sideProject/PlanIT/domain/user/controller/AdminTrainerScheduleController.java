@@ -1,7 +1,7 @@
 package com.sideProject.PlanIT.domain.user.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChageRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleResponseDto;
 import com.sideProject.PlanIT.domain.user.service.WorktimeService;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +21,15 @@ public class AdminTrainerScheduleController {
     private final WorktimeService worktimeservice;
     // 직원 출퇴근 확인
     @GetMapping("/trainerschedule")
-    public ApiResponse<Page<TrainerScheduleResponseDto>> findalltrainerSchedule(@PageableDefault(size = 10) Pageable pageable, Principal principal){
+    public ApiResponse<Page<TrainerScheduleResponseDto>> findallTrainerSchedule(@PageableDefault(size = 10) Pageable pageable, Principal principal){
         Long id = Long.parseLong(principal.getName());
-        return ApiResponse.ok(worktimeservice.FindTrainerSchedule(id,pageable));
+        return ApiResponse.ok(worktimeservice.findTrainerSchedule(id,pageable));
     }
 
     // 특정 직원 일정 수정(출퇴근)
     @PutMapping("/trainerschedule/{schedule_id}")
-    public ApiResponse<String> updatetrainerSchedule(@PathVariable("schedule_id") Long id, TrainerSchduleChageRequestDto request){
+    public ApiResponse<String> updateTrainerSchedule(@PathVariable("schedule_id") Long id, @RequestBody TrainerSchduleChangeRequestDto request){
 
-        return ApiResponse.ok(worktimeservice.TrainerScheduleChange(request,id));
+        return ApiResponse.ok(worktimeservice.trainerScheduleChange(request,id));
     }
 }
