@@ -1,12 +1,14 @@
 package com.sideProject.PlanIT.domain.user.entity;
 
+import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,24 +19,29 @@ public class WorkTime {
     @Column(name = "id")
     private Long id;
 
-    @Column
-    private String week; // 요일
+    @Enumerated(EnumType.STRING)
+    private Week week;
 
     @Column
-    LocalDateTime startAt;
+    LocalTime startAt;
 
     @Column
-    LocalDateTime endAt;
+    LocalTime endAt;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
     Employee employee;
 
     @Builder
-    public WorkTime(String week, LocalDateTime startAt, LocalDateTime endAt, Employee employee) {
+    public WorkTime(Week week, LocalTime startAt, LocalTime endAt, Employee employee) {
         this.week = week;
         this.startAt = startAt;
         this.endAt = endAt;
         this.employee = employee;
+    }
+
+    public void ChageWorktime(LocalTime startAt, LocalTime endAt){
+        this.startAt = startAt;
+        this.endAt = endAt;
     }
 }
