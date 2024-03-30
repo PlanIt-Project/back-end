@@ -15,11 +15,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reservation")
+@RequestMapping("/member")
 
 public class TrainerScheduleController {
     private final WorktimeService worktimeservice;
-    @PostMapping("/trainer")
+    @PostMapping("/trainerschedule")
     public ApiResponse<?> trainerScheduleRegistration(@RequestBody List<TrainerScheduleRequestDto> request, Principal principal) {
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(worktimeservice.trainerScheduleRegistration(request,id));
