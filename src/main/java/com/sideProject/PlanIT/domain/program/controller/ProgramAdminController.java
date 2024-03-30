@@ -99,7 +99,7 @@ public class ProgramAdminController {
             Principal principal) {
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(
-                programService.findRegistrations(id, option,pageable)
+                programService.findRegistrationsByAdmin(id, option,pageable)
         );
     }
 
