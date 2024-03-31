@@ -16,7 +16,9 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Query("SELECT r FROM Reservation r WHERE r.employee = :employee AND r.reservedTime IN :reservedTimes")
-    List<Reservation> findByEmployeeAndReservedTimeIn(@Param("employee") Employee employee, @Param("reservedTimes") List<LocalDateTime> reservedTimes);
+    List<Reservation> findByEmployeeAndReservedTimeIn(
+            @Param("employee") Employee employee,
+            @Param("reservedTimes") List<LocalDateTime> reservedTimes);
     @Query("SELECT r FROM Reservation r WHERE r.employee = :employee AND r.reservedTime IN :reservedTimes AND r.status = :status")
     List<Reservation> findByEmployeeAndReservedTimeInAndStatus(@Param("employee") Employee employee,
                                                                @Param("reservedTimes") List<LocalDateTime> reservedTimes,
@@ -25,6 +27,22 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r FROM Reservation r WHERE r.member = :member AND r.reservedTime BETWEEN :startDateTime AND :endDateTime")
     List<Reservation> findByMemberAndDateTimeBetween(@Param("member") Member member, @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
+    @Query("SELECT r FROM Reservation r WHERE r.member = :member AND r.status = :status AND r.reservedTime BETWEEN :startDateTime AND :endDateTime")
+    List<Reservation> findByMemberAndStatusAndDateTimeBetween(
+            @Param("member") Member member,
+            @Param("status") ReservationStatus status,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime);
     @Query("SELECT r FROM Reservation r WHERE r.employee = :employee AND r.reservedTime BETWEEN :startDateTime AND :endDateTime")
-    List<Reservation> findByEmployeeAndDateTimeBetween(@Param("employee") Employee employee, @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+    List<Reservation> findByEmployeeAndDateTimeBetween(
+            @Param("employee") Employee employee,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime);
+
+    @Query("SELECT r FROM Reservation r WHERE r.employee = :employee AND r.status = :status AND r.reservedTime BETWEEN :startDateTime AND :endDateTime")
+    List<Reservation> findByEmployeeAndStatusAndDateTimeBetween(
+            @Param("employee") Employee employee,
+            @Param("status") ReservationStatus status,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime);
 }
