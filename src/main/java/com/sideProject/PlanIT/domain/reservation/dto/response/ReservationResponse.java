@@ -1,5 +1,7 @@
 package com.sideProject.PlanIT.domain.reservation.dto.response;
 
+import com.sideProject.PlanIT.domain.product.entity.Product;
+import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
 import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Slf4j
 @Getter
@@ -56,10 +59,17 @@ public class ReservationResponse {
 
         return ReservationResponse.builder()
                 .id(reservation.getId())
-                .member(MemberSemiResponseDto.of(reservation.getMember()))
+                .member(Optional.ofNullable(reservation.getMember())
+                        .map(MemberSemiResponseDto::of)
+                        .orElse(null))
                 .employee(EmployeeSemiResponseDto.of(reservation.getEmployee()))
-                .programId(reservation.getProgram().getId())
-                .programName(reservation.getProgram().getProduct().getName())
+                .programId(Optional.ofNullable(reservation.getProgram())
+                                .map(Program::getId)
+                                .orElse(null))
+                .programName(Optional.ofNullable(reservation.getProgram())
+                        .map(Program::getProduct)
+                        .map(Product::getName)
+                        .orElse(null))
                 .reservationTime(reservation.getReservedTime())
                 .programTime(reservation.getClassTime())
                 .status(reservation.getStatus())
