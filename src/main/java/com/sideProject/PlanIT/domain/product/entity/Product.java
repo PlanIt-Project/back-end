@@ -1,11 +1,12 @@
 package com.sideProject.PlanIT.domain.product.entity;
 
-import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
-import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductSellingType;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.Period;
 
@@ -18,6 +19,7 @@ public class Product {
     @Column(name = "id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Column
@@ -46,32 +48,8 @@ public class Product {
         this.sellingType = sellingType;
     }
 
-    public Product update(ProductRequestDto productRequestDto) {
-        this.name = productRequestDto.getName();
-        this.period = productRequestDto.getPeriod();
-        this.number = productRequestDto.getNumber();
-        this.price = productRequestDto.getPrice();
-        this.type = productRequestDto.getType();
-
-        return this;
-    }
-
-    public static ProductResponseDto toDto(Product product) {
-        return ProductResponseDto.builder()
-                .id(product.id)
-                .name(product.name)
-                .number(product.number)
-                .period(product.period)
-                .price(product.price)
-                .type(product.type)
-                .build();
-    }
-
-    public void stopSelling() {
+    public Product stopSelling() {
         this.sellingType = ProductSellingType.STOP_SELLING;
-    }
-
-    public void reSelling() {
-        this.sellingType = ProductSellingType.SELLING;
+        return this;
     }
 }

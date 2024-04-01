@@ -56,17 +56,17 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public RegistrationResponse registration(RegistrationRequest request, Long memberId, LocalDateTime now){
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(memberId + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
         Product product = productRepository.findById(request.getProductId()).orElseThrow(() ->
-                new CustomException("상품을 찾을 수 없습니다.", ErrorCode.PRODUCT_NOT_FOUND)
+                new CustomException(request.getProductId() + "은 존재하지 않는 상품입니다.", ErrorCode.PRODUCT_NOT_FOUND)
         );
 
         Long trainerId = null;
         if(request.getTrainerId() != null) {
             trainerId = employeeRepository.findById(request.getTrainerId()).orElseThrow(() ->
-                    new CustomException("직원을 찾을 수 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND)
+                    new CustomException(request.getTrainerId() + "은 존재하지 않는 트레이너입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
             ).getId();
         }
         //결제 로직
@@ -127,7 +127,7 @@ public class ProgramServiceImpl implements ProgramService {
 
     private Registration getRegistrationById(long registrationId) {
         return registrationRepository.findById(registrationId).orElseThrow(() ->
-                new CustomException("존재하지 않는 등록입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+                new CustomException(registrationId + "은 존재하지 않는 등록입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
     }
 
@@ -252,7 +252,7 @@ public class ProgramServiceImpl implements ProgramService {
             return true;
         }
         // 월이 0인 경우, 일수로 판단
-        else if (period.getDays() > 0) {
+        if (period.getDays() > 0) {
             return true;
         }
         return false;
@@ -295,7 +295,7 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Page<ProgramResponse> findByUser(long userId, ProgramSearchStatus option, Pageable pageable) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
         Page<Program> programs = null;
@@ -314,7 +314,7 @@ public class ProgramServiceImpl implements ProgramService {
 
     public ProgramResponse findByProgramId(long programId, long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId + "은 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
         Program program = programRepository.findById(programId).orElseThrow(() ->
@@ -334,14 +334,15 @@ public class ProgramServiceImpl implements ProgramService {
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                 new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
-        if(Objects.equals(program.getEmployee().getId(), employee.getId())) {
-            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        if(!Objects.equals(program.getEmployee().getId(), employee.getId())) {
+            throw new CustomException(employee.getId()+ "은 " + program.getId() + "의 조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
     }
 
     private void validMemberAccess(Member member, Program program) {
-        if(Objects.equals(program.getMember().getId(), member.getId())) {
-            throw new CustomException("조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+        log.info(member.getId() + " " + program.getMember().getId());
+        if(!Objects.equals(program.getMember().getId(), member.getId())) {
+            throw new CustomException(member.getId()+ "은 " + program.getId() + "의 조회 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
     }
 
@@ -380,9 +381,9 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     @Override
-    public Page<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option, Pageable pageable) {
+    public Page<FindRegistrationResponse> findRegistrationsByAdmin(long adminId, RegistrationSearchStatus option, Pageable pageable) {
         // 회원 검증 및 권한 확인
-        Member admin = validateMemberAndAuthority(adminId, MemberRole.ADMIN);
+        validateMemberAndAuthority(adminId, MemberRole.ADMIN);
         // Registration 조회 및 변환
         return findAndConvertRegistrations(option, pageable, null);
     }
@@ -399,7 +400,7 @@ public class ProgramServiceImpl implements ProgramService {
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND));
         if (requiredRole != null && member.getRole() != requiredRole) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+            throw new CustomException(memberId+"는 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
         return member;
     }

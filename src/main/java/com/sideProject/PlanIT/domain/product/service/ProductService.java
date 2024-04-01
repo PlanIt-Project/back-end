@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
     Product createProduct(ProductRequestDto productRequestDto);
-    String deleteProduct(Long product_id);
+    String stopProductSell(Long product_id);
     Page<ProductResponseDto> findAllProducts(ProductSearchOption option, Pageable pageable);
     ProductResponseDto findProduct(Long product_id);
 }

@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.reservation.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
+import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRequest;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequest;
 import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
@@ -57,6 +58,7 @@ public class ReservationController {
     public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservation(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "option", defaultValue = "ALL") ReservationFindOption option,
             Principal principal
     ) {
         if (date == null) {
@@ -66,7 +68,8 @@ public class ReservationController {
         return ApiResponse.ok(
                 reservationService.findReservationForWeekByMember(
                         date,
-                        Long.valueOf(principal.getName())
+                        Long.valueOf(principal.getName()),
+                        option
                 )
         );
     }

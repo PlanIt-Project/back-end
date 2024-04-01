@@ -23,7 +23,7 @@ public interface ProgramService {
     public Page<ProgramResponse> findByUser(long userId, ProgramSearchStatus option, Pageable pageable);
     public ProgramResponse findByProgramId(long programId, long userId);
     public Long approve(Long programId, Long trainerId,LocalDateTime now);
-    public Page<FindRegistrationResponse> findRegistrations(long adminId, RegistrationSearchStatus option, Pageable pageable);
+    public Page<FindRegistrationResponse> findRegistrationsByAdmin(long adminId, RegistrationSearchStatus option, Pageable pageable);
     public Page<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable);
     public Long suspendProgram(Long id, LocalDate now);
     public Long resumeProgram(Long id, LocalDate now);

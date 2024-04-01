@@ -6,6 +6,7 @@ import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
+import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
 import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
@@ -44,15 +45,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId + "는 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
-                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+                new CustomException(member.getId() + "은 직원이 아닙니다.", ErrorCode.NO_AUTHORITY)
         );
-
-        if(!Objects.equals(member.getId(), employee.getMember().getId())) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-        }
 
         List<Reservation> existingReservations
                 = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedTimes);
@@ -86,13 +83,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId+"은 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Program program = programRepository.findById(programId).orElseThrow(() ->
-                new CustomException("존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+                new CustomException(programId+ "는 존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() ->
-                new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
+                new CustomException(reservationId + "는 존재하지 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
 
         //프로그램 상태 변경
@@ -113,7 +110,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     @Override
-    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(LocalDate date, Long userId) {
+    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(
+            LocalDate date,
+            Long userId,
+            ReservationFindOption option
+    ) {
         LocalDateTime startOfWeek = calStartOfWeek(date);
         LocalDateTime endOfWeek = calEndOfWeek(date);
 
@@ -127,15 +128,49 @@ public class ReservationServiceImpl implements ReservationService {
             Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                     new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
             );
-            reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+            reservations = findReservationByEmployee(employee,startOfWeek,endOfWeek,option);
         } else {
-            reservations = reservationRepository.findByMemberAndDateTimeBetween(member,startOfWeek,endOfWeek);
+            reservations = findReservationByMember(member,startOfWeek,endOfWeek,option);
         }
 
 
         return reservations.stream()
                 .map(ReservationResponse::of)
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
+    }
+
+    private List<Reservation> findReservationByEmployee(
+            Employee employee,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationFindOption option
+    ) {
+        if(option == ReservationFindOption.ALL) {
+            return reservationRepository.findByEmployeeAndDateTimeBetween(employee,startTime,endTime);
+        } else if (option == ReservationFindOption.RESERVED) {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.RESERVED,startTime,endTime);
+        } else if (option == ReservationFindOption.POSSIBLE) {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.POSSIBLE,startTime,endTime);
+        } else {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.FINISHED,startTime,endTime);
+        }
+    }
+
+    private List<Reservation> findReservationByMember(
+            Member member,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationFindOption option
+    ) {
+        if(option == ReservationFindOption.ALL) {
+            return reservationRepository.findByMemberAndDateTimeBetween(member,startTime,endTime);
+        } else if (option == ReservationFindOption.RESERVED) {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.RESERVED,startTime,endTime);
+        } else if (option == ReservationFindOption.POSSIBLE) {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.POSSIBLE,startTime,endTime);
+        } else {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.FINISHED,startTime,endTime);
+        }
     }
 
     @Override

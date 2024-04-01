@@ -158,6 +158,97 @@ class ProgramServiceTest {
             assertThat(programs.getContent()).hasSize(0);
             assertThat(registrations).hasSize(1);
         }
+
+        @DisplayName("pt을 등록한다.")
+        @Test
+        void registerPTaddTrainer(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+            Employee employee = initTrainer("trainer");
+
+            Pageable pageable = PageRequest.of(0, 10);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId())
+                    .registrationAt(LocalDate.now())
+                    .trainerId(employee.getId())
+                    .build();
+
+            //when
+            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
+            List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
+
+            //then
+            assertThat(result.getMessage()).isEqualTo("PT권 등록이 요청되었습니다.");
+            assertThat(programs.getContent()).hasSize(0);
+            assertThat(registrations).hasSize(1);
+            assertThat(registrations.get(0).getTrainerId()).isEqualTo(employee.getId());
+            assertThat(registrations.get(0).getProduct().getId()).isEqualTo(product.getId());
+        }
+
+        @DisplayName("존재하지 않는 회원이 등록을 요청하면 예외가 발생한다.")
+        @Test
+        void register_non_existent_user(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId())
+                    .registrationAt(LocalDate.now())
+                    .build();
+
+            //when
+            //then
+            assertThatThrownBy(() -> programService.registration(request,member.getId() + 1,LocalDateTime.now()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(member.getId() + 1 + "는 존재하지 않는 회원입니다.");
+        }
+
+        @DisplayName("존재하지 않는 트레이너로 PT등록을 요청하면 예외가 발생한다.")
+        @Test
+        void register_non_existent_Employee(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("PT권 30회", periodOfTenDays,30,ProductType.PT);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId())
+                    .registrationAt(LocalDate.now())
+                    .trainerId(0L)
+                    .build();
+
+            //when
+            //then
+            assertThatThrownBy(() -> programService.registration(request,member.getId(),LocalDateTime.now()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(request.getTrainerId() + "은 존재하지 않는 트레이너입니다.");
+        }
+
+        @DisplayName("존재하지 않는 상품으로 등록을 요청하면 예외가 발생한다.")
+        @Test
+        void register_non_existent_product(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            RegistrationRequest request = RegistrationRequest.builder()
+                    .productId(product.getId()+1)
+                    .registrationAt(LocalDate.now())
+                    .build();
+
+            //when
+            //then
+            assertThatThrownBy(() -> programService.registration(request,member.getId(),LocalDateTime.now()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(request.getProductId() + "은 존재하지 않는 상품입니다.");
+        }
     }
 
 
@@ -439,6 +530,8 @@ class ProgramServiceTest {
             assertThatThrownBy(() -> programService.refund(1L,localDateTime))
                     .isInstanceOf(CustomException.class).hasMessage("등록되지 않은 프로그램입니다.");
         }
+
+
     }
 
     @Nested
@@ -476,9 +569,9 @@ class ProgramServiceTest {
             assertThat(program.getEmployee().getId()).isEqualTo(trainer.getId()); //등록된 트레이너 확인
         }
 
-        @DisplayName("30일 회원권을 등록하면 등록 날짜에서 30일 후 까지의 프로그램을 생성한다")
+        @DisplayName("한달 회원권을 등록하면 등록 날짜에서 1달 후 까지의 프로그램을 생성한다")
         @Test
-        void approveProgramBy30DaysProgram(){
+        void approveProgramBy1MonthProgram(){
             //given
             LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -507,6 +600,40 @@ class ProgramServiceTest {
             assertThat(program.getEmployee()).isNull();
             assertThat(program.getStartAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate()); //등록일 확인
             assertThat(program.getEndAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate().plusMonths(1).minusDays(1)); //등록일 확인
+            assertThat(program.getRemainedNumber()).isEqualTo(0); //등록일 확인
+        }
+
+        @DisplayName("30일 회원권을 등록하면 등록 날짜에서 30일 후 까지의 프로그램을 생성한다")
+        @Test
+        void approveProgramBy30DaysProgram(){
+            //given
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            Period periodOfTenDays = Period.ofDays(30);
+            Product product = initProduct("회원권 30일", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1@test.com");
+            Member member = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.PENDING)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(localDateTime)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            long result = programService.approve(saveRegistration.getId(),trainer.getId(),localDateTime);
+            Program program = programRepository.findById(result).orElseThrow();
+
+            //then
+            assertThat(program.getRegistration().getId()).isEqualTo(saveRegistration.getId());
+            assertThat(program.getEmployee()).isNull();
+            assertThat(program.getStartAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate()); //등록일 확인
+            assertThat(program.getEndAt()).isEqualTo(saveRegistration.getRegistrationAt().toLocalDate().plusDays(30).minusDays(1)); //등록일 확인
             assertThat(program.getRemainedNumber()).isEqualTo(0); //등록일 확인
         }
 
@@ -640,6 +767,18 @@ class ProgramServiceTest {
             assertThatThrownBy(() -> programService.approve(saveRegistration.getId(),null,localDateTime))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("파라미터 값을 확인해주세요.");
+        }
+
+        @DisplayName("실패 : 존재하지 않는 프로그램을 승인하면 예외가 발생한다")
+        @Test
+        void approveProgram5(){
+            //given
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            //then
+            assertThatThrownBy(() -> programService.approve(0L,null,localDateTime))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(0 + "은 존재하지 않는 등록입니다.");
         }
     }
 
@@ -850,6 +989,109 @@ class ProgramServiceTest {
             assertThat(results1).extracting("startAt","endAt","status")
                     .contains(tuple("2000-01-01","2000-02-01",IN_PROGRESS),
                             tuple("2000-01-01","2000-03-01",IN_PROGRESS),
+                            tuple("2000-01-01","2000-04-01",EXPIRED)
+                    );
+        }
+
+        @DisplayName("유효하지 않은 프로그램을 조회가능한다")
+        @Test
+        void findInValidProgram(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Employee trainer2 = initTrainer("employee2");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
+
+            Member member3 = Member.builder()
+                    .name("admin")
+                    .email("admin@admin.com")
+                    .password("test123")
+                    .birth(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .phone_number("010-0000-0000")
+                    .role(MemberRole.ADMIN)
+                    .build();
+            Member admin = memberRepository.save(member3);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            Registration registration2 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration2 = registrationRepository.save(registration2);
+
+            Program program2 = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration2)
+                    .product(saveRegistration2.getProduct())
+                    .member(saveRegistration2.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-03-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program2);
+
+            Registration registration3 = Registration.builder()
+                    .product(product)
+                    .member(member2)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration3 = registrationRepository.save(registration3);
+
+            Program program3 = Program.builder()
+                    .employee(trainer2)
+                    .registration(saveRegistration3)
+                    .product(saveRegistration3.getProduct())
+                    .member(saveRegistration3.getMember())
+                    .status(EXPIRED)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-04-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program3);
+
+            //when
+            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.INVALID, pageable);
+
+            //then
+            assertThat(results1.getContent().size()).isEqualTo(1);
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .contains(
                             tuple("2000-01-01","2000-04-01",EXPIRED)
                     );
         }
@@ -1561,6 +1803,21 @@ class ProgramServiceTest {
                     .hasMessage("프로그램을 찾을 수 없습니다.");
         }
 
+        @DisplayName("실패 : 유저가 진행했던 없으면 조회시 예외가 발생한다.")
+        @Test
+        void findByMemberNoExistMember(){
+            //given
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Pageable pageable = PageRequest.of(0, 10);
+
+            //when
+
+            //then
+            assertThatThrownBy(() -> programService.findByUser(0L, ProgramSearchStatus.ALL, pageable))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("0는 존재하지 않는 회원입니다.");
+        }
+
         @DisplayName("실패 : 유저가 진행중인 프로그램이 없으면 조회시 예외가 발생한다.")
         @Test
         void findByMemberNoExistInProgressProgram(){
@@ -1924,7 +2181,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.ALL, pageable);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.ALL, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(5);
@@ -2010,7 +2267,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY, pageable);
+            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(3);
@@ -2058,9 +2315,49 @@ class ProgramServiceTest {
             registrationRepository.save(registration2);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(),RegistrationSearchStatus.READY,pageable))
+            assertThatThrownBy(() -> programService.findRegistrationsByAdmin(admin.getId(),RegistrationSearchStatus.READY,pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
+        }
+
+        @DisplayName("실패 : 어드민이 아니면 조회할 수 없다")
+        @Test
+        void adminFindRegistrationNotAdmin(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Pageable pageable = PageRequest.of(0, 10);
+
+            Registration registration1= Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(10000)
+                    .status(RegistrationStatus.DECLINED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            registrationRepository.save(registration1);
+
+            Registration registration2 = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(20000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            registrationRepository.save(registration2);
+
+            //when //then
+            assertThatThrownBy(() -> programService.findRegistrationsByAdmin(member1.getId(),RegistrationSearchStatus.READY,pageable))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(member1.getId()+"는 권한이 없습니다.");
         }
 
         @DisplayName("실패 : registration이 존재하지 않으면 조회시 예외가 발생한다.")
@@ -2071,7 +2368,7 @@ class ProgramServiceTest {
             Pageable pageable = PageRequest.of(0, 10);
 
             //when //then
-            assertThatThrownBy(() -> programService.findRegistrations(admin.getId(), RegistrationSearchStatus.READY, pageable))
+            assertThatThrownBy(() -> programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.READY, pageable))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("조건을 만족하는 Registration이 없습니다.");
         }
@@ -2290,4 +2587,293 @@ class ProgramServiceTest {
                     .hasMessage("프로그램이 정지 상태가 아닙니다.");
         }
     }
+
+    @Nested
+    @DisplayName("findByProgramIdTest")
+    class findByProgramIdTest {
+
+        @DisplayName("프로그램을 진행중인 회원은 특정 프로그램을 조회 가능하다.")
+        @Test
+        void findByProgramId(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+
+            //when
+            ProgramResponse results1 = programService.findByProgramId(program.getId(),member1.getId());
+
+            //then
+            assertThat(results1).extracting("startAt","endAt","status")
+                    .containsExactly("2000-01-01","2000-02-01",ProgramStatus.IN_PROGRESS);
+        }
+
+        @DisplayName("프로그램을 진행중인 트레이너는 특정 프로그램을 조회 가능하다.")
+        @Test
+        void findByProgramId2(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program program1 = programRepository.save(program);
+
+
+            //when
+            ProgramResponse results1 = programService.findByProgramId(program.getId(),trainer.getMember().getId());
+
+            //then
+            assertThat(results1).extracting("id","startAt","endAt","status")
+                    .containsExactly(program1.getId(),"2000-01-01","2000-02-01",ProgramStatus.IN_PROGRESS);
+        }
+
+        @DisplayName("어드민은 아무 프로그램이나 조회 가능하다.")
+        @Test
+        void findByProgramId3(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Member member2 = initMember("tester2",MemberRole.MEMBER);
+            Member admin = initMember("admin", MemberRole.ADMIN);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program saveProgram1 = programRepository.save(program);
+
+            Registration registration2 = Registration.builder()
+                    .product(product)
+                    .member(member2)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration2 = registrationRepository.save(registration2);
+
+            Program program2 = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration2)
+                    .product(saveRegistration2.getProduct())
+                    .member(saveRegistration2.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program saveProgram2 = programRepository.save(program2);
+
+
+            //when
+            ProgramResponse results1 = programService.findByProgramId(program.getId(),admin.getId());
+            ProgramResponse results2 = programService.findByProgramId(program2.getId(),admin.getId());
+
+            //then
+            assertThat(results1).extracting("id","startAt","endAt","status")
+                    .containsExactly(saveProgram1.getId(),"2000-01-01","2000-02-01",ProgramStatus.IN_PROGRESS);
+            assertThat(results2).extracting("id","startAt","endAt","status")
+                    .containsExactly(saveProgram2.getId(),"2000-01-01","2000-02-01",ProgramStatus.IN_PROGRESS);
+        }
+        @DisplayName("실패 : 존재하지 않는 회원은 조회할 수 없다")
+        @Test
+        void findByProgramIdnonExistentMember(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+            //when
+
+            //then
+            assertThatThrownBy(() -> programService.findByProgramId(program.getId(), member1.getId()+1))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(member1.getId()+1 + "은 존재하지 않는 회원입니다.");
+        }
+
+        @DisplayName("실패 : 존재하지 않는 프로그램은 조회할 수 없다.")
+        @Test
+        void findByProgramIdnonExistentProgram(){
+            //given
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            //when
+
+            //then
+            assertThatThrownBy(() -> programService.findByProgramId(0L, member1.getId()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("0은 존재하지 않는 프로그램입니다.");
+        }
+
+        @DisplayName("실패 : 해당 프로그램을 진행하고 있지 않은 트레이너는 조회할 수 없다")
+        @Test
+        void findByProgramIdNoProgressTrainerThisProgram(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Employee trainer2 = initTrainer("employee2");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+            //when
+
+            //then
+            assertThatThrownBy(() -> programService.findByProgramId(program.getId(), trainer2.getMember().getId()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(trainer2.getId()+ "은 " + program.getId() + "의 조회 권한이 없습니다.");
+        }
+
+        @DisplayName("실패 : 해당 프로그램을 진행하고 있지 않은 트레이너는 조회할 수 없다")
+        @Test
+        void findByProgramIdNoProgressMemberThisProgram(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+            //when
+
+            //then
+            assertThatThrownBy(() -> programService.findByProgramId(program.getId(), member2.getId()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(member2.getId()+ "은 " + program.getId() + "의 조회 권한이 없습니다.");
+        }
+    }
+
 }
