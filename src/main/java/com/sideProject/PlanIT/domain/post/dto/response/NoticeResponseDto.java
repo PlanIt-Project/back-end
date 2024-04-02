@@ -6,21 +6,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NoticeResponseDto {
     private Long id;
     private String title;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
+    private LocalDate startAt;
+    private LocalDate endAt;
     private String attachmentPath;
     private String imagePath;
     private String content;
 
     @Builder
-    public NoticeResponseDto(Long id, String title, LocalDateTime startAt, LocalDateTime endAt, String attachmentPath, String imagePath, String content) {
+    public NoticeResponseDto(Long id, String title, LocalDate startAt, LocalDate endAt, String attachmentPath, String imagePath, String content) {
         this.id = id;
         this.title = title;
         this.startAt = startAt;
