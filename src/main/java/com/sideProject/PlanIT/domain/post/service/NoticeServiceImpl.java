@@ -2,6 +2,8 @@ package com.sideProject.PlanIT.domain.post.service;
 
 
 import com.sideProject.PlanIT.common.modules.FileHandler;
+import com.sideProject.PlanIT.common.response.CustomException;
+import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
 import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import com.sideProject.PlanIT.domain.post.entity.Notice;
@@ -37,7 +39,7 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public String editNotice(Long notice_id, NoticeRequestDto noticeRequestDto) {
-        Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id"));
+        Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException(" Id"));
         fileHandler.saveFile(noticeRequestDto.getAttachment());
         fileHandler.saveFile(noticeRequestDto.getImage());
         //todo: 기존 저장된 파일 제거?
@@ -70,7 +72,7 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     public NoticeResponseDto findNotice(Long notice_id) {
-        return NoticeResponseDto.of(noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException("no exist Id")));
+        return NoticeResponseDto.of(noticeRepository.findById(notice_id).orElseThrow(() -> new CustomException(ErrorCode.NOTICE_NOT_FOUND)));
     }
 
 

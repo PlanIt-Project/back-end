@@ -1,11 +1,13 @@
 package com.sideProject.PlanIT.domain.post.entity;
 
 import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
-import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,10 +22,10 @@ public class Notice {
     private String title;
 
     @Column
-    private LocalDateTime startAt;
+    private LocalDate startAt;
 
     @Column
-    private LocalDateTime endAt;
+    private LocalDate endAt;
 
     @Column
     private String attachmentPath;
@@ -35,7 +37,7 @@ public class Notice {
     private String content;
 
     @Builder
-    public Notice(String title, LocalDateTime startAt, LocalDateTime endAt, String attachmentPath, String imagePath, String content) {
+    public Notice(String title, LocalDate startAt, LocalDate endAt, String attachmentPath, String imagePath, String content) {
         this.title = title;
         this.startAt = startAt;
         this.endAt = endAt;
