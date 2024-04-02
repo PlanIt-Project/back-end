@@ -6,19 +6,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BannerResponseDto {
     private Long id;
     private String title;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
+    private LocalDate startAt;
+    private LocalDate endAt;
     private String imagePath;
 
     @Builder
-    public BannerResponseDto(Long id, String title, LocalDateTime startAt, LocalDateTime endAt, String imagePath) {
+    public BannerResponseDto(Long id, String title, LocalDate startAt, LocalDate endAt, String imagePath) {
         this.id = id;
         this.title = title;
         this.startAt = startAt;

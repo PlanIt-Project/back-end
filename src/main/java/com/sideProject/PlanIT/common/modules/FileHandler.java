@@ -14,6 +14,8 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+
+//todo: 파일명 중복 처리
 public class FileHandler {
     @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;

@@ -2,9 +2,12 @@ package com.sideProject.PlanIT.domain.post.entity;
 
 import com.sideProject.PlanIT.domain.post.dto.request.BannerRequestDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,16 +22,16 @@ public class Banner {
     private String title;
 
     @Column
-    private LocalDateTime startAt;
+    private LocalDate startAt;
 
     @Column
-    private LocalDateTime endAt;
+    private LocalDate endAt;
 
     @Column
     private String imagePath;
 
     @Builder
-    public Banner(String title, LocalDateTime startAt, LocalDateTime endAt, String imagePath) {
+    public Banner(String title, LocalDate startAt, LocalDate endAt, String imagePath) {
         this.title = title;
         this.startAt = startAt;
         this.endAt = endAt;
