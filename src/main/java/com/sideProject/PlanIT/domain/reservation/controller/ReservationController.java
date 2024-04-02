@@ -31,7 +31,8 @@ public class ReservationController {
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
-                        request.getReservedTimes(),
+                        request.getReservationDate(),
+                        request.getReservationTimes(),
                         Long.valueOf(principal.getName())
                 )
         );
@@ -64,7 +65,6 @@ public class ReservationController {
         if (date == null) {
             date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
         }
-        System.out.println(principal.getName());
         return ApiResponse.ok(
                 reservationService.findReservationForWeekByMember(
                         date,

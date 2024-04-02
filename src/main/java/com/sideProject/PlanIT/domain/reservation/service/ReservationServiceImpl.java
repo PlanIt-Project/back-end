@@ -43,7 +43,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
+    public String changeAvailability(LocalDate reservedDate,List<LocalTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException(userId + "는 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -51,8 +51,10 @@ public class ReservationServiceImpl implements ReservationService {
                 new CustomException(member.getId() + "은 직원이 아닙니다.", ErrorCode.NO_AUTHORITY)
         );
 
+        List<LocalDateTime> reservedDateTimes = createLocalDateTimes(reservedDate, reservedTimes);
+
         List<Reservation> existingReservations
-                = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedTimes);
+                = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedDateTimes);
 
 
         // 기존 예약 삭제
@@ -62,12 +64,12 @@ public class ReservationServiceImpl implements ReservationService {
         reservedReservations.forEach(reservationRepository::delete);
 
         // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
-        reservedTimes.forEach(reservedTime -> {
+        reservedDateTimes.forEach(reservedDateTime -> {
             boolean exists = existingReservations.stream()
-                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedTime));
+                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedDateTime));
             if (!exists) {
                 Reservation newReservation = Reservation.builder()
-                        .reservedTime(reservedTime)
+                        .reservedTime(reservedDateTime)
                         .status(ReservationStatus.POSSIBLE)
                         .employee(employee)
                         .classTime(LocalTime.of(1,0))
@@ -77,6 +79,13 @@ public class ReservationServiceImpl implements ReservationService {
         });
 
         return "ok";
+    }
+
+    public static List<LocalDateTime> createLocalDateTimes(LocalDate date, List<LocalTime> times) {
+        // Stream을 사용하여 각 LocalTime 요소에 대해 LocalDate와 결합
+        return times.stream()
+                .map(time -> date.atTime(time))
+                .collect(Collectors.toList());
     }
 
     @Override

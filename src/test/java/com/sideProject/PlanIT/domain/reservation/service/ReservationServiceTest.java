@@ -117,14 +117,15 @@ class ReservationServiceTest {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time1 = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
-            LocalDateTime time2 = LocalDateTime.of(2021, 1, 1, 11, 0, 0);
-            LocalDateTime time3 = LocalDateTime.of(2021, 1, 1, 12, 0, 0);
-            LocalDateTime time4 = LocalDateTime.of(2021, 1, 1, 13, 0, 0);
+            LocalDate date = LocalDate.of(2021,1,1);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
 
-            List<LocalDateTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times ,trainer.getMember().getId());
+            String result = reservationService.changeAvailability(date, times ,trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -149,21 +150,24 @@ class ReservationServiceTest {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time1 = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
-            LocalDateTime time2 = LocalDateTime.of(2021, 1, 1, 11, 0, 0);
-            LocalDateTime time3 = LocalDateTime.of(2021, 1, 1, 12, 0, 0);
-            LocalDateTime time4 = LocalDateTime.of(2021, 1, 1, 13, 0, 0);
+            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
+
+            LocalDate date = LocalDate.of(2021,1,1);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
 
             Reservation saveReservation = Reservation.builder()
-                    .reservedTime(time1)
+                    .reservedTime(time)
                     .employee(trainer)
                     .status(ReservationStatus.POSSIBLE)
                     .build();
             reservationRepository.save(saveReservation);
 
-            List<LocalDateTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
+            String result = reservationService.changeAvailability(date ,times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -187,21 +191,24 @@ class ReservationServiceTest {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time1 = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
-            LocalDateTime time2 = LocalDateTime.of(2021, 1, 1, 11, 0, 0);
-            LocalDateTime time3 = LocalDateTime.of(2021, 1, 1, 12, 0, 0);
-            LocalDateTime time4 = LocalDateTime.of(2021, 1, 1, 13, 0, 0);
+            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
+
+            LocalDate date = LocalDate.of(2021,1,1);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
 
             Reservation saveReservation = Reservation.builder()
-                    .reservedTime(time1)
+                    .reservedTime(time)
                     .employee(trainer)
                     .status(ReservationStatus.RESERVED)
                     .build();
             reservationRepository.save(saveReservation);
 
-            List<LocalDateTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
-            String result = reservationService.changeAvailability(times, trainer.getMember().getId());
+            String result = reservationService.changeAvailability(date, times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
@@ -226,15 +233,16 @@ class ReservationServiceTest {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time1 = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
-            LocalDateTime time2 = LocalDateTime.of(2021, 1, 1, 11, 0, 0);
-            LocalDateTime time3 = LocalDateTime.of(2021, 1, 1, 12, 0, 0);
-            LocalDateTime time4 = LocalDateTime.of(2021, 1, 1, 13, 0, 0);
+            LocalDate date = LocalDate.of(2021,1,1);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
 
-            List<LocalDateTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
             //then
-            assertThatThrownBy(() -> reservationService.changeAvailability(times, trainer.getMember().getId()+1))
+            assertThatThrownBy(() -> reservationService.changeAvailability(date, times, trainer.getMember().getId()+1))
                     .isInstanceOf(CustomException.class)
                     .hasMessage(trainer.getMember().getId()+1 + "는 존재하지 않는 유저입니다.");
         }
@@ -245,15 +253,16 @@ class ReservationServiceTest {
             //given
             Member trainer = initMember("trainer",MemberRole.MEMBER);
 
-            LocalDateTime time1 = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
-            LocalDateTime time2 = LocalDateTime.of(2021, 1, 1, 11, 0, 0);
-            LocalDateTime time3 = LocalDateTime.of(2021, 1, 1, 12, 0, 0);
-            LocalDateTime time4 = LocalDateTime.of(2021, 1, 1, 13, 0, 0);
+            LocalDate date = LocalDate.of(2021,1,1);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
 
-            List<LocalDateTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
             //then
-            assertThatThrownBy(() -> reservationService.changeAvailability(times, trainer.getId()))
+            assertThatThrownBy(() -> reservationService.changeAvailability(date,times, trainer.getId()))
                     .isInstanceOf(CustomException.class)
                     .hasMessage(trainer.getId() + "은 직원이 아닙니다.");
         }
