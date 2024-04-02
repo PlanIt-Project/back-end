@@ -6,12 +6,11 @@ import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
-import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
 import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
-import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
+import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponseDto;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
 import com.sideProject.PlanIT.domain.reservation.repository.ReservationRepository;
@@ -766,8 +765,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>>result1 = reservationService.findReservationForWeekByMember(today, member1.getId(), ReservationFindOption.ALL);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, member1.getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>>result1 = reservationService.findReservationForWeekByMember(today, member1.getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, member1.getId(), ReservationFindOption.ALL);
 
 
             //then
@@ -863,8 +862,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>>result1 = reservationService.findReservationForWeekByMember(today, member1.getId(), ReservationFindOption.FINISHED);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, member1.getId(), ReservationFindOption.FINISHED);
+            Map<LocalDate, List<ReservationResponseDto>>result1 = reservationService.findReservationForWeekByMember(today, member1.getId(), ReservationFindOption.FINISHED);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, member1.getId(), ReservationFindOption.FINISHED);
 
 
             //then
@@ -951,8 +950,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>> result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.ALL);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>> result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.ALL);
 
             //then
             assertThat(result1).hasSize(2);
@@ -1034,8 +1033,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2);
             List<Reservation> reservationList = reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>> result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.ALL);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>> result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.ALL);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.ALL);
 
 
             //then
@@ -1122,8 +1121,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.RESERVED);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.RESERVED);
+            Map<LocalDate, List<ReservationResponseDto>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.RESERVED);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.RESERVED);
 
 
             //then
@@ -1209,8 +1208,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.POSSIBLE);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.POSSIBLE);
+            Map<LocalDate, List<ReservationResponseDto>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.POSSIBLE);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.POSSIBLE);
 
 
             //then
@@ -1297,8 +1296,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3);
             reservationRepository.saveAll(reservations);
             //when
-            Map<LocalDate, List<ReservationResponse>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.FINISHED);
-            Map<LocalDate, List<ReservationResponse>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.FINISHED);
+            Map<LocalDate, List<ReservationResponseDto>>result1 = reservationService.findReservationForWeekByMember(today, trainer.getMember().getId(), ReservationFindOption.FINISHED);
+            Map<LocalDate, List<ReservationResponseDto>> result2 = reservationService.findReservationForWeekByMember(today2, trainer.getMember().getId(), ReservationFindOption.FINISHED);
 
 
             //then
@@ -1535,8 +1534,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3,reservation4);
             reservationRepository.saveAll(reservations);
             //when
-            List<ReservationResponse> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
-            List<ReservationResponse> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
+            List<ReservationResponseDto> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
+            List<ReservationResponseDto> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
 
 
             //then

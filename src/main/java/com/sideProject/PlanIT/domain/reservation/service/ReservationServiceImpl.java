@@ -2,12 +2,10 @@ package com.sideProject.PlanIT.domain.reservation.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
-import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
+import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponseDto;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
 import com.sideProject.PlanIT.domain.reservation.repository.ReservationRepository;
@@ -119,7 +117,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     @Override
-    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(
+    public Map<LocalDate, List<ReservationResponseDto>> findReservationForWeekByMember(
             LocalDate date,
             Long userId,
             ReservationFindOption option
@@ -144,7 +142,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         return reservations.stream()
-                .map(ReservationResponse::of)
+                .map(ReservationResponseDto::of)
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
     }
 
@@ -183,7 +181,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationResponse> findReservationForDayByEmployee(LocalDate date, Long employeeId) {
+    public List<ReservationResponseDto> findReservationForDayByEmployee(LocalDate date, Long employeeId) {
         LocalDateTime startOfWeek = calStartOfDay(date);
         LocalDateTime endOfWeek = calEndOfDay(date);
 
@@ -195,7 +193,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
 
         return reservations.stream()
-                .map(ReservationResponse::of)
+                .map(ReservationResponseDto::of)
                 .toList();
     }
 

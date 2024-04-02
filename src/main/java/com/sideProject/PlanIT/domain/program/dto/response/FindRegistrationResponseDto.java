@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FindRegistrationResponse {
+public class FindRegistrationResponseDto {
     private Long id;
     private String registrationAt;
     private String refundAt;
@@ -22,7 +22,7 @@ public class FindRegistrationResponse {
     private Long trainerId;
 
     @Builder
-    public FindRegistrationResponse(Long id, String registrationAt, String refundAt, RegistrationStatus status, int discount, int totalPrice, ProductResponseDto product, MemberSemiResponseDto member, Long trainerId) {
+    public FindRegistrationResponseDto(Long id, String registrationAt, String refundAt, RegistrationStatus status, int discount, int totalPrice, ProductResponseDto product, MemberSemiResponseDto member, Long trainerId) {
         this.id = id;
         this.registrationAt = registrationAt;
         this.refundAt = refundAt;
@@ -34,14 +34,14 @@ public class FindRegistrationResponse {
         this.trainerId = trainerId;
     }
 
-    public static FindRegistrationResponse of(Registration registration){
+    public static FindRegistrationResponseDto of(Registration registration){
         //환불 여부 null 체크
         String registrationAt = registration.getRefundAt() != null ?
                 registration.getRefundAt().toString() :
                 "";
 
 
-        return FindRegistrationResponse.builder()
+        return FindRegistrationResponseDto.builder()
                 .id(registration.getId())
                 .registrationAt(registration.getRegistrationAt().toString())
                 .refundAt(registrationAt)
