@@ -6,6 +6,7 @@ import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
+import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
 import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
 import com.sideProject.PlanIT.domain.reservation.entity.ENUM.ReservationStatus;
 import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
@@ -42,20 +43,18 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public String changeAvailability(List<LocalDateTime> reservedTimes, Long userId) {
+    public String changeAvailability(LocalDate reservedDate,List<LocalTime> reservedTimes, Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId + "는 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
-                new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+                new CustomException(member.getId() + "은 직원이 아닙니다.", ErrorCode.NO_AUTHORITY)
         );
 
-        if(!Objects.equals(member.getId(), employee.getMember().getId())) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
-        }
+        List<LocalDateTime> reservedDateTimes = createLocalDateTimes(reservedDate, reservedTimes);
 
         List<Reservation> existingReservations
-                = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedTimes);
+                = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedDateTimes);
 
 
         // 기존 예약 삭제
@@ -65,12 +64,12 @@ public class ReservationServiceImpl implements ReservationService {
         reservedReservations.forEach(reservationRepository::delete);
 
         // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
-        reservedTimes.forEach(reservedTime -> {
+        reservedDateTimes.forEach(reservedDateTime -> {
             boolean exists = existingReservations.stream()
-                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedTime));
+                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedDateTime));
             if (!exists) {
                 Reservation newReservation = Reservation.builder()
-                        .reservedTime(reservedTime)
+                        .reservedTime(reservedDateTime)
                         .status(ReservationStatus.POSSIBLE)
                         .employee(employee)
                         .classTime(LocalTime.of(1,0))
@@ -82,25 +81,32 @@ public class ReservationServiceImpl implements ReservationService {
         return "ok";
     }
 
+    public static List<LocalDateTime> createLocalDateTimes(LocalDate date, List<LocalTime> times) {
+        // Stream을 사용하여 각 LocalTime 요소에 대해 LocalDate와 결합
+        return times.stream()
+                .map(time -> date.atTime(time))
+                .collect(Collectors.toList());
+    }
+
     @Override
     @Transactional
     public String reservation(Long reservationId, Long userId, Long programId, LocalDateTime now) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
-                new CustomException("존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(userId+"은 존재하지 않는 유저입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
         Program program = programRepository.findById(programId).orElseThrow(() ->
-                new CustomException("존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+                new CustomException(programId+ "는 존재하지 않는 수업입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() ->
-                new CustomException(reservationId + "는 존재하지 않는 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
+                new CustomException(reservationId + "는 존재하지 않는 예약입니다.", ErrorCode.RESERVATION_NOT_FOUND)
         );
+
+        //프로그램 상태 변경
+        program.reservation();
 
         if(!Objects.equals(program.getEmployee().getId(), reservation.getEmployee().getId())) {
             throw new CustomException("유저 " + userId + "은 해당 트레이너에 예약할 수 없습니다.", ErrorCode.NOT_YOUR_TRAINER);
         }
-
-        //프로그램 상태 변경
-        program.reservation();
 
         //프로그램 예약
         reservation.reservation(program,member,now);
@@ -113,7 +119,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     @Override
-    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(LocalDate date, Long userId) {
+    public Map<LocalDate, List<ReservationResponse>> findReservationForWeekByMember(
+            LocalDate date,
+            Long userId,
+            ReservationFindOption option
+    ) {
         LocalDateTime startOfWeek = calStartOfWeek(date);
         LocalDateTime endOfWeek = calEndOfWeek(date);
 
@@ -127,9 +137,9 @@ public class ReservationServiceImpl implements ReservationService {
             Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                     new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
             );
-            reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+            reservations = findReservationByEmployee(employee,startOfWeek,endOfWeek,option);
         } else {
-            reservations = reservationRepository.findByMemberAndDateTimeBetween(member,startOfWeek,endOfWeek);
+            reservations = findReservationByMember(member,startOfWeek,endOfWeek,option);
         }
 
 
@@ -138,10 +148,44 @@ public class ReservationServiceImpl implements ReservationService {
                 .collect(Collectors.groupingBy(response -> response.getReservationTime().toLocalDate()));
     }
 
+    private List<Reservation> findReservationByEmployee(
+            Employee employee,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationFindOption option
+    ) {
+        if(option == ReservationFindOption.ALL) {
+            return reservationRepository.findByEmployeeAndDateTimeBetween(employee,startTime,endTime);
+        } else if (option == ReservationFindOption.RESERVED) {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.RESERVED,startTime,endTime);
+        } else if (option == ReservationFindOption.POSSIBLE) {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.POSSIBLE,startTime,endTime);
+        } else {
+            return reservationRepository.findByEmployeeAndStatusAndDateTimeBetween(employee,ReservationStatus.FINISHED,startTime,endTime);
+        }
+    }
+
+    private List<Reservation> findReservationByMember(
+            Member member,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationFindOption option
+    ) {
+        if(option == ReservationFindOption.ALL) {
+            return reservationRepository.findByMemberAndDateTimeBetween(member,startTime,endTime);
+        } else if (option == ReservationFindOption.RESERVED) {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.RESERVED,startTime,endTime);
+        } else if (option == ReservationFindOption.POSSIBLE) {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.POSSIBLE,startTime,endTime);
+        } else {
+            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.FINISHED,startTime,endTime);
+        }
+    }
+
     @Override
-    public List<ReservationResponse> findReservationForWeekByEmployee(LocalDate date, Long employeeId) {
-        LocalDateTime startOfWeek = calStartOfWeek(date);
-        LocalDateTime endOfWeek = calEndOfWeek(date);
+    public List<ReservationResponse> findReservationForDayByEmployee(LocalDate date, Long employeeId) {
+        LocalDateTime startOfWeek = calStartOfDay(date);
+        LocalDateTime endOfWeek = calEndOfDay(date);
 
         List<Reservation> reservations;
         //트레이너이면

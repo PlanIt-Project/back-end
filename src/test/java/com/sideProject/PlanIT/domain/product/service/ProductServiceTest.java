@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class ProductServiceTest {
 
     @Autowired

@@ -76,6 +76,10 @@ public class Reservation {
         this.status = ReservationStatus.POSSIBLE;
     }
 
+    public void finish() {
+        this.status = ReservationStatus.FINISHED;
+    }
+
     private void ensureReservationIsPossible(LocalDateTime now) {
         if (status != ReservationStatus.POSSIBLE) {
             throw new CustomException("예약 " + id + "은 예약할 수 없습니다.", ErrorCode.ALREADY_RESERVATION);

@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.reservation.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
+import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRequest;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequest;
 import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
@@ -30,7 +31,8 @@ public class ReservationController {
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
-                        request.getReservedTimes(),
+                        request.getReservationDate(),
+                        request.getReservationTimes(),
                         Long.valueOf(principal.getName())
                 )
         );
@@ -57,16 +59,17 @@ public class ReservationController {
     public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservation(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "option", defaultValue = "ALL") ReservationFindOption option,
             Principal principal
     ) {
         if (date == null) {
             date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
         }
-        System.out.println(principal.getName());
         return ApiResponse.ok(
                 reservationService.findReservationForWeekByMember(
                         date,
-                        Long.valueOf(principal.getName())
+                        Long.valueOf(principal.getName()),
+                        option
                 )
         );
     }
@@ -81,7 +84,7 @@ public class ReservationController {
             date = LocalDate.now(); // 파라미터가 없을 경우 기본값으로 오늘 날짜를 사용
         }
         return ApiResponse.ok(
-                reservationService.findReservationForWeekByEmployee(
+                reservationService.findReservationForDayByEmployee(
                         date,
                         employeeId
                 )
