@@ -3,6 +3,8 @@ package com.sideProject.PlanIT.domain.user.service;
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 
+import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponse;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -76,5 +79,21 @@ public class WorktimeServiceImpl implements WorktimeService {
         return worktime.map(TrainerScheduleResponseDto::of);
     }
 
-        // 특정 트레이너 출퇴근 조회 => 확인 후 진행
+    // 특정 트레이너 출퇴근 조회
+    @Override
+    public List<TrainerScheduleResponseDto> findoneTrianerSchedule(Long employee_id,Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(()-> new CustomException("존재하지 않는 회원입니다.",ErrorCode.MEMBER_NOT_FOUND));
+        if(member.getRole() != MemberRole.ADMIN && member.getRole() != MemberRole.TRAINER){
+            throw new CustomException("권한이 없습니다.",ErrorCode.NO_AUTHORITY);
+        }
+        List<WorkTime> worktime = worktimeRepository.findByEmployeeId(employee_id);
+        if (worktime.isEmpty()){
+            throw new CustomException("일정을 찾을 수 없습니다.",ErrorCode.TrainerSchedule_NOT_FOUND);
+        }
+        return worktime.stream()
+                .map(TrainerScheduleResponseDto::of)
+                .collect(Collectors.toList());
+
+    }
+
 }

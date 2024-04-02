@@ -1,9 +1,11 @@
 package com.sideProject.PlanIT.domain.user.service;
 
+import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleResponseDto;
+import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,5 +19,5 @@ public interface WorktimeService {
     // 트레이너 출퇴근 전체 조회
     public Page<TrainerScheduleResponseDto> findTrainerSchedule(Long id, Pageable pageable);
     // 특정 트레이너 출퇴근 조회
-
+    public List<TrainerScheduleResponseDto> findoneTrianerSchedule(Long trainer_id, Long id);
 }
