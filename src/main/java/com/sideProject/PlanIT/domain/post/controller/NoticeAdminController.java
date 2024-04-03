@@ -5,9 +5,10 @@ import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
 import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import com.sideProject.PlanIT.domain.post.service.NoticeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/notice")
@@ -31,7 +32,9 @@ public class NoticeAdminController {
     }
 
     @GetMapping
-    public ApiResponse<List<NoticeResponseDto>> findAllNotices() {
-        return ApiResponse.ok(noticeService.findAllNotices());
+    public ApiResponse<Page<NoticeResponseDto>> findAllNotices(
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return ApiResponse.ok(noticeService.findAllNotices(pageable));
     }
 }
