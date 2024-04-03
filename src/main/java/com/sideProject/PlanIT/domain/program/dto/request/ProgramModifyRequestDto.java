@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProgramModifyRequest {
+public class ProgramModifyRequestDto {
 
     String startTime;
     String endTime;
@@ -12,7 +12,7 @@ public class ProgramModifyRequest {
     Long employId;
 
     @Builder
-    public ProgramModifyRequest(String startTime, String endTime, Long memberId, Long employId) {
+    public ProgramModifyRequestDto(String startTime, String endTime, Long memberId, Long employId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.memberId = memberId;

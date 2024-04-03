@@ -1,10 +1,10 @@
 package com.sideProject.PlanIT.domain.program.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.domain.program.dto.request.ApproveRequest;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
-import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
+import com.sideProject.PlanIT.domain.program.dto.request.ApproveRequestDto;
+import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequestDto;
+import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
@@ -31,7 +31,7 @@ public class ProgramAdminController {
 
     //어드민이 전부 검색
     @GetMapping("")
-    public ApiResponse<Page<ProgramResponse>> find(
+    public ApiResponse<Page<ProgramResponseDto>> find(
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option,
             @PageableDefault(size = 10) Pageable pageable,
             Principal principal) {
@@ -46,7 +46,7 @@ public class ProgramAdminController {
 
     //어드민이 유저 id로 검색
     @GetMapping("/by-user/{id}")
-    public ApiResponse<Page<ProgramResponse>> find(
+    public ApiResponse<Page<ProgramResponseDto>> find(
             @PathVariable("id") Long id,
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option) {
@@ -57,7 +57,7 @@ public class ProgramAdminController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ProgramResponse> find(
+    public ApiResponse<ProgramResponseDto> find(
             @PathVariable("id") Long id) {
         Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(loggedInUser.getName());
@@ -78,14 +78,14 @@ public class ProgramAdminController {
     @PutMapping("/{id}")
     public ApiResponse<String> modify(
             @PathVariable("id") Long id,
-            ProgramModifyRequest request) {
+            ProgramModifyRequestDto request) {
         return ApiResponse.ok(
                 programService.modify(id, request)
         );
     }
 
     @PostMapping("/approve/{id}")
-    public ApiResponse<Long> approve(@PathVariable("id") Long id, @RequestBody ApproveRequest request) {
+    public ApiResponse<Long> approve(@PathVariable("id") Long id, @RequestBody ApproveRequestDto request) {
         LocalDateTime now = LocalDateTime.now();
         return ApiResponse.ok(
                 programService.approve(id, request.getTrainer(), now)
@@ -93,7 +93,7 @@ public class ProgramAdminController {
     }
 
     @GetMapping("/registration")
-    public ApiResponse<Page<FindRegistrationResponse>> findRegistration(
+    public ApiResponse<Page<FindRegistrationResponseDto>> findRegistration(
             @RequestParam(value = "option", required = false, defaultValue = "READY") RegistrationSearchStatus option,
             @PageableDefault(size = 10) Pageable pageable,
             Principal principal) {
@@ -105,7 +105,7 @@ public class ProgramAdminController {
 
 
     @GetMapping("/registration/{id}")
-    public ApiResponse<Page<FindRegistrationResponse>> findRegistrationByUser(
+    public ApiResponse<Page<FindRegistrationResponseDto>> findRegistrationByUser(
             @PathVariable("id") Long id,
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(value = "option", required = false, defaultValue = "READY") RegistrationSearchStatus option) {

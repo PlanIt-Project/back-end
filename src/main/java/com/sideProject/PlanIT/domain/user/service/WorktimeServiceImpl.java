@@ -3,11 +3,9 @@ package com.sideProject.PlanIT.domain.user.service;
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 
-import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
-import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponse;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
@@ -23,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +35,7 @@ public class WorktimeServiceImpl implements WorktimeService {
     private final MemberRepository memberRepository;
     private final WorktimeRepository worktimeRepository;
     @Override
-    public TrainerScheduleRegistrationResponse trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id){
+    public TrainerScheduleRegistrationResponseDto trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id){
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND));
         Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() -> new CustomException("존재하지 않는 직원입니다", ErrorCode.EMPLOYEE_NOT_FOUND));
@@ -49,7 +45,7 @@ public class WorktimeServiceImpl implements WorktimeService {
         worktimeRepository.save(WorkTime.builder().week(requestdto.getWeek()).startAt(requestdto.getStartAt()).endAt(requestdto.getEndAt()).employee(trainer).build());
 
     }
-        return TrainerScheduleRegistrationResponse.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
+        return TrainerScheduleRegistrationResponseDto.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
     }
 
     // 특정 일정 가져오기

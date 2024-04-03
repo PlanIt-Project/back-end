@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ApproveRequest {
+public class ApproveRequestDto {
     Long trainer;
 
     @Builder
-    public ApproveRequest(Long trainer) {
+    public ApproveRequestDto(Long trainer) {
         this.trainer = trainer;
     }
 }

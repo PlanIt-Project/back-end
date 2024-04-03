@@ -4,10 +4,10 @@ import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
-import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
-import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequestDto;
+import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
@@ -16,7 +16,7 @@ import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
+import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequestDto;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
@@ -117,13 +117,13 @@ class ProgramServiceTest {
             Member member = initMember("tester1",MemberRole.MEMBER);
             Pageable pageable = PageRequest.of(0, 10);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
                     .build();
 
             //when
-            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            RegistrationResponseDto result = programService.registration(request,member.getId(),LocalDateTime.now());
             Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
             List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
 
@@ -143,13 +143,13 @@ class ProgramServiceTest {
 
             Pageable pageable = PageRequest.of(0, 10);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
                     .build();
 
             //when
-            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            RegistrationResponseDto result = programService.registration(request,member.getId(),LocalDateTime.now());
             Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
             List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
 
@@ -170,14 +170,14 @@ class ProgramServiceTest {
 
             Pageable pageable = PageRequest.of(0, 10);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
                     .trainerId(employee.getId())
                     .build();
 
             //when
-            RegistrationResponse result = programService.registration(request,member.getId(),LocalDateTime.now());
+            RegistrationResponseDto result = programService.registration(request,member.getId(),LocalDateTime.now());
             Page<Program> programs = programRepository.findByMemberId(member.getId(),pageable);
             List<Registration> registrations = registrationRepository.findByMemberId(member.getId());
 
@@ -197,7 +197,7 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
                     .build();
@@ -217,7 +217,7 @@ class ProgramServiceTest {
             Product product = initProduct("PT권 30회", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId())
                     .registrationAt(LocalDate.now())
                     .trainerId(0L)
@@ -238,7 +238,7 @@ class ProgramServiceTest {
             Product product = initProduct("회원권 1달", periodOfTenDays,30,ProductType.PT);
             Member member = initMember("tester1",MemberRole.MEMBER);
 
-            RegistrationRequest request = RegistrationRequest.builder()
+            RegistrationRequestDto request = RegistrationRequestDto.builder()
                     .productId(product.getId()+1)
                     .registrationAt(LocalDate.now())
                     .build();
@@ -293,7 +293,7 @@ class ProgramServiceTest {
             Member member2 = initMember("tester2",MemberRole.MEMBER);
 
             //when
-            ProgramModifyRequest request = ProgramModifyRequest.builder()
+            ProgramModifyRequestDto request = ProgramModifyRequestDto.builder()
                     .employId(trainer2.getId())
                     .memberId(member2.getId())
                     .startTime("2023-03-06")
@@ -322,7 +322,7 @@ class ProgramServiceTest {
         @Test
         void modifyProgram2(){
             //given //when
-            ProgramModifyRequest request = ProgramModifyRequest.builder()
+            ProgramModifyRequestDto request = ProgramModifyRequestDto.builder()
                     .employId(1L)
                     .memberId(1L)
                     .startTime("2023-03-06")
@@ -369,7 +369,7 @@ class ProgramServiceTest {
                     .build();
             Program result = programRepository.save(program);
 
-            ProgramModifyRequest request = ProgramModifyRequest.builder()
+            ProgramModifyRequestDto request = ProgramModifyRequestDto.builder()
                     .employId(1L)
                     .memberId(member.getId()+1)
                     .startTime("2023-03-06")
@@ -416,7 +416,7 @@ class ProgramServiceTest {
                     .build();
             Program result = programRepository.save(program);;
 
-            ProgramModifyRequest request = ProgramModifyRequest.builder()
+            ProgramModifyRequestDto request = ProgramModifyRequestDto.builder()
                     .employId(trainer.getId()+1)
                     .memberId(member.getId())
                     .startTime("2023-03-06")
@@ -878,7 +878,7 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
+            Page<ProgramResponseDto> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(3);
@@ -982,7 +982,7 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
+            Page<ProgramResponseDto> results1 = programService.find(admin.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(3);
@@ -1086,7 +1086,7 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.find(admin.getId(), ProgramSearchStatus.INVALID, pageable);
+            Page<ProgramResponseDto> results1 = programService.find(admin.getId(), ProgramSearchStatus.INVALID, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(1);
@@ -1290,8 +1290,8 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.VALID, pageable);
-            Page<ProgramResponse> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.VALID, pageable);
+            Page<ProgramResponseDto> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.VALID, pageable);
+            Page<ProgramResponseDto> results2 = programService.findByUser(member2.getId(), ProgramSearchStatus.VALID, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(2);
@@ -1387,8 +1387,8 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
-            Page<ProgramResponse> results2 = programService.findByUser(trainer2.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
+            Page<ProgramResponseDto> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
+            Page<ProgramResponseDto> results2 = programService.findByUser(trainer2.getMember().getId(), ProgramSearchStatus.INVALID,pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(2);
@@ -1485,7 +1485,7 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.ALL, pageable);
+            Page<ProgramResponseDto> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.ALL, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(3);
@@ -1625,7 +1625,7 @@ class ProgramServiceTest {
 
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID, pageable);
+            Page<ProgramResponseDto> results1 = programService.findByUser(member1.getId(), ProgramSearchStatus.INVALID, pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(4);
@@ -1719,7 +1719,7 @@ class ProgramServiceTest {
             programRepository.save(program3);
 
             //when
-            Page<ProgramResponse> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL,pageable);
+            Page<ProgramResponseDto> results1 = programService.findByUser(trainer.getMember().getId(), ProgramSearchStatus.ALL,pageable);
 
             //then
             assertThat(results1.getContent().size()).isEqualTo(3);
@@ -1935,8 +1935,8 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL, pageable);
-            Page<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL, pageable);
+            Page<FindRegistrationResponseDto> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.ALL, pageable);
+            Page<FindRegistrationResponseDto> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.ALL, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(4);
@@ -2022,8 +2022,8 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY, pageable);
-            Page<FindRegistrationResponse> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY, pageable);
+            Page<FindRegistrationResponseDto> result1 = programService.findRegistrationsByUser(member1.getId(), RegistrationSearchStatus.READY, pageable);
+            Page<FindRegistrationResponseDto> result2 = programService.findRegistrationsByUser(member2.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(2);
@@ -2181,7 +2181,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.ALL, pageable);
+            Page<FindRegistrationResponseDto> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.ALL, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(5);
@@ -2267,7 +2267,7 @@ class ProgramServiceTest {
             registrationRepository.save(registration5);
 
             //when
-            Page<FindRegistrationResponse> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.READY, pageable);
+            Page<FindRegistrationResponseDto> result1 = programService.findRegistrationsByAdmin(admin.getId(), RegistrationSearchStatus.READY, pageable);
 
             //then
             assertThat(result1.getContent()).hasSize(3);
@@ -2626,7 +2626,7 @@ class ProgramServiceTest {
 
 
             //when
-            ProgramResponse results1 = programService.findByProgramId(program.getId(),member1.getId());
+            ProgramResponseDto results1 = programService.findByProgramId(program.getId(),member1.getId());
 
             //then
             assertThat(results1).extracting("startAt","endAt","status")
@@ -2667,7 +2667,7 @@ class ProgramServiceTest {
 
 
             //when
-            ProgramResponse results1 = programService.findByProgramId(program.getId(),trainer.getMember().getId());
+            ProgramResponseDto results1 = programService.findByProgramId(program.getId(),trainer.getMember().getId());
 
             //then
             assertThat(results1).extracting("id","startAt","endAt","status")
@@ -2733,8 +2733,8 @@ class ProgramServiceTest {
 
 
             //when
-            ProgramResponse results1 = programService.findByProgramId(program.getId(),admin.getId());
-            ProgramResponse results2 = programService.findByProgramId(program2.getId(),admin.getId());
+            ProgramResponseDto results1 = programService.findByProgramId(program.getId(),admin.getId());
+            ProgramResponseDto results2 = programService.findByProgramId(program2.getId(),admin.getId());
 
             //then
             assertThat(results1).extracting("id","startAt","endAt","status")

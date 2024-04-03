@@ -5,7 +5,7 @@ import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.common.util.JwtTokenProvider;
 import com.sideProject.PlanIT.domain.user.controller.enums.MemberSearchOption;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerSubResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberChangePasswordRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.request.MemberEditRequestDto;
@@ -117,14 +117,14 @@ public class MemberServiceImpl implements MemberService {
                 new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         //트레이너면 트레이너 정보 조회
-        TrainerResponse trainerResponse = null;
+        TrainerSubResponseDto trainerSubResponseDto = null;
         if(member.getRole().equals(MemberRole.TRAINER)) {
             Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                     new CustomException(ErrorCode.EMPLOYEE_NOT_FOUND));
-            trainerResponse = TrainerResponse.of(trainer);
+            trainerSubResponseDto = TrainerSubResponseDto.of(trainer);
         }
 
-        return MemberResponseDto.of(member,trainerResponse);
+        return MemberResponseDto.of(member, trainerSubResponseDto);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.sideProject.PlanIT.domain.program.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
-import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
-import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequestDto;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
@@ -27,14 +27,14 @@ public class ProgramController {
     private final ProgramService programService;
 
     @PostMapping("/registration")
-    public ApiResponse<?> registration(@RequestBody RegistrationRequest request, Principal principal){
+    public ApiResponse<?> registration(@RequestBody RegistrationRequestDto request, Principal principal){
         LocalDateTime now = LocalDateTime.now();
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(programService.registration(request, id, now));
     }
 
     @GetMapping
-    public ApiResponse<Page<ProgramResponse>> find(
+    public ApiResponse<Page<ProgramResponseDto>> find(
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             Principal principal) {
@@ -45,7 +45,7 @@ public class ProgramController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ProgramResponse> findById(
+    public ApiResponse<ProgramResponseDto> findById(
             @PathVariable("id") Long id,
             Principal principal) {
         //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
@@ -56,7 +56,7 @@ public class ProgramController {
     }
 
     @GetMapping("/registration")
-    public ApiResponse<Page<FindRegistrationResponse>> findRegistration(
+    public ApiResponse<Page<FindRegistrationResponseDto>> findRegistration(
             @RequestParam(value = "option", required = false, defaultValue = "ALL") RegistrationSearchStatus option,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             Principal principal) {
