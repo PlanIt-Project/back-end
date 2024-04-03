@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @Slf4j
 
-//todo: 파일명 중복 처리
 public class FileHandler {
     @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;
@@ -25,13 +25,13 @@ public class FileHandler {
             return null;
         }
         try {
-            String fileName = file.getOriginalFilename();
+            String fileName = getUniqueFileName(file.getOriginalFilename());
             File dest = new File(fileStorageDir + File.separator + fileName);
             file.transferTo(dest);
 
             return fileName;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return "이미지 업로드 오류 발생";
         }
     }
@@ -51,4 +51,9 @@ public class FileHandler {
             throw new CustomException("파일이 존재하지 않습니다.", ErrorCode.FILE_NOT_FOUND);
         }
     }
+
+    private String getUniqueFileName(String fileName) {
+        return UUID.randomUUID() + fileName;
+    }
+
 }
