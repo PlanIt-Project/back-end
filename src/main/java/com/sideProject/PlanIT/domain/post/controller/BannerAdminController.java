@@ -8,16 +8,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/admin/banner")
+@Slf4j
 @RequiredArgsConstructor
 public class BannerAdminController {
     private final BannerService bannerService;
 
     @PostMapping
-    public ApiResponse<String> createBanner(@ModelAttribute BannerRequestDto bannerRequestDto) {
+    public ApiResponse<String> createBanner(@ModelAttribute BannerRequestDto bannerRequestDto
+    ) {
+        log.info(bannerRequestDto.getTitle());
         return ApiResponse.ok(bannerService.createBanner(bannerRequestDto));
     }
 

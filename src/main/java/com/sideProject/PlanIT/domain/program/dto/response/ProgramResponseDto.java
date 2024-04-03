@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.program.dto.response;
 
 import com.sideProject.PlanIT.domain.product.entity.Product;
+import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class ProgramResponseDto {
     long id;
     String productName;
+    ProductType type;
     int remainedNumber;
     String startAt;
     String endAt;
@@ -43,6 +45,7 @@ public class ProgramResponseDto {
         this.endAt = endAt;
         this.status = status;
         this.productName = product.getName();
+        this.type = product.getType();
         this.member = MemberSemiResponseDto.of(member);
         this.employee = EmployeeSemiResponseDto.of(employee);
         this.suspendAt = suspendAt;
