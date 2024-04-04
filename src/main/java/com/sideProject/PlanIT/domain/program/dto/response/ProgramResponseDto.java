@@ -14,7 +14,7 @@ import lombok.Getter;
 import java.util.Optional;
 
 @Getter
-public class ProgramResponse {
+public class ProgramResponseDto {
     long id;
     String productName;
     ProductType type;
@@ -28,7 +28,7 @@ public class ProgramResponse {
     EmployeeSemiResponseDto employee;
 
     @Builder
-    public ProgramResponse(
+    public ProgramResponseDto(
             long id,
             int remainedNumber,
             String startAt,
@@ -52,8 +52,8 @@ public class ProgramResponse {
         this.resumeAt = resumeAt;
     }
 
-    public static ProgramResponse of(Program program){
-        return ProgramResponse.builder()
+    public static ProgramResponseDto of(Program program){
+        return ProgramResponseDto.builder()
                 .id(program.getId())
                 .remainedNumber(program.getRemainedNumber())
                 .status(program.getStatus())

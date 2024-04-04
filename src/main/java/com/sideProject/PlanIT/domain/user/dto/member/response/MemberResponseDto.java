@@ -1,6 +1,6 @@
 package com.sideProject.PlanIT.domain.user.dto.member.response;
 
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerResponse;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerSubResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.AccessLevel;
@@ -20,10 +20,10 @@ public class MemberResponseDto {
     private LocalDate birth;
     private String address;
     private MemberRole role;
-    private TrainerResponse trainerInfo;
+    private TrainerSubResponseDto trainerInfo;
 
     @Builder
-    public MemberResponseDto(Long id, String email, String name, String phone_number, LocalDate birth, String address, MemberRole role, TrainerResponse trainerInfo) {
+    public MemberResponseDto(Long id, String email, String name, String phone_number, LocalDate birth, String address, MemberRole role, TrainerSubResponseDto trainerInfo) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -34,7 +34,7 @@ public class MemberResponseDto {
         this.trainerInfo = trainerInfo;
     }
 
-    public static MemberResponseDto of(Member member, TrainerResponse trainerResponse) {
+    public static MemberResponseDto of(Member member, TrainerSubResponseDto trainerSubResponseDto) {
         return MemberResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
@@ -43,7 +43,7 @@ public class MemberResponseDto {
                 .birth(member.getBirth())
                 .address(member.getAddress())
                 .role(member.getRole())
-                .trainerInfo(trainerResponse)
+                .trainerInfo(trainerSubResponseDto)
                 .build();
     }
 }

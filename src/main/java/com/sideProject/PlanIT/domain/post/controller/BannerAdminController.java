@@ -5,11 +5,12 @@ import com.sideProject.PlanIT.domain.post.dto.request.BannerRequestDto;
 import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
 import com.sideProject.PlanIT.domain.post.service.BannerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/banner")
@@ -36,7 +37,9 @@ public class BannerAdminController {
     }
 
     @GetMapping
-    public ApiResponse<List<BannerResponseDto>> findAllBanners() {
-        return ApiResponse.ok(bannerService.findAllBanners());
+    public ApiResponse<Page<BannerResponseDto>> findAllBanners(
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return ApiResponse.ok(bannerService.findAllBanners(pageable));
     }
 }

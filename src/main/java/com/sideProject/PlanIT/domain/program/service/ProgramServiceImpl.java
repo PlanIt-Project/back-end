@@ -5,10 +5,10 @@ import com.sideProject.PlanIT.common.response.ErrorCode;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
-import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequest;
-import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponse;
-import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponse;
+import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequestDto;
+import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationResponseDto;
+import com.sideProject.PlanIT.domain.program.dto.response.RegistrationResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
@@ -17,7 +17,7 @@ import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequest;
+import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequestDto;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
@@ -54,7 +54,7 @@ public class ProgramServiceImpl implements ProgramService {
     private final RegistrationRepository registrationRepository;
     private final ProductRepository productRepository;
     @Override
-    public RegistrationResponse registration(RegistrationRequest request, Long memberId, LocalDateTime now){
+    public RegistrationResponseDto registration(RegistrationRequestDto request, Long memberId, LocalDateTime now){
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
                 new CustomException(memberId + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -87,10 +87,10 @@ public class ProgramServiceImpl implements ProgramService {
 
         if(resultRegistration.getProduct().getType() == ProductType.MEMBERSHIP) {
             approve(resultRegistration.getId(),null,now);
-            return RegistrationResponse.of(resultRegistration.getId(),"회원권 등록이 완료되었습니다.");
+            return RegistrationResponseDto.of(resultRegistration.getId(),"회원권 등록이 완료되었습니다.");
         }
 
-        return RegistrationResponse.of(resultRegistration.getId(),"PT권 등록이 요청되었습니다.");
+        return RegistrationResponseDto.of(resultRegistration.getId(),"PT권 등록이 요청되었습니다.");
     }
     @Override
     public String refund(long programId, LocalDateTime localDateTime) {
@@ -137,7 +137,7 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     @Override
-    public String modify(long programId, ProgramModifyRequest request) {
+    public String modify(long programId, ProgramModifyRequestDto request) {
         Program program = getProgramById(programId);
 
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() ->
@@ -271,10 +271,10 @@ public class ProgramServiceImpl implements ProgramService {
      * 프로그램을 조회하여 리스트를 반환하는 메서드(어드민 만 사용 가능)
      *
      * @param option 조회 옵션(ALL : 전부, VAILD : 유효한 프로그램, UNVAILD : 유효하지 않은 프로그램)
-     * @return List<ProgramResponse>
+     * @return List<ProgramResponseDto>
      */
     @Override
-    public Page<ProgramResponse> find(long adminId, ProgramSearchStatus option, Pageable pageable) {
+    public Page<ProgramResponseDto> find(long adminId, ProgramSearchStatus option, Pageable pageable) {
         Member admin = memberRepository.findById(adminId).orElseThrow(() ->
                 new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -289,11 +289,11 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("프로그램을 찾을 수 없습니다",ErrorCode.PROGRAM_NOT_FOUND);
         }
 
-        return programs.map(ProgramResponse::of);
+        return programs.map(ProgramResponseDto::of);
     }
 
     @Override
-    public Page<ProgramResponse> findByUser(long userId, ProgramSearchStatus option, Pageable pageable) {
+    public Page<ProgramResponseDto> findByUser(long userId, ProgramSearchStatus option, Pageable pageable) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException(userId + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -309,10 +309,10 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("프로그램을 찾을 수 없습니다.",ErrorCode.PROGRAM_NOT_FOUND);
         }
 
-        return programs.map(ProgramResponse::of);
+        return programs.map(ProgramResponseDto::of);
     }
 
-    public ProgramResponse findByProgramId(long programId, long userId) {
+    public ProgramResponseDto findByProgramId(long programId, long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() ->
                 new CustomException(userId + "은 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -327,7 +327,7 @@ public class ProgramServiceImpl implements ProgramService {
             validMemberAccess(member,program);
         }
 
-        return ProgramResponse.of(program);
+        return ProgramResponseDto.of(program);
     }
 
     private void validTrainerAccess(Member member, Program program) {
@@ -381,7 +381,7 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     @Override
-    public Page<FindRegistrationResponse> findRegistrationsByAdmin(long adminId, RegistrationSearchStatus option, Pageable pageable) {
+    public Page<FindRegistrationResponseDto> findRegistrationsByAdmin(long adminId, RegistrationSearchStatus option, Pageable pageable) {
         // 회원 검증 및 권한 확인
         validateMemberAndAuthority(adminId, MemberRole.ADMIN);
         // Registration 조회 및 변환
@@ -389,7 +389,7 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     @Override
-    public Page<FindRegistrationResponse> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable) {
+    public Page<FindRegistrationResponseDto> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable) {
         // 회원 검증
         Member member = validateMemberAndAuthority(userId, null);
         // Registration 조회 및 변환
@@ -405,7 +405,7 @@ public class ProgramServiceImpl implements ProgramService {
         return member;
     }
 
-    private Page<FindRegistrationResponse> findAndConvertRegistrations(RegistrationSearchStatus option, Pageable pageable, Member member) {
+    private Page<FindRegistrationResponseDto> findAndConvertRegistrations(RegistrationSearchStatus option, Pageable pageable, Member member) {
         Page<Registration> registrations;
         if (member == null) {
             registrations = findRegistration(option, pageable);
@@ -417,7 +417,7 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
-        return registrations.map(FindRegistrationResponse::of);
+        return registrations.map(FindRegistrationResponseDto::of);
     }
 
     //todo : 리팩토링 여부 생각, INVALID 조회 추가

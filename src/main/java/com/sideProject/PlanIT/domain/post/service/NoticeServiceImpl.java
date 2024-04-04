@@ -10,10 +10,9 @@ import com.sideProject.PlanIT.domain.post.entity.Notice;
 import com.sideProject.PlanIT.domain.post.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,19 +55,15 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeResponseDto> findAllNotices() {
-        List<Notice> notices = noticeRepository.findAll();
-        return notices.stream()
-                .map(NoticeResponseDto::of)
-                .collect(Collectors.toList());
+    public Page<NoticeResponseDto> findAllNotices(Pageable pageable) {
+        Page<Notice> notices = noticeRepository.findAll(pageable);
+        return notices.map(NoticeResponseDto::of);
     }
 
     @Override
-    public List<NoticeResponseDto> findAllNoticesInTime() {
-        List<Notice> notices = noticeRepository.findByStartAtBeforeAndEndAtAfter();
-        return notices.stream()
-                .map(NoticeResponseDto::of)
-                .collect(Collectors.toList());
+    public Page<NoticeResponseDto> findAllNoticesInTime(Pageable pageable) {
+        Page<Notice> notices = noticeRepository.findByStartAtBeforeAndEndAtAfter(pageable);
+        return notices.map(NoticeResponseDto::of);
     }
 
     public NoticeResponseDto findNotice(Long notice_id) {
