@@ -2,8 +2,6 @@ package com.sideProject.PlanIT.domain.reservation.service;
 
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
-import com.sideProject.PlanIT.domain.product.entity.Product;
-import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
@@ -15,9 +13,10 @@ import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
-import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorkTimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final ProgramRepository programRepository;
-    private final WorktimeRepository worktimeRepository;
+    private final WorkTimeRepository workTimeRepository;
 
     @Override
     @Transactional
@@ -54,11 +53,21 @@ public class ReservationServiceImpl implements ReservationService {
                 new CustomException(member.getId() + "은 직원이 아닙니다.", ErrorCode.NO_AUTHORITY)
         );
 
+        // 해당 직원의 해당 요일의 근무 시간 조회
+        Week week = Week.from(reservedDate);
+        List<WorkTime> workTimesForDay = workTimeRepository.findByEmployeeIdAndWeek(employee.getId(), week);
+
         List<LocalDateTime> reservedDateTimes = createLocalDateTimes(reservedDate, reservedTimes);
 
         List<Reservation> existingReservations
                 = reservationRepository.findByEmployeeAndReservedTimeIn(employee, reservedDateTimes);
 
+        //근무시간 내인지 체크
+        for(LocalDateTime dateTime: reservedDateTimes) {
+            if(isAvailableForReservation(dateTime, workTimesForDay)) {
+                throw new CustomException(employee.getId() + " " + dateTime + "은 근무시간 입니다.", ErrorCode.EMPLOYEE_NOT_FOUND);
+            }
+        }
 
         // 기존 예약 삭제
         List<Reservation> reservedReservations = existingReservations.stream()
@@ -82,6 +91,16 @@ public class ReservationServiceImpl implements ReservationService {
         });
 
         return "ok";
+    }
+
+    // 예약 가능성 확인: 지정된 예약 시간이 직원의 근무 시간 외인지 확인
+    private boolean isAvailableForReservation(LocalDateTime dateTime, List<WorkTime> workTimesForDay) {
+        LocalTime time = dateTime.toLocalTime();
+
+        return workTimesForDay.stream()
+                .noneMatch(workTime ->
+                        (time.isAfter(workTime.getStartAt()) || time.equals(workTime.getStartAt())) &&
+                                (time.isBefore(workTime.getEndAt()) || time.equals(workTime.getEndAt())));
     }
 
     public static List<LocalDateTime> createLocalDateTimes(LocalDate date, List<LocalTime> times) {
@@ -143,7 +162,7 @@ public class ReservationServiceImpl implements ReservationService {
             reservations = findReservationByEmployee(employee,startOfWeek,endOfWeek,option);
 
             //예약 시간이 출퇴근 시간 사이에 존재하는지 확인
-            List<WorkTime> workTimes = worktimeRepository.findByEmployeeId(employee.getId());
+            List<WorkTime> workTimes = workTimeRepository.findByEmployeeId(employee.getId());
             reservations = reservations.stream()
                     .filter(reservation -> !reservation.isWithinEmployeeWorkTime(workTimes))
                     .toList();
@@ -200,7 +219,7 @@ public class ReservationServiceImpl implements ReservationService {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
                 new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        List<WorkTime> workTimes = worktimeRepository.findByEmployeeId(employeeId);
+        List<WorkTime> workTimes = workTimeRepository.findByEmployeeId(employeeId);
         List<Reservation> reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
 
 

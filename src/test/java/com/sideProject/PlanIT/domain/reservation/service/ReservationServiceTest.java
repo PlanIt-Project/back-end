@@ -6,7 +6,6 @@ import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.product.repository.ProductRepository;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
-import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
@@ -22,7 +21,7 @@ import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
-import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorkTimeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +63,7 @@ class ReservationServiceTest {
     @Autowired
     ReservationService reservationService;
     @Autowired
-    WorktimeRepository worktimeRepository;
+    WorkTimeRepository worktimeRepository;
 
     DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
 
@@ -271,6 +270,34 @@ class ReservationServiceTest {
             assertThatThrownBy(() -> reservationService.changeAvailability(date,times, trainer.getId()))
                     .isInstanceOf(CustomException.class)
                     .hasMessage(trainer.getId() + "은 직원이 아닙니다.");
+        }
+
+        @DisplayName("실패 : 근무시간 내에는 예약이 설정이 불가능하다")
+        @Test
+        void addReservation6() {
+            //given
+            Employee trainer = initTrainer("trainer");
+
+            WorkTime workTime = WorkTime.builder()
+                    .employee(trainer)
+                    .week(Week.Tue)
+                    .startAt(LocalTime.of(10,0,0))
+                    .endAt(LocalTime.of(11,0,0))
+                    .build();
+            worktimeRepository.save(workTime);
+
+            LocalDate date = LocalDate.of(2023,3,19);
+            LocalTime time1 = LocalTime.of(10, 0);
+            LocalTime time2 = LocalTime.of(11, 0, 0);
+            LocalTime time3 = LocalTime.of(12, 0, 0);
+            LocalTime time4 = LocalTime.of(13, 0, 0);
+
+            List<LocalTime> times = List.of(time1, time2, time3, time4);
+            //when
+            //then
+            assertThatThrownBy(() -> reservationService.changeAvailability(date,times, trainer.getId()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(trainer.getId() + " 2023-03-19T10:00은 근무시간 입니다.");
         }
     }
 

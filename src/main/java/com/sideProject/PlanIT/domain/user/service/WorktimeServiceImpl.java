@@ -3,8 +3,6 @@ package com.sideProject.PlanIT.domain.user.service;
 import com.sideProject.PlanIT.common.response.CustomException;
 import com.sideProject.PlanIT.common.response.ErrorCode;
 
-import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
-import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponse;
@@ -15,7 +13,7 @@ import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
-import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorkTimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +33,7 @@ public class WorktimeServiceImpl implements WorktimeService {
     // 트레이너 출퇴근 등록
     private final EmployeeRepository employeeRepository;
     private final MemberRepository memberRepository;
-    private final WorktimeRepository worktimeRepository;
+    private final WorkTimeRepository worktimeRepository;
     @Override
     public TrainerScheduleRegistrationResponse trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id){
 

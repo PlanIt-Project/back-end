@@ -41,6 +41,7 @@ public enum ErrorCode {
     TrainerSchedule_NOT_FOUND(404, "트레이너 일정을 찾을 수 없습니다"),
   
     NOT_SUSPEND_PROGRAM(422, "일시정지 요청이 거부되었습니다."),
+    IS_WORK_TIME(422, "근무 시간에는 예약설정이 불가능합니다."),
     SUSPEND_REQUEST_DENIED(422, "일시정지 요청이 거부되었습니다.");
 
 
