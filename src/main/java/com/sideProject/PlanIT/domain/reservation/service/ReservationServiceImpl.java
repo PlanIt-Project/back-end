@@ -13,9 +13,11 @@ import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
 import com.sideProject.PlanIT.domain.reservation.repository.ReservationRepository;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
+import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
     private final ProgramRepository programRepository;
+    private final WorktimeRepository worktimeRepository;
 
     @Override
     @Transactional
@@ -138,6 +141,12 @@ public class ReservationServiceImpl implements ReservationService {
                     new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
             );
             reservations = findReservationByEmployee(employee,startOfWeek,endOfWeek,option);
+
+            //예약 시간이 출퇴근 시간 사이에 존재하는지 확인
+            List<WorkTime> workTimes = worktimeRepository.findByEmployeeId(employee.getId());
+            reservations = reservations.stream()
+                    .filter(reservation -> !reservation.isWithinEmployeeWorkTime(workTimes))
+                    .toList();
         } else {
             reservations = findReservationByMember(member,startOfWeek,endOfWeek,option);
         }
@@ -187,14 +196,16 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDateTime startOfWeek = calStartOfDay(date);
         LocalDateTime endOfWeek = calEndOfDay(date);
 
-        List<Reservation> reservations;
         //트레이너이면
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
                 new CustomException("존재하지 않는 트레이너입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
-        reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+        List<WorkTime> workTimes = worktimeRepository.findByEmployeeId(employeeId);
+        List<Reservation> reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
+
 
         return reservations.stream()
+                .filter(reservation -> !reservation.isWithinEmployeeWorkTime(workTimes))
                 .map(ReservationResponse::of)
                 .toList();
     }

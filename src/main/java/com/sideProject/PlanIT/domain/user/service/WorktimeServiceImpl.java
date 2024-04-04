@@ -45,10 +45,15 @@ public class WorktimeServiceImpl implements WorktimeService {
         Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() -> new CustomException("존재하지 않는 직원입니다", ErrorCode.EMPLOYEE_NOT_FOUND));
 
 
-    for (TrainerScheduleRequestDto requestdto : request){
-        worktimeRepository.save(WorkTime.builder().week(requestdto.getWeek()).startAt(requestdto.getStartAt()).endAt(requestdto.getEndAt()).employee(trainer).build());
+        for (TrainerScheduleRequestDto requestdto : request){
+            worktimeRepository.save(WorkTime.builder()
+                    .week(requestdto.getWeek())
+                    .startAt(requestdto.getStartAt())
+                    .endAt(requestdto.getEndAt())
+                    .employee(trainer)
+                    .build());
 
-    }
+        }
         return TrainerScheduleRegistrationResponse.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
     }
 

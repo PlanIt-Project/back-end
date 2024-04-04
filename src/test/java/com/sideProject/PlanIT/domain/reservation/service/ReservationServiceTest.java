@@ -17,9 +17,12 @@ import com.sideProject.PlanIT.domain.reservation.entity.Reservation;
 import com.sideProject.PlanIT.domain.reservation.repository.ReservationRepository;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
+import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
+import com.sideProject.PlanIT.domain.user.entity.enums.Week;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,11 +63,14 @@ class ReservationServiceTest {
     ReservationRepository reservationRepository;
     @Autowired
     ReservationService reservationService;
+    @Autowired
+    WorktimeRepository worktimeRepository;
 
     DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
 
     @AfterEach
     void tearDown() {
+        worktimeRepository.deleteAllInBatch();
         reservationRepository.deleteAllInBatch();
         programRepository.deleteAllInBatch();
         registrationRepository.deleteAllInBatch();
@@ -1546,6 +1552,105 @@ class ReservationServiceTest {
             ).contains(
                     tuple(program1.getId(),reservationTime1, ReservationStatus.RESERVED),
                     tuple(null,reservationTime2, ReservationStatus.POSSIBLE),
+                    tuple(null,reservationTime3, ReservationStatus.POSSIBLE)
+            );
+            assertThat(result2).hasSize(1);
+            assertThat(result2.get(0)).extracting(
+                    "programId","reservationTime", "status"
+            ).containsExactly(
+                    null,reservationTime4, ReservationStatus.POSSIBLE);
+        }
+
+        @DisplayName("트레이너의 출근 시간 외의 예약을 조회 가능하다")
+        @Test
+        void findReservationForDayByEmployee2(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(0);
+            Product product = initProduct("PT 30회권", periodOfTenDays,30,ProductType.PT);
+            Employee trainer = initTrainer("trainer");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2024-03-10 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-03-10 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .employee(trainer)
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2024-03-10", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program program1 = programRepository.save(program);
+
+            WorkTime workTime = WorkTime.builder()
+                    .employee(trainer)
+                    .week(Week.Tue)
+                    .startAt(LocalTime.of(10,0,0))
+                    .endAt(LocalTime.of(11,0,0))
+                    .build();
+            worktimeRepository.save(workTime);
+
+            LocalDateTime reservationTime1 = LocalDateTime.of(2024, 3, 19, 10, 0, 0);
+            Reservation reservation1 = Reservation.builder()
+                    .reservedTime(reservationTime1)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime2= LocalDateTime.of(2024, 3, 19, 11, 0, 0);
+            Reservation reservation2 = Reservation.builder()
+                    .reservedTime(reservationTime2)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime3 = LocalDateTime.of(2024, 3, 19, 12, 0, 0);
+            Reservation reservation3 = Reservation.builder()
+                    .reservedTime(reservationTime3)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime4 = LocalDateTime.of(2024, 3, 20, 12, 0, 0);
+            Reservation reservation4 = Reservation.builder()
+                    .reservedTime(reservationTime4)
+                    .employee(trainer)
+                    .status(ReservationStatus.POSSIBLE)
+                    .classTime(LocalTime.of(1,0))
+                    .build();
+
+            LocalDateTime reservationTime = LocalDateTime.of(2024, 3, 16, 10, 0, 0);
+
+            reservation1.reservation(program1,member1,reservationTime);
+
+            LocalDate today = LocalDate.of(2024, 3, 19);
+            LocalDate today2 = LocalDate.of(2024, 3, 20);
+
+            List<Reservation> reservations = List.of(reservation1,reservation2,reservation3,reservation4);
+            reservationRepository.saveAll(reservations);
+            //when
+            List<ReservationResponse> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
+            List<ReservationResponse> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
+
+
+            //then
+            assertThat(result1).hasSize(1);
+            assertThat(result1).extracting(
+                    "programId","reservationTime", "status"
+            ).contains(
                     tuple(null,reservationTime3, ReservationStatus.POSSIBLE)
             );
             assertThat(result2).hasSize(1);
