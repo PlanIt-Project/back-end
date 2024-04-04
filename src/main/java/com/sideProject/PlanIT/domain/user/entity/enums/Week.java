@@ -8,11 +8,11 @@ public enum Week {
 
     Mon(DayOfWeek.MONDAY),    // 월
     Tue(DayOfWeek.TUESDAY),   // 화
-    Wed(DayOfWeek.WEDNESDAY), // 수
-    Thu(DayOfWeek.THURSDAY),  // 목
-    Fri(DayOfWeek.FRIDAY),    // 금
-    Sat(DayOfWeek.SATURDAY),  // 토
-    Sun(DayOfWeek.SUNDAY);    // 일
+    wed(DayOfWeek.WEDNESDAY), // 수
+    thu(DayOfWeek.THURSDAY),  // 목
+    fri(DayOfWeek.FRIDAY),    // 금
+    sat(DayOfWeek.SATURDAY),  // 토
+    sun(DayOfWeek.SUNDAY);    // 일
 
     private final DayOfWeek dayOfWeek;
 
