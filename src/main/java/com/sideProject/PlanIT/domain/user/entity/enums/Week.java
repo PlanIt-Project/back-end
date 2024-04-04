@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public enum Week {
-
+    //todo : week 양식 수정
     Mon(DayOfWeek.MONDAY),    // 월
     Tue(DayOfWeek.TUESDAY),   // 화
     wed(DayOfWeek.WEDNESDAY), // 수
