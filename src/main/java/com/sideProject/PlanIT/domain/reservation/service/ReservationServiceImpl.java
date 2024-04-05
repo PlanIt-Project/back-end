@@ -225,7 +225,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         return reservations.stream()
                 .filter(reservation -> !reservation.isWithinEmployeeWorkTime(workTimes))
-                .map(ReservationResponse::of)
+                .map(ReservationResponseDto::of)
                 .toList();
     }
 

@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
-public class TrainerSchduleChangeRequestDto {
+public class TrainerScheduleChangeRequestDto {
     private LocalTime startAt;
     private LocalTime endAt;
 
