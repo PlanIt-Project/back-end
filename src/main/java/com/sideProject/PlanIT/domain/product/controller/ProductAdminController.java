@@ -18,7 +18,7 @@ public class ProductAdminController {
         return ApiResponse.ok(productService.createProduct(productRequestDto));
     }
 
-    @PutMapping("/{product_id}")
+    @DeleteMapping("/{product_id}")
     public ApiResponse<String> stopSelling(@PathVariable Long product_id) {
         return ApiResponse.ok(productService.stopProductSell(product_id));
     }

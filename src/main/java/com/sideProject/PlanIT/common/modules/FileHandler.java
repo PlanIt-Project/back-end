@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -29,7 +31,12 @@ public class FileHandler {
             File dest = new File(fileStorageDir + File.separator + fileName);
             file.transferTo(dest);
 
-            return fileName;
+            String fileExtension = getFileExtension(fileName);
+            if (isImageFile(fileExtension)) {
+                return "/image/" + fileName;
+            } else {
+                return "/file/" + fileName;
+            }
         } catch (IOException e) {
             log.error(e.getMessage());
             return "이미지 업로드 오류 발생";
@@ -54,6 +61,20 @@ public class FileHandler {
 
     private String getUniqueFileName(String fileName) {
         return UUID.randomUUID() + fileName;
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastIndex = fileName.lastIndexOf('.');
+        if (lastIndex > 0) {
+            return fileName.substring(lastIndex + 1);
+        }
+        return "";
+    }
+
+    private boolean isImageFile(String fileExtension) {
+        // 이미지 파일 확장자 리스트
+        List<String> imageExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+        return imageExtensions.contains(fileExtension.toLowerCase());
     }
 
 }
