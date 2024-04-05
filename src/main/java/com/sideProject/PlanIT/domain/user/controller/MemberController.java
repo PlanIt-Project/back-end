@@ -29,23 +29,23 @@ public class MemberController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ApiResponse<Long> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        return ApiResponse.ok(memberService.signUp(memberSignUpRequestDto).getId());
+    public ApiResponse<Long> signUp(@RequestBody MemberSignUpRequestDto request) {
+        return ApiResponse.ok(memberService.signUp(request).getId());
     }
 
     @PostMapping("/email")
-    public ApiResponse<String> mailSend(@RequestBody @Valid EmailSendReqeustDto emailSendReqeustDto) {
-        return ApiResponse.ok(emailService.joinEmail(emailSendReqeustDto.getEmail()));
+    public ApiResponse<String> mailSend(@RequestBody @Valid EmailSendReqeustDto request) {
+        return ApiResponse.ok(emailService.joinEmail(request.getEmail()));
     }
 
     @PostMapping("/email/check")
-    public ApiResponse<String> mailValidation(@RequestBody @Valid EmailValidationRequestDto emailValidationRequestDto) {
-        return ApiResponse.ok(emailService.validEmail(emailValidationRequestDto));
+    public ApiResponse<String> mailValidation(@RequestBody @Valid EmailValidationRequestDto request) {
+        return ApiResponse.ok(emailService.validEmail(request));
     }
 
     @PostMapping("/signin")
-    public ApiResponse<JwtResponseDto> signIn(@RequestBody MemberSignInRequestDto memberSignInRequestDto) {
-        return ApiResponse.ok(memberService.memberValidation(memberSignInRequestDto));
+    public ApiResponse<JwtResponseDto> signIn(@RequestBody MemberSignInRequestDto request) {
+        return ApiResponse.ok(memberService.memberValidation(request));
     }
 
     @GetMapping("/refresh")
@@ -59,13 +59,13 @@ public class MemberController {
     }
 
     @PutMapping
-    public ApiResponse<String> editMember(Principal principal, @RequestBody MemberEditRequestDto memberEditRequestDto) {
-        return ApiResponse.ok(memberService.editMember(Long.parseLong(principal.getName()), memberEditRequestDto));
+    public ApiResponse<String> editMember(Principal principal, @RequestBody MemberEditRequestDto request) {
+        return ApiResponse.ok(memberService.editMember(Long.parseLong(principal.getName()), request));
     }
 
     @PutMapping("/password")
-    public ApiResponse<String> changePassword(Principal principal, @RequestBody MemberChangePasswordRequestDto memberChangePasswordRequestDto) {
-        return ApiResponse.ok(memberService.changePassword(Long.parseLong(principal.getName()), memberChangePasswordRequestDto));
+    public ApiResponse<String> changePassword(Principal principal, @RequestBody MemberChangePasswordRequestDto request) {
+        return ApiResponse.ok(memberService.changePassword(Long.parseLong(principal.getName()), request));
     }
 
     @GetMapping
