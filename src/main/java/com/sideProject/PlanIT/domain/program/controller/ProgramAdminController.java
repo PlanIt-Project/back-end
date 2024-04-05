@@ -35,8 +35,6 @@ public class ProgramAdminController {
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option,
             @PageableDefault(size = 10) Pageable pageable,
             Principal principal) {
-        //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
-        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         Long id = Long.parseLong(principal.getName());
 
         return ApiResponse.ok(
@@ -50,7 +48,6 @@ public class ProgramAdminController {
             @PathVariable("id") Long id,
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option) {
-        //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
         return ApiResponse.ok(
                 programService.findByUser(id, option, pageable)
         );

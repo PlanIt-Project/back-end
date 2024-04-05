@@ -13,7 +13,7 @@ import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
 import com.sideProject.PlanIT.domain.user.repository.MemberRepository;
-import com.sideProject.PlanIT.domain.user.repository.WorktimeRepository;
+import com.sideProject.PlanIT.domain.user.repository.WorkTimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,7 @@ public class WorktimeServiceImpl implements WorktimeService {
     // 트레이너 출퇴근 등록
     private final EmployeeRepository employeeRepository;
     private final MemberRepository memberRepository;
-    private final WorktimeRepository worktimeRepository;
+    private final WorkTimeRepository worktimeRepository;
     @Override
     public TrainerScheduleRegistrationResponseDto trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id){
 
@@ -41,11 +41,15 @@ public class WorktimeServiceImpl implements WorktimeService {
         Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() -> new CustomException("존재하지 않는 직원입니다", ErrorCode.EMPLOYEE_NOT_FOUND));
 
 
-    for (TrainerScheduleRequestDto requestdto : request){
-        worktimeRepository.save(WorkTime.builder().week(requestdto.getWeek()).startAt(requestdto.getStartAt()).endAt(requestdto.getEndAt()).employee(trainer).build());
+        for (TrainerScheduleRequestDto requestdto : request){
+            worktimeRepository.save(WorkTime.builder()
+                    .week(requestdto.getWeek())
+                    .startAt(requestdto.getStartAt())
+                    .endAt(requestdto.getEndAt())
+                    .employee(trainer)
+                    .build());
 
-    }
-        return TrainerScheduleRegistrationResponseDto.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
+        return TrainerScheduleRegistrationResponse.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
     }
 
     // 특정 일정 가져오기
