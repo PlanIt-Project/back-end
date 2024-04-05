@@ -1,11 +1,9 @@
 package com.sideProject.PlanIT.domain.user.service;
 
-import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerSchduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleRequestDto;
-import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponse;
+import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleRegistrationResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleResponseDto;
-import com.sideProject.PlanIT.domain.user.entity.WorkTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +11,7 @@ import java.util.List;
 
 public interface WorktimeService {
     // 트레이너 출퇴근 등록
-    public TrainerScheduleRegistrationResponse trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id);
+    public TrainerScheduleRegistrationResponseDto trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id);
     // 트레이너 출퇴근 수정
     public String trainerScheduleChange(TrainerSchduleChangeRequestDto request, Long schedule_id);
     // 트레이너 출퇴근 전체 조회

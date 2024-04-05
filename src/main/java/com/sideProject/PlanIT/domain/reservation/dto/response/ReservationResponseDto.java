@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Slf4j
 @Getter
-public class ReservationResponse {
+public class ReservationResponseDto {
     Long id;
     MemberSemiResponseDto member;
     EmployeeSemiResponseDto employee;
@@ -27,7 +27,7 @@ public class ReservationResponse {
     ReservationStatus status;
 
     @Builder
-    public ReservationResponse(
+    public ReservationResponseDto(
             Long id,
             MemberSemiResponseDto member,
             EmployeeSemiResponseDto employee,
@@ -47,9 +47,9 @@ public class ReservationResponse {
         this.status = status;
     }
 
-    public static ReservationResponse of(Reservation reservation) {
+    public static ReservationResponseDto of(Reservation reservation) {
         if(reservation.getStatus() == ReservationStatus.POSSIBLE) {
-            return ReservationResponse.builder()
+            return ReservationResponseDto.builder()
                     .id(reservation.getId())
                     .reservationTime(reservation.getReservedTime())
                     .employee(EmployeeSemiResponseDto.of(reservation.getEmployee()))
@@ -57,7 +57,7 @@ public class ReservationResponse {
                     .build();
         }
 
-        return ReservationResponse.builder()
+        return ReservationResponseDto.builder()
                 .id(reservation.getId())
                 .member(Optional.ofNullable(reservation.getMember())
                         .map(MemberSemiResponseDto::of)

@@ -2,9 +2,9 @@ package com.sideProject.PlanIT.domain.reservation.controller;
 
 import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.reservation.controller.ENUM.ReservationFindOption;
-import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRequest;
-import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequest;
-import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponse;
+import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRequestDto;
+import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequestDto;
+import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponseDto;
 import com.sideProject.PlanIT.domain.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class ReservationController {
     @PutMapping("/change")
     public ApiResponse<String> changeAvailability(
             Principal principal,
-            @RequestBody ChangeReservationRequest request
+            @RequestBody ChangeReservationRequestDto request
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
@@ -42,7 +42,7 @@ public class ReservationController {
     public ApiResponse<String> reservation(
             Principal principal,
             @PathVariable("reservationId") Long reservationId,
-            @RequestBody ReservationRequest request
+            @RequestBody ReservationRequestDto request
     ) {
         LocalDateTime now = LocalDateTime.now();
         return ApiResponse.ok(
@@ -56,7 +56,7 @@ public class ReservationController {
     }
 
     @GetMapping("")
-    public ApiResponse<Map<LocalDate, List<ReservationResponse>>> findReservation(
+    public ApiResponse<Map<LocalDate, List<ReservationResponseDto>>> findReservation(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(value = "option", defaultValue = "ALL") ReservationFindOption option,
@@ -75,7 +75,7 @@ public class ReservationController {
     }
 
     @GetMapping("/trainer/{employeeId}")
-    public ApiResponse<List<ReservationResponse>> findReservationByEmployee(
+    public ApiResponse<List<ReservationResponseDto>> findReservationByEmployee(
             @RequestParam(value = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable("employeeId") Long employeeId

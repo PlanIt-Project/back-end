@@ -7,7 +7,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-public class ProgramRegistraion {
+public class ProgramRegistraionDto {
     @Getter
     @AllArgsConstructor
     public static class programRegistrationrequest {
