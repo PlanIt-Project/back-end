@@ -33,7 +33,7 @@ public class FileController {
         }
     }
 
-    @GetMapping("file/{file_name}")
+    @GetMapping("/file/{file_name}")
     public ResponseEntity<byte[]> loadFile(@PathVariable String file_name) {
         try {
             byte[] fileBytes = fileHandler.loadFile(file_name);
