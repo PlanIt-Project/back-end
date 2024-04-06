@@ -5,12 +5,11 @@ import com.sideProject.PlanIT.domain.post.dto.request.BannerRequestDto;
 import com.sideProject.PlanIT.domain.post.dto.response.BannerResponseDto;
 import com.sideProject.PlanIT.domain.post.service.BannerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/admin/banner")
@@ -20,15 +19,15 @@ public class BannerAdminController {
     private final BannerService bannerService;
 
     @PostMapping
-    public ApiResponse<String> createBanner(@ModelAttribute BannerRequestDto bannerRequestDto
+    public ApiResponse<String> createBanner(@ModelAttribute BannerRequestDto request
     ) {
-        log.info(bannerRequestDto.getTitle());
-        return ApiResponse.ok(bannerService.createBanner(bannerRequestDto));
+        log.info(request.getTitle());
+        return ApiResponse.ok(bannerService.createBanner(request));
     }
 
     @PutMapping("/{banner_id}")
-    public ApiResponse<String> editBanner(@PathVariable Long banner_id, @ModelAttribute BannerRequestDto bannerRequestDto) {
-        return ApiResponse.ok(bannerService.editBanner(banner_id, bannerRequestDto));
+    public ApiResponse<String> editBanner(@PathVariable Long banner_id, @ModelAttribute BannerRequestDto request) {
+        return ApiResponse.ok(bannerService.editBanner(banner_id, request));
     }
 
     @DeleteMapping("/{banner_id}")

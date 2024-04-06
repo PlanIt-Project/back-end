@@ -14,8 +14,8 @@ public class ProductAdminController {
     private final ProductService productService;
 
     @PostMapping
-    public ApiResponse<Product> createProduct(@RequestBody ProductRequestDto productRequestDto) {
-        return ApiResponse.ok(productService.createProduct(productRequestDto));
+    public ApiResponse<Product> createProduct(@RequestBody ProductRequestDto request) {
+        return ApiResponse.ok(productService.createProduct(request));
     }
 
     @DeleteMapping("/{product_id}")

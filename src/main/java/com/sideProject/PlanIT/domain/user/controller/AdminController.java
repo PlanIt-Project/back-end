@@ -33,7 +33,7 @@ public class AdminController {
 
 
     @PutMapping("/employee/{member_id}")
-    public ApiResponse<String> grantEmployeeAuth(@PathVariable(name = "member_id") Long member_id, @RequestBody TrainerRequestDto trainerRequestDto) {
-        return ApiResponse.ok(memberService.grantEmployeeAuth(member_id, trainerRequestDto));
+    public ApiResponse<String> grantEmployeeAuth(@PathVariable(name = "member_id") Long member_id, @RequestBody TrainerRequestDto request) {
+        return ApiResponse.ok(memberService.grantEmployeeAuth(member_id, request));
     }
 }
