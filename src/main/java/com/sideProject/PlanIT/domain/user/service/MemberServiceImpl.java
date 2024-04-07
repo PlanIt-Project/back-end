@@ -45,15 +45,17 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.NO_EXIST_PASSWORD);
         }
         String encryptedPassword = passwordEncoder.encode(memberSignUpRequestDto.getPassword());
-        return memberRepository.save(Member.builder()
+        return memberRepository.save(
+                Member.builder()
                         .email(memberSignUpRequestDto.getEmail())
                         .password(encryptedPassword)
                         .name(memberSignUpRequestDto.getName())
                         .phone_number(memberSignUpRequestDto.getPhone_number())
                         .birth(memberSignUpRequestDto.getBirth())
                         .address(memberSignUpRequestDto.getAddress())
-                        .role(MemberRole.MEMBER)
-                .build());
+                        .gender(memberSignUpRequestDto.getGender())
+                        .role(MemberRole.MEMBER).build()
+        );
     }
 
     @Override

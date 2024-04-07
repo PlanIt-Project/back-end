@@ -2876,4 +2876,77 @@ class ProgramServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("MemberShipExpireTest")
+    class MemberShipExpireTest {
+
+        @DisplayName("기간이 만료된 회원권의 상태를 만료상태로 바꾼다.")
+        @Test
+        void memberShipExpireTest1(){
+            //given
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Employee trainer = initTrainer("employee1");
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+            Member member2 = initMember("tester2",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program);
+
+            Registration registration2 = Registration.builder()
+                    .product(product)
+                    .member(member2)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration2 = registrationRepository.save(registration2);
+
+            Program program2 = Program.builder()
+                    .employee(trainer)
+                    .registration(saveRegistration2)
+                    .product(saveRegistration2.getProduct())
+                    .member(saveRegistration2.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            programRepository.save(program2);
+
+            LocalDate now = LocalDate.of(2000,2,2);
+
+            //when
+            String result = programService.expiredMemberShipProgram(now);
+            List<Program> expiredProgram = programRepository.findByStatusIn(ProgramStatus.forUnValid());
+
+            //then
+            assertThat(result).isEqualTo("ok");
+            assertThat(expiredProgram.size()).isEqualTo(2);
+
+        }
+    }
+
 }

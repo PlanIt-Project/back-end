@@ -27,4 +27,5 @@ public interface ProgramService {
     public Page<FindRegistrationResponseDto> findRegistrationsByUser(long userId, RegistrationSearchStatus option, Pageable pageable);
     public Long suspendProgram(Long id, LocalDate now);
     public Long resumeProgram(Long id, LocalDate now);
+    public String expiredMemberShipProgram(LocalDate now);
 }
