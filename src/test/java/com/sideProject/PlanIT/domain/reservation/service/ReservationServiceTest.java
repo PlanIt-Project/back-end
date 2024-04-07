@@ -76,6 +76,7 @@ class ReservationServiceTest {
         employeeRepository.deleteAllInBatch();
         memberRepository.deleteAllInBatch();
         productRepository.deleteAllInBatch();
+
     }
 
     private Product initProduct(String name, Period period, int number, ProductType type) {
@@ -280,7 +281,7 @@ class ReservationServiceTest {
 
             WorkTime workTime = WorkTime.builder()
                     .employee(trainer)
-                    .week(Week.Tue)
+                    .week(Week.sun)
                     .startAt(LocalTime.of(10,0,0))
                     .endAt(LocalTime.of(11,0,0))
                     .build();
@@ -295,7 +296,7 @@ class ReservationServiceTest {
             List<LocalTime> times = List.of(time1, time2, time3, time4);
             //when
             //then
-            assertThatThrownBy(() -> reservationService.changeAvailability(date,times, trainer.getId()))
+            assertThatThrownBy(() -> reservationService.changeAvailability(date,times, trainer.getMember().getId()))
                     .isInstanceOf(CustomException.class)
                     .hasMessage(trainer.getId() + " 2023-03-19T10:00은 근무시간 입니다.");
         }
@@ -1669,8 +1670,8 @@ class ReservationServiceTest {
             List<Reservation> reservations = List.of(reservation1,reservation2,reservation3,reservation4);
             reservationRepository.saveAll(reservations);
             //when
-            List<ReservationResponse> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
-            List<ReservationResponse> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
+            List<ReservationResponseDto> result1 = reservationService.findReservationForDayByEmployee(today, trainer.getId());
+            List<ReservationResponseDto> result2 = reservationService.findReservationForDayByEmployee(today2, trainer.getId());
 
 
             //then

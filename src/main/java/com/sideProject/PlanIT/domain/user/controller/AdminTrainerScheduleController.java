@@ -21,20 +21,20 @@ import java.util.List;
 public class AdminTrainerScheduleController {
     private final WorktimeService worktimeservice;
     // 직원 출퇴근 확인
-    @GetMapping("/trainerschedule")
+    @GetMapping("/trainer-schedule")
     public ApiResponse<Page<TrainerScheduleResponseDto>> findallTrainerSchedule(@PageableDefault(size = 10) Pageable pageable, Principal principal){
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(worktimeservice.findTrainerSchedule(id,pageable));
     }
 
     // 특정 직원 일정 수정(출퇴근)
-    @PutMapping("/trainerschedule/{schedule_id}")
+    @PutMapping("/trainer-schedule/{schedule_id}")
     public ApiResponse<String> updateTrainerSchedule(@PathVariable("schedule_id") Long id, @RequestBody TrainerScheduleChangeRequestDto request){
 
         return ApiResponse.ok(worktimeservice.trainerScheduleChange(request,id));
     }
     // 특정 직원 일정 조회
-    @GetMapping("/trainerschedule/{trainer_id}")
+    @GetMapping("/trainer-schedule/{trainer_id}")
     public ApiResponse<List<TrainerScheduleResponseDto>> findTrainerSchedule(@PathVariable("trainer_id") Long trainer_id, Principal principal, Pageable pageable){
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(worktimeservice.findOneTrainerSchedule(trainer_id,id));
