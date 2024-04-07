@@ -20,7 +20,7 @@ public class MemberResponseDto {
     private String phone_number;
     private LocalDate birth;
     private String address;
-    private String gender;
+    private Gender gender;
     private MemberRole role;
     private TrainerSubResponseDto trainerInfo;
 
@@ -44,6 +44,7 @@ public class MemberResponseDto {
         this.address = address;
         this.role = role;
         this.trainerInfo = trainerInfo;
+        this.gender = gender;
     }
 
     public static MemberResponseDto of(Member member, TrainerSubResponseDto trainerSubResponseDto) {
