@@ -21,13 +21,13 @@ import java.util.List;
 
 public class TrainerScheduleController {
     private final WorktimeService worktimeservice;
-    @PostMapping("/trainerSchedule")
+    @PostMapping("/trainer-schedule")
     public ApiResponse<?> trainerScheduleRegistration(@RequestBody List<TrainerScheduleRequestDto> request, Principal principal) {
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(worktimeservice.trainerScheduleRegistration(request,id));
     }
 
-    @GetMapping("/trainerSchedule/{trainer_id}")
+    @GetMapping("/trainer-schedule/{trainer_id}")
     public ApiResponse<List<TrainerScheduleResponseDto>> findTrainerSchedule(@PathVariable("trainer_id") Long trainer_id, Principal principal, Pageable pageable){
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(worktimeservice.findOneTrainerSchedule(trainer_id,id));

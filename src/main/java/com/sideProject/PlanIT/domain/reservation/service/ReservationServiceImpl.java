@@ -55,6 +55,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 해당 직원의 해당 요일의 근무 시간 조회
         Week week = Week.from(reservedDate);
+        System.out.println(week);
         List<WorkTime> workTimesForDay = workTimeRepository.findByEmployeeIdAndWeek(employee.getId(), week);
 
         List<LocalDateTime> reservedDateTimes = createLocalDateTimes(reservedDate, reservedTimes);
@@ -64,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         //근무시간 내인지 체크
         for(LocalDateTime dateTime: reservedDateTimes) {
-            if(isAvailableForReservation(dateTime, workTimesForDay)) {
+            if(!isAvailableForReservationByWorkTime(dateTime, workTimesForDay)) {
                 throw new CustomException(employee.getId() + " " + dateTime + "은 근무시간 입니다.", ErrorCode.EMPLOYEE_NOT_FOUND);
             }
         }
@@ -94,13 +95,18 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     // 예약 가능성 확인: 지정된 예약 시간이 직원의 근무 시간 외인지 확인
-    private boolean isAvailableForReservation(LocalDateTime dateTime, List<WorkTime> workTimesForDay) {
+    private boolean isAvailableForReservationByWorkTime(LocalDateTime dateTime, List<WorkTime> workTimesForDay) {
         LocalTime time = dateTime.toLocalTime();
+
+        for(WorkTime work : workTimesForDay) {
+            log.info("{} {}",work.getStartAt(),work.getEndAt());
+        }
 
         return workTimesForDay.stream()
                 .noneMatch(workTime ->
-                        (time.isAfter(workTime.getStartAt()) || time.equals(workTime.getStartAt())) &&
-                                (time.isBefore(workTime.getEndAt()) || time.equals(workTime.getEndAt())));
+                        (time.isAfter(workTime.getStartAt()) && time.isBefore(workTime.getEndAt()))
+                                || time.equals(workTime.getStartAt())
+                                || time.equals(workTime.getEndAt()));
     }
 
     public static List<LocalDateTime> createLocalDateTimes(LocalDate date, List<LocalTime> times) {
@@ -199,15 +205,22 @@ public class ReservationServiceImpl implements ReservationService {
             LocalDateTime endTime,
             ReservationFindOption option
     ) {
-        if(option == ReservationFindOption.ALL) {
-            return reservationRepository.findByMemberAndDateTimeBetween(member,startTime,endTime);
-        } else if (option == ReservationFindOption.RESERVED) {
-            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.RESERVED,startTime,endTime);
-        } else if (option == ReservationFindOption.POSSIBLE) {
-            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.POSSIBLE,startTime,endTime);
-        } else {
-            return reservationRepository.findByMemberAndStatusAndDateTimeBetween(member,ReservationStatus.FINISHED,startTime,endTime);
+        ReservationStatus status = null;
+        switch (option) {
+            case RESERVED:
+                status = ReservationStatus.RESERVED;
+                break;
+            case POSSIBLE:
+                status = ReservationStatus.POSSIBLE;
+                break;
+            case FINISHED:
+                status = ReservationStatus.FINISHED;
+                break;
         }
+
+        return (status == null) ?
+                reservationRepository.findByMemberAndDateTimeBetween(member, startTime, endTime) :
+                reservationRepository.findByMemberAndStatusAndDateTimeBetween(member, status, startTime, endTime);
     }
 
     @Override

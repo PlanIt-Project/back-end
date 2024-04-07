@@ -51,7 +51,10 @@ public class WorktimeServiceImpl implements WorktimeService {
 
         }
 
-        return TrainerScheduleRegistrationResponseDto.of(trainer.getId(),"출퇴근시간이 등록되었습니다.");
+        return TrainerScheduleRegistrationResponseDto.of(
+                trainer.getId(),
+                "출퇴근시간이 등록되었습니다."
+        );
     }
 
     // 특정 일정 가져오기
@@ -63,7 +66,8 @@ public class WorktimeServiceImpl implements WorktimeService {
     @Override
     public String trainerScheduleChange(TrainerScheduleChangeRequestDto request, Long schedule_id){
         WorkTime TrainerSchedule = getTrainerScheduleByID(schedule_id);
-        TrainerSchedule.ChageWorktime(request.getStartAt(),request.getEndAt());
+
+        TrainerSchedule.changeWorkTime(request.getStartAt(),request.getEndAt());
 
         worktimeRepository.save(TrainerSchedule);
         return "OK";
@@ -74,7 +78,9 @@ public class WorktimeServiceImpl implements WorktimeService {
 
     @Override
     public Page<TrainerScheduleResponseDto> findTrainerSchedule(Long id, Pageable pageable){
-        Member member = memberRepository.findById(id).orElseThrow(()-> new CustomException("존재하지 않는 회원입니다.",ErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(id).orElseThrow(() ->
+                new CustomException("존재하지 않는 회원입니다.",ErrorCode.MEMBER_NOT_FOUND)
+        );
         if(member.getRole() != MemberRole.ADMIN && member.getRole() != MemberRole.TRAINER){
             throw new CustomException("권한이 없습니다.",ErrorCode.NO_AUTHORITY);
         }
@@ -89,14 +95,14 @@ public class WorktimeServiceImpl implements WorktimeService {
         if(member.getRole() != MemberRole.ADMIN && member.getRole() != MemberRole.TRAINER){
             throw new CustomException("권한이 없습니다.",ErrorCode.NO_AUTHORITY);
         }
+
         List<WorkTime> worktime = worktimeRepository.findByEmployeeId(employee_id);
         if (worktime.isEmpty()){
             throw new CustomException("일정을 찾을 수 없습니다.",ErrorCode.TrainerSchedule_NOT_FOUND);
         }
+
         return worktime.stream()
                 .map(TrainerScheduleResponseDto::of)
                 .collect(Collectors.toList());
-
     }
-
 }
