@@ -130,19 +130,18 @@ public class Program extends BaseEntity {
 
         if(this.remainedNumber == 0) {
             throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
-        }else if(this.remainedNumber ==1 ){
+        }else if(this.remainedNumber == 1 ){
             this.status = ProgramStatus.EXPIRED;
         }
         this.remainedNumber--;
     }
 
-    //todo : 에약 취소 경우 추가
     public void cancelReservation() {
         if(this.product.getType() != ProductType.PT) {
-            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+            throw new CustomException(this.id + "은 PT권이 아닙니다.", ErrorCode.EMPLOYEE_NOT_FOUND);
         }
         if(this.remainedNumber+1 > this.product.getNumber()) {
-            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+            throw new CustomException(this.id + "는 예약취소가 불가능합니다.", ErrorCode.EMPLOYEE_NOT_FOUND);
         }
 
         this.remainedNumber++;

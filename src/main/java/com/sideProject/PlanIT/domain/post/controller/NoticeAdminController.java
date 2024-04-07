@@ -17,13 +17,13 @@ public class NoticeAdminController {
     private final NoticeService noticeService;
 
     @PostMapping
-    public ApiResponse<String> createNotice(@ModelAttribute NoticeRequestDto noticeRequestDto) {
-        return ApiResponse.ok(noticeService.createNotice(noticeRequestDto));
+    public ApiResponse<String> createNotice(@ModelAttribute NoticeRequestDto request) {
+        return ApiResponse.ok(noticeService.createNotice(request));
     }
 
     @PutMapping("/{notice_id}")
-    public ApiResponse<String> editNotice(@PathVariable Long notice_id , @ModelAttribute NoticeRequestDto noticeRequestDto) {
-        return ApiResponse.ok(noticeService.editNotice(notice_id, noticeRequestDto));
+    public ApiResponse<String> editNotice(@PathVariable Long notice_id , @ModelAttribute NoticeRequestDto request) {
+        return ApiResponse.ok(noticeService.editNotice(notice_id, request));
     }
 
     @DeleteMapping("/{notice_id}")

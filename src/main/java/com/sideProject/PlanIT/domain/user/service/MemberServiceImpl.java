@@ -117,14 +117,14 @@ public class MemberServiceImpl implements MemberService {
                 new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         //트레이너면 트레이너 정보 조회
-        TrainerSubResponseDto trainerSubResponseDto = null;
+        TrainerSubResponseDto response = null;
         if(member.getRole().equals(MemberRole.TRAINER)) {
             Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
                     new CustomException(ErrorCode.EMPLOYEE_NOT_FOUND));
-            trainerSubResponseDto = TrainerSubResponseDto.of(trainer);
+            response = TrainerSubResponseDto.of(trainer);
         }
 
-        return MemberResponseDto.of(member, trainerSubResponseDto);
+        return MemberResponseDto.of(member, response);
     }
 
     @Override

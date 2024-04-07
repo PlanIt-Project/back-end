@@ -40,7 +40,7 @@ public class WorkTime {
         this.employee = employee;
     }
 
-    public void ChageWorktime(LocalTime startAt, LocalTime endAt){
+    public void changeWorkTime(LocalTime startAt, LocalTime endAt){
         this.startAt = startAt;
         this.endAt = endAt;
     }
