@@ -20,6 +20,8 @@ public enum ErrorCode {
     ALREADY_RESERVATION(400, "이미 예약 되어있습니다."),
     SAME_PASSWORD(400, "변경 비밀번호가 같습니다."),
     INVALID_RESERVATION_TIME(400, "예약 가능한 시간이 아닙니다."),
+    INVALID_BIRTH(400, "생년월일이 잘못 입력됐습니다."),
+    INVALID_INPUT(400, "입력값이 잘못 입력됐습니다."),
 
     //401
     INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),
