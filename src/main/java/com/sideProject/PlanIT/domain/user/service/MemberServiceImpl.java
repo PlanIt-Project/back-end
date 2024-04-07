@@ -147,7 +147,7 @@ public class MemberServiceImpl implements MemberService {
             members = memberRepository.findByRole(MemberRole.TRAINER,pageable);
         }
 
-        if(members == null) {
+        if(members.getContent().isEmpty()) {
             throw new CustomException("회원이 없습니다", ErrorCode.MEMBER_NOT_FOUND);
         }
 
