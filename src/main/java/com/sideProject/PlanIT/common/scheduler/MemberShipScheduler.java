@@ -3,6 +3,7 @@ package com.sideProject.PlanIT.common.scheduler;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
 import com.sideProject.PlanIT.domain.program.entity.Program;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
+import com.sideProject.PlanIT.domain.program.service.ProgramService;
 import com.sideProject.PlanIT.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -18,6 +20,7 @@ import java.util.List;
 public class MemberShipScheduler {
     private final ProgramRepository programRepository;
     private final EmailService emailService;
+    private final ProgramService programService;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void memberShipEndTimeEvent() {
@@ -29,6 +32,13 @@ public class MemberShipScheduler {
 
         sendMailToOneWeekLeft(afterOneWeek);
         sendMailToOneMonthLeft(afterOneMonth);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void memberShipExpireEvent() {
+        LocalDate toDay = LocalDate.now();
+
+        programService.expiredMemberShipProgram(toDay);
     }
 
     private void sendMailToOneWeekLeft(LocalDate afterOneWeek) {
