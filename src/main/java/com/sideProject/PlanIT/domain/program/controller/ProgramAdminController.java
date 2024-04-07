@@ -8,6 +8,7 @@ import com.sideProject.PlanIT.domain.program.dto.response.FindRegistrationRespon
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -82,7 +83,7 @@ public class ProgramAdminController {
     }
 
     @PostMapping("/approve/{id}")
-    public ApiResponse<Long> approve(@PathVariable("id") Long id, @RequestBody ApproveRequestDto request) {
+    public ApiResponse<Long> approve(@PathVariable("id") Long id, @Valid @RequestBody ApproveRequestDto request) {
         LocalDateTime now = LocalDateTime.now();
         return ApiResponse.ok(
                 programService.approve(id, request.getTrainer(), now)

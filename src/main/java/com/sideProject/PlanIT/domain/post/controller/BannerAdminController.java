@@ -21,7 +21,6 @@ public class BannerAdminController {
     @PostMapping
     public ApiResponse<String> createBanner(@ModelAttribute BannerRequestDto request
     ) {
-        log.info(request.getTitle());
         return ApiResponse.ok(bannerService.createBanner(request));
     }
 

@@ -22,5 +22,18 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> ok(T data) {return new ApiResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), data);}
 
-    public static ApiResponse<?> error(ErrorCode errorCode) {return new ApiResponse<>(errorCode.getStatus(), errorCode.getMessage(),null);}
+    public static ApiResponse<?> error(ErrorCode errorCode) {
+        return new ApiResponse<>(
+                errorCode.getStatus(),
+                errorCode.getMessage(),
+                null);
+    }
+
+    public static ApiResponse<?> error(int code, String message) {
+        return new ApiResponse<>(
+                code,
+                message,
+                null
+        );
+    }
 }

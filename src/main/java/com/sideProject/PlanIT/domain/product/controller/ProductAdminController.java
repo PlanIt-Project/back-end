@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.product.dto.request.ProductRequestDto;
 import com.sideProject.PlanIT.domain.product.entity.Product;
 import com.sideProject.PlanIT.domain.product.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class ProductAdminController {
     private final ProductService productService;
 
     @PostMapping
-    public ApiResponse<Product> createProduct(@RequestBody ProductRequestDto request) {
+    public ApiResponse<Product> createProduct(@Valid @RequestBody ProductRequestDto request) {
         return ApiResponse.ok(productService.createProduct(request));
     }
 
