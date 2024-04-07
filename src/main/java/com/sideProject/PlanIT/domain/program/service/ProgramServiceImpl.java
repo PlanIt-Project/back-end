@@ -34,7 +34,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * 프로그램 관련 Service
@@ -439,5 +441,23 @@ public class ProgramServiceImpl implements ProgramService {
         } else {
             return registrationRepository.findByStatus(RegistrationStatus.PENDING, pageable);
         }
+    }
+
+    @Override
+    public String expiredMemberShipProgram(LocalDate now) {
+        //만료 기간이 어제인 프로그램 조회
+        List<Program> expirationDatePrograms = programRepository
+                .findMembershipProgramsByEndAtAndProductType(
+                        now.minusDays(1),
+                        ProductType.MEMBERSHIP
+                );
+
+        for(Program expirationDateProgram : expirationDatePrograms) {
+            expirationDateProgram.changeToExpired();
+
+            programRepository.save(expirationDateProgram);
+        }
+
+        return "ok";
     }
 }

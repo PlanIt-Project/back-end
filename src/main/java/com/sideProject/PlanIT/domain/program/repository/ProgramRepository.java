@@ -23,7 +23,7 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     Page<Program> findByMemberIdAndStatusIn(Long memberId, List<ProgramStatus> status, Pageable pageable);
     Page<Program> findByEmployeeIdAndStatus(Long employeeId,ProgramStatus status, Pageable pageable);
     Page<Program> findByStatusIn(List<ProgramStatus> status, Pageable pageable);
-
+    List<Program> findByStatusIn(List<ProgramStatus> status);
     @Query("SELECT p FROM Program p JOIN p.product pr WHERE p.endAt = ?1 AND pr.type = ?2")
     List<Program> findMembershipProgramsByEndAtAndProductType(LocalDate endAt, ProductType productType);
 }

@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.domain.user.dto.member.response;
 
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerSubResponseDto;
+import com.sideProject.PlanIT.domain.user.entity.enums.Gender;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.AccessLevel;
@@ -19,11 +20,22 @@ public class MemberResponseDto {
     private String phone_number;
     private LocalDate birth;
     private String address;
+    private String gender;
     private MemberRole role;
     private TrainerSubResponseDto trainerInfo;
 
     @Builder
-    public MemberResponseDto(Long id, String email, String name, String phone_number, LocalDate birth, String address, MemberRole role, TrainerSubResponseDto trainerInfo) {
+    public MemberResponseDto(
+            Long id,
+            String email,
+            String name,
+            String phone_number,
+            LocalDate birth,
+            String address,
+            MemberRole role,
+            TrainerSubResponseDto trainerInfo,
+            Gender gender
+    ) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -43,6 +55,7 @@ public class MemberResponseDto {
                 .birth(member.getBirth())
                 .address(member.getAddress())
                 .role(member.getRole())
+                .gender(member.getGender())
                 .trainerInfo(trainerSubResponseDto)
                 .build();
     }
