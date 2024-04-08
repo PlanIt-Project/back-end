@@ -29,12 +29,12 @@ public class MemberController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ApiResponse<Long> signUp(@RequestBody MemberSignUpRequestDto request) {
+    public ApiResponse<Long> signUp(@Valid @RequestBody MemberSignUpRequestDto request) {
         return ApiResponse.ok(memberService.signUp(request).getId());
     }
 
     @PostMapping("/email")
-    public ApiResponse<String> mailSend(@RequestBody @Valid EmailSendReqeustDto request) {
+    public ApiResponse<String> mailSend(@RequestBody @Valid EmailSendRequestDto request) {
         return ApiResponse.ok(emailService.joinEmail(request.getEmail()));
     }
 

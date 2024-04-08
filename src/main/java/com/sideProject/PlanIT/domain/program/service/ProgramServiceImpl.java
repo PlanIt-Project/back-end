@@ -18,6 +18,7 @@ import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.repository.ProgramRepository;
 import com.sideProject.PlanIT.domain.program.repository.RegistrationRepository;
 import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequestDto;
+import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.repository.EmployeeRepository;
@@ -36,6 +37,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -419,7 +421,18 @@ public class ProgramServiceImpl implements ProgramService {
             throw new CustomException("조건을 만족하는 Registration이 없습니다.", ErrorCode.REGISTRATION_NOT_FOUND);
         }
 
-        return registrations.map(FindRegistrationResponseDto::of);
+        return registrations.map(registration -> {
+            FindRegistrationResponseDto dto = FindRegistrationResponseDto.of(registration);
+            if (registration.getTrainerId() != null) {
+                Optional<Employee> trainer = employeeRepository.findById(registration.getTrainerId());
+
+                trainer.ifPresent(employee -> dto.setTrainer(new EmployeeSemiResponseDto(
+                        employee.getId(),
+                        employee.getMember().getName())
+                ));
+            }
+            return dto;
+        });
     }
 
     //todo : 리팩토링 여부 생각, INVALID 조회 추가

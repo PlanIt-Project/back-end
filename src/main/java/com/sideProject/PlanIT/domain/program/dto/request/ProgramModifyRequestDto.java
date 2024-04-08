@@ -1,11 +1,14 @@
 package com.sideProject.PlanIT.domain.program.dto.request;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class ProgramModifyRequestDto {
 
+    @NotNull
     String startTime;
     String endTime;
     Long memberId;

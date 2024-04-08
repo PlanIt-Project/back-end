@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.product.dto.request;
 
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductSellingType;
 import com.sideProject.PlanIT.domain.product.entity.enums.ProductType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,11 +13,15 @@ import java.time.Period;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductRequestDto {
+    @NotNull(message = "상품명이 없습니다.")
     private String name;
     private Period period;
     private int number;
+    @NotNull(message = "금액이 없습니다.")
     private int price;
+    @NotNull(message = "상품 타입이 없습니다.")
     private ProductType type;
+    @NotNull(message = "판매 상태가 없습니다.")
     private ProductSellingType sellingType;
 
     @Builder

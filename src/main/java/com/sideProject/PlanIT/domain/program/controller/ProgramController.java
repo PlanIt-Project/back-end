@@ -7,6 +7,7 @@ import com.sideProject.PlanIT.domain.program.dto.response.ProgramResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.enums.ProgramSearchStatus;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationSearchStatus;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class ProgramController {
     private final ProgramService programService;
 
     @PostMapping("/registration")
-    public ApiResponse<?> registration(@RequestBody RegistrationRequestDto request, Principal principal){
+    public ApiResponse<?> registration(@Valid @RequestBody RegistrationRequestDto request, Principal principal){
         LocalDateTime now = LocalDateTime.now();
         Long id = Long.parseLong(principal.getName());
         return ApiResponse.ok(programService.registration(request, id, now));
@@ -48,8 +49,7 @@ public class ProgramController {
     public ApiResponse<ProgramResponseDto> findById(
             @PathVariable("id") Long id,
             Principal principal) {
-        //todo : spring security 개발 후 토큰에서 userID를 전달해 줘야함.
-        Long userId = Long.parseLong(principal.getName());
+        long userId = Long.parseLong(principal.getName());
         return ApiResponse.ok(
                 programService.findByProgramId(id, userId)
         );
@@ -60,7 +60,7 @@ public class ProgramController {
             @RequestParam(value = "option", required = false, defaultValue = "ALL") RegistrationSearchStatus option,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             Principal principal) {
-        Long id = Long.parseLong(principal.getName());
+        long id = Long.parseLong(principal.getName());
 
         return ApiResponse.ok(
                 programService.findRegistrationsByUser(id,option, pageable)
