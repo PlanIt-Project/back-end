@@ -2,6 +2,7 @@ package com.sideProject.PlanIT.domain.post.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ public class NoticeRequestDto {
     private MultipartFile image;
     private String content;
 
+    @Builder
     public NoticeRequestDto(String title, LocalDate startAt, LocalDate endAt, MultipartFile attachment, MultipartFile image, String content) {
         this.title = title;
         this.startAt = startAt;

@@ -29,20 +29,21 @@ public class BannerServiceImpl implements BannerService{
             .endAt(bannerRequestDto.getEndAt())
             .imagePath(fileHandler.saveFile(bannerRequestDto.getImage()))
             .build());
-        return "생성 완료";
+        return "배너 생성 완료";
     }
 
     @Override
     public String editBanner(Long banner_id, BannerRequestDto bannerRequestDto) {
         Banner bannerToEdit = bannerRepository.findById(banner_id).orElseThrow(() -> new CustomException(ErrorCode.BANNER_NOT_FOUND));
-        bannerRepository.save(bannerToEdit.update(bannerRequestDto));
-        return "수정 완료";
+        String imagePath = fileHandler.saveFile(bannerRequestDto.getImage());
+        bannerRepository.save(bannerToEdit.update(bannerRequestDto, imagePath));
+        return "배너 수정 완료";
     }
 
     @Override
     public String deleteBanner(Long banner_id) {
         bannerRepository.deleteById(banner_id);
-        return "삭제 완료";
+        return "배너 삭제 완료";
     }
 
     @Override
