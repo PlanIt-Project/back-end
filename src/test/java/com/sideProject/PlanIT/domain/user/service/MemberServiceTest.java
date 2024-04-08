@@ -278,6 +278,24 @@ public class MemberServiceTest {
             assertThat(member.getAddress()).isEqualTo("경기");
             assertThat(result).isEqualTo("수정 완료");
         }
+
+        @DisplayName("사용자가 없으면 에러를 반환한다")
+        @Test
+        void editMember2() {
+
+            // given
+            MemberEditRequestDto memberEditRequestDto = MemberEditRequestDto.builder()
+                    .name("test2")
+                    .phone_number("010-1234-5678")
+                    .birth(LocalDate.of(2001, 1, 1))
+                    .address("경기")
+                    .build();
+
+            // when, then
+            assertThatThrownBy(() -> memberService.editMember(2L, memberEditRequestDto))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("회원을 찾을 수 없습니다");
+        }
     }
 
     @Nested
@@ -363,6 +381,26 @@ public class MemberServiceTest {
                     .isInstanceOf(CustomException.class)
                     .hasMessage("변경 비밀번호가 같습니다.");
         }
+
+        @DisplayName("사용자가 없으면 에러가 발생한다")
+        @Test
+        void changePassword5() {
+
+            // given
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
+
+            // when
+            MemberChangePasswordRequestDto memberChangePasswordRequestDto = MemberChangePasswordRequestDto.builder()
+                    .currentPassword("test1234")
+                    .newPassword("test1234")
+                    .newPasswordCheck("test1234")
+                    .build();
+
+            // then
+            assertThatThrownBy(() -> memberService.changePassword(2L, memberChangePasswordRequestDto))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("회원을 찾을 수 없습니다");
+        }
     }
 
     @Nested
@@ -385,6 +423,19 @@ public class MemberServiceTest {
             assertThat(memberResponseDto.getBirth()).isEqualTo("2000-01-01");
             assertThat(memberResponseDto.getPhone_number()).isEqualTo("010-0000-0000");
             assertThat(memberResponseDto.getRole()).isEqualTo(MemberRole.MEMBER);
+        }
+
+        @DisplayName("member_id를 가진 멤버가 없으면 에러가 발생한다")
+        @Test
+        void findMember2() {
+
+            // given
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
+
+            // when, given
+            assertThatThrownBy(() -> memberService.findMember(2L))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("회원을 찾을 수 없습니다");
         }
 
         @DisplayName("member_id로 조회한 멤버가 트레이너면 트레이너 정보와 함께 조회한다")
@@ -419,6 +470,26 @@ public class MemberServiceTest {
             assertThat(memberResponseDto.getRole()).isEqualTo(MemberRole.TRAINER);
             assertThat(memberResponseDto.getTrainerInfo().getCareer()).isEqualTo("P1Y2M3D");
             assertThat(memberResponseDto.getTrainerInfo().getTrainerMessage()).isEqualTo("test trainer message");
+        }
+
+        @DisplayName("member_id로 조회한 멤버가 트레이너이지만 트레이너 데이터가 없으면 에러가 발생한다")
+        @Test
+        void findMemberTrainer2() {
+
+            // given
+            memberRepository.save(Member.builder()
+                    .email("test1@naver.com")
+                    .password("test1234")
+                    .name("test1")
+                    .birth(LocalDate.of(2000, 1, 1))
+                    .address("서울")
+                    .phone_number("010-0000-0000")
+                    .role(MemberRole.TRAINER)
+                    .build());
+            // when, then
+            assertThatThrownBy(() -> memberService.findMember(memberRepository.findByEmail("test1@naver.com").get().getId()))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("직원을 찾을 수 없습니다");
         }
 
     }
@@ -510,6 +581,19 @@ public class MemberServiceTest {
             assertThat(result.getTotalPages()).isEqualTo(1);
             assertThat(result.getContent().size()).isEqualTo(2);
         }
+
+        @DisplayName("회원도 트레이너도 없으면 에러가 발생한다")
+        @Test
+        void find4() {
+
+            // when
+            Pageable pageable = PageRequest.of(0, 3);
+
+            // then
+            assertThatThrownBy(() -> memberService.find(MemberSearchOption.ALL, pageable))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("회원이 없습니다");
+        }
     }
 
     @Nested
@@ -562,6 +646,22 @@ public class MemberServiceTest {
 
             // then
             assertThat(memberRepository.findByEmail("test1@naver.com").get().getRole()).isEqualTo(MemberRole.TRAINER);
+        }
+
+        @DisplayName("회원이 없으면 에러가 발생한다")
+        @Test
+        void grantEmployee2() {
+            // given
+            initMember("test1", passwordEncoder.encode("test1234"), MemberRole.MEMBER);
+            TrainerRequestDto trainerRequestDto = TrainerRequestDto.builder()
+                    .career("P1Y2M3D")
+                    .trainerMessage("test trainer message")
+                    .build();
+
+            // when, then
+            assertThatThrownBy(() -> memberService.grantEmployeeAuth(2L, trainerRequestDto))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage("회원을 찾을 수 없습니다");
         }
     }
 }
