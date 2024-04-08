@@ -3,6 +3,7 @@ package com.sideProject.PlanIT.domain.program.dto.response;
 import com.sideProject.PlanIT.domain.product.dto.response.ProductResponseDto;
 import com.sideProject.PlanIT.domain.program.entity.Registration;
 import com.sideProject.PlanIT.domain.program.entity.enums.RegistrationStatus;
+import com.sideProject.PlanIT.domain.user.dto.member.response.EmployeeSemiResponseDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberSemiResponseDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +20,10 @@ public class FindRegistrationResponseDto {
     private int totalPrice;
     private ProductResponseDto product;
     private MemberSemiResponseDto member;
-    private Long trainerId;
+    private EmployeeSemiResponseDto trainer;
 
     @Builder
-    public FindRegistrationResponseDto(Long id, String registrationAt, String refundAt, RegistrationStatus status, int discount, int totalPrice, ProductResponseDto product, MemberSemiResponseDto member, Long trainerId) {
+    public FindRegistrationResponseDto(Long id, String registrationAt, String refundAt, RegistrationStatus status, int discount, int totalPrice, ProductResponseDto product, MemberSemiResponseDto member, EmployeeSemiResponseDto trainer) {
         this.id = id;
         this.registrationAt = registrationAt;
         this.refundAt = refundAt;
@@ -31,7 +32,11 @@ public class FindRegistrationResponseDto {
         this.totalPrice = totalPrice;
         this.product = product;
         this.member = member;
-        this.trainerId = trainerId;
+        this.trainer = trainer;
+    }
+
+    public void setTrainer(EmployeeSemiResponseDto trainer) {
+        this.trainer = trainer;
     }
 
     public static FindRegistrationResponseDto of(Registration registration){
@@ -50,7 +55,7 @@ public class FindRegistrationResponseDto {
                 .totalPrice(registration.getTotalPrice())
                 .product(ProductResponseDto.of(registration.getProduct()))
                 .member(MemberSemiResponseDto.of(registration.getMember()))
-                .trainerId(registration.getTrainerId())
+                .trainer(null)
                 .build();
     }
 }

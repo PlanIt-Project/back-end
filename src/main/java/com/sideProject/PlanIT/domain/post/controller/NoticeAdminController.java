@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.post.dto.request.NoticeRequestDto;
 import com.sideProject.PlanIT.domain.post.dto.response.NoticeResponseDto;
 import com.sideProject.PlanIT.domain.post.service.NoticeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ public class NoticeAdminController {
     private final NoticeService noticeService;
 
     @PostMapping
-    public ApiResponse<String> createNotice(@ModelAttribute NoticeRequestDto request) {
+    public ApiResponse<String> createNotice(@Valid @ModelAttribute NoticeRequestDto request) {
         return ApiResponse.ok(noticeService.createNotice(request));
     }
 
