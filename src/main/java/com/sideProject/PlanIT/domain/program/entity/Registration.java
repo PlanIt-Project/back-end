@@ -48,7 +48,16 @@ public class Registration {
     private Product product;
 
     @Builder
-    public Registration(LocalDateTime registrationAt, LocalDateTime paymentAt, LocalDateTime refundAt, RegistrationStatus status, int discount, int totalPrice, Member member, Product product, Long trainerId) {
+    public Registration(
+            LocalDateTime registrationAt,
+            LocalDateTime paymentAt,
+            LocalDateTime refundAt,
+            RegistrationStatus status,
+            int discount,
+            int totalPrice,
+            Member member,
+            Product product,
+            Long trainerId) {
         this.registrationAt = registrationAt;
         this.paymentAt = paymentAt;
         this.refundAt = refundAt;

@@ -6,6 +6,7 @@ import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRe
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequestDto;
 import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponseDto;
 import com.sideProject.PlanIT.domain.reservation.service.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +28,7 @@ public class ReservationController {
     @PutMapping("/change")
     public ApiResponse<String> changeAvailability(
             Principal principal,
-            @RequestBody ChangeReservationRequestDto request
+            @Valid @RequestBody ChangeReservationRequestDto request
     ) {
         return ApiResponse.ok(
                 reservationService.changeAvailability(
@@ -42,7 +43,7 @@ public class ReservationController {
     public ApiResponse<String> reservation(
             Principal principal,
             @PathVariable("reservationId") Long reservationId,
-            @RequestBody ReservationRequestDto request
+            @Valid @RequestBody ReservationRequestDto request
     ) {
         LocalDateTime now = LocalDateTime.now();
         return ApiResponse.ok(
