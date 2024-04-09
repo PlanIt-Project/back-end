@@ -55,7 +55,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 해당 직원의 해당 요일의 근무 시간 조회
         Week week = Week.from(reservedDate);
-        System.out.println(week);
         List<WorkTime> workTimesForDay = workTimeRepository.findByEmployeeIdAndWeek(employee.getId(), week);
 
         List<LocalDateTime> reservedDateTimes = createLocalDateTimes(reservedDate, reservedTimes);
@@ -70,28 +69,62 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
 
-        // 기존 예약 삭제
-        List<Reservation> reservedReservations = existingReservations.stream()
-                .filter(reservation -> reservation.getStatus() == ReservationStatus.POSSIBLE)
-                .toList();
-        reservedReservations.forEach(reservationRepository::delete);
+        // 이미 존재하는 예약
+        List<Reservation> reservationsAlreadyExist = reservationRepository.findByEmployeeAndReservedDate(employee, reservedDate);
 
-        // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
-        reservedDateTimes.forEach(reservedDateTime -> {
-            boolean exists = existingReservations.stream()
-                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedDateTime));
-            if (!exists) {
-                Reservation newReservation = Reservation.builder()
-                        .reservedTime(reservedDateTime)
-                        .status(ReservationStatus.POSSIBLE)
-                        .employee(employee)
-                        .classTime(LocalTime.of(1,0))
-                        .build();
-                reservationRepository.save(newReservation);
-            }
+        // 예약 필터링 후 남는 예약 (새로 생성할 예약)
+        List<LocalDateTime> newReservedTimes = createLocalDateTimes(reservedDate, updateReservationsByRequest(reservationsAlreadyExist, reservedTimes));
+
+        newReservedTimes.forEach(reservedDateTime -> {
+            Reservation newReservation = Reservation.builder()
+                    .reservedTime(reservedDateTime)
+                    .status(ReservationStatus.POSSIBLE)
+                    .employee(employee)
+                    .classTime(LocalTime.of(1, 0))
+                    .build();
+            reservationRepository.save(newReservation);
         });
 
+
+
+//        // 기존 예약 삭제
+//        List<Reservation> reservedReservations = existingReservations.stream()
+//                .filter(reservation -> reservation.getStatus() == ReservationStatus.POSSIBLE)
+//                .toList();
+//        reservedReservations.forEach(reservationRepository::delete);
+//
+//        // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
+//        reservedDateTimes.forEach(reservedDateTime -> {
+//            boolean exists = existingReservations.stream()
+//                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedDateTime));
+//            if (!exists) {
+//                Reservation newReservation = Reservation.builder()
+//                        .reservedTime(reservedDateTime)
+//                        .status(ReservationStatus.POSSIBLE)
+//                        .employee(employee)
+//                        .classTime(LocalTime.of(1,0))
+//                        .build();
+//                reservationRepository.save(newReservation);
+//            }
+//        });
+
         return "ok";
+    }
+
+    private List<LocalTime> updateReservationsByRequest(List<Reservation> reservationsAlreadyExist, List<LocalTime> reservedTimes) {
+        for(Reservation reservation: reservationsAlreadyExist) {
+            // 요청 예약에 없지만 DB에 있으면 DB에서 삭제
+            if (!reservedTimes.contains(reservation.getReservedTime().toLocalTime())) {
+                reservationRepository.delete(reservation);
+            }
+
+            // 요청 예약에 있지만 DB에도 있으면 요청 예약에서 삭제
+            else {
+                reservedTimes.removeIf(time -> time.equals(reservation.getReservedTime().toLocalTime()));
+            }
+        }
+
+        return reservedTimes;
     }
 
     // 예약 가능성 확인: 지정된 예약 시간이 직원의 근무 시간 외인지 확인
