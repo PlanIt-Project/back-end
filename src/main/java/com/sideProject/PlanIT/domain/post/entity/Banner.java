@@ -38,13 +38,11 @@ public class Banner {
         this.imagePath = imagePath;
     }
 
-    public Banner update(BannerRequestDto bannerRequestDto) {
+    public Banner update(BannerRequestDto bannerRequestDto, String imagePath) {
         this.title = bannerRequestDto.getTitle();
         this.startAt = bannerRequestDto.getStartAt();
         this.endAt = bannerRequestDto.getEndAt();
-        if (bannerRequestDto.getImage() != null) {
-            this.imagePath = bannerRequestDto.getImage().getOriginalFilename();
-        }
+        this.imagePath = imagePath;
 
         return this;
     }

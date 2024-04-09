@@ -33,25 +33,25 @@ public class NoticeServiceImpl implements NoticeService{
             .imagePath(fileHandler.saveFile(noticeRequestDto.getImage()))
             .content(noticeRequestDto.getContent())
             .build());
-        return "생성 완료";
+        return "공지 생성 완료";
     }
 
     @Override
     public String editNotice(Long notice_id, NoticeRequestDto noticeRequestDto) {
-        Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new IllegalArgumentException(" Id"));
-        fileHandler.saveFile(noticeRequestDto.getAttachment());
-        fileHandler.saveFile(noticeRequestDto.getImage());
+        Notice noticeToEdit = noticeRepository.findById(notice_id).orElseThrow(() -> new CustomException(ErrorCode.NOTICE_NOT_FOUND));
+        String attachmentPath = fileHandler.saveFile(noticeRequestDto.getAttachment());
+        String imagePath = fileHandler.saveFile(noticeRequestDto.getImage());
         //todo: 기존 저장된 파일 제거?
 
-        noticeRepository.save(noticeToEdit.update(noticeRequestDto));
+        noticeRepository.save(noticeToEdit.update(noticeRequestDto, attachmentPath, imagePath));
 
-        return "수정 완료";
+        return "공지 수정 완료";
     }
 
     @Override
     public String deleteNotice(Long notice_id) {
         noticeRepository.deleteById(notice_id);
-        return "삭제 완료";
+        return "공지 삭제 완료";
     }
 
     @Override
