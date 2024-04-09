@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -160,9 +161,9 @@ class ReservationServiceTest {
 
             LocalDate date = LocalDate.of(2021,1,1);
             LocalTime time1 = LocalTime.of(10, 0);
-            LocalTime time2 = LocalTime.of(11, 0, 0);
-            LocalTime time3 = LocalTime.of(12, 0, 0);
-            LocalTime time4 = LocalTime.of(13, 0, 0);
+            LocalTime time2 = LocalTime.of(11, 0);
+            LocalTime time3 = LocalTime.of(12, 0);
+            LocalTime time4 = LocalTime.of(13, 0);
 
             Reservation saveReservation = Reservation.builder()
                     .reservedTime(time)
@@ -171,16 +172,17 @@ class ReservationServiceTest {
                     .build();
             reservationRepository.save(saveReservation);
 
-            List<LocalTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = new ArrayList<>(List.of(time1, time2, time3, time4));
             //when
             String result = reservationService.changeAvailability(date ,times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
             //then
             assertThat(result).isEqualTo("ok");
-            assertThat(registrations).hasSize(3);
+            assertThat(registrations).hasSize(4);
             assertThat(registrations).extracting(
                     "reservedTime", "status"
             ).contains(
+                    tuple(LocalDateTime.of(2021, 1, 1, 10, 0, 0), ReservationStatus.POSSIBLE),
                     tuple(LocalDateTime.of(2021, 1, 1, 11, 0, 0), ReservationStatus.POSSIBLE),
                     tuple(LocalDateTime.of(2021, 1, 1, 12, 0, 0), ReservationStatus.POSSIBLE),
                     tuple(LocalDateTime.of(2021, 1, 1, 13, 0, 0), ReservationStatus.POSSIBLE)
@@ -188,7 +190,7 @@ class ReservationServiceTest {
 
             assertThat(registrations)
                     .extracting((reservation) -> reservation.getEmployee().getId())
-                    .containsExactly(trainer.getId(), trainer.getId(), trainer.getId());
+                    .containsExactly(trainer.getId(), trainer.getId(), trainer.getId(), trainer.getId());
         }
 
         @DisplayName("예약된 예약은 삭제되지 않는다")
@@ -212,7 +214,7 @@ class ReservationServiceTest {
                     .build();
             reservationRepository.save(saveReservation);
 
-            List<LocalTime> times = List.of(time1, time2, time3, time4);
+            List<LocalTime> times = new ArrayList<>(List.of(time1, time2, time3, time4));
             //when
             String result = reservationService.changeAvailability(date, times, trainer.getMember().getId());
             List<Reservation> registrations = reservationRepository.findAll();
