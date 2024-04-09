@@ -46,16 +46,12 @@ public class Notice {
         this.content = content;
     }
 
-    public Notice update(NoticeRequestDto noticeRequestDto) {
+    public Notice update(NoticeRequestDto noticeRequestDto, String attachmentPath, String imagePath) {
         this.title = noticeRequestDto.getTitle();
         this.startAt = noticeRequestDto.getStartAt();
         this.endAt = noticeRequestDto.getEndAt();
-        if (noticeRequestDto.getImage() != null) {
-            this.imagePath = noticeRequestDto.getImage().getOriginalFilename();
-        }
-        if (noticeRequestDto.getAttachment() != null) {
-            this.attachmentPath = noticeRequestDto.getAttachment().getOriginalFilename();
-        }
+        this.attachmentPath = attachmentPath;
+        this.imagePath = imagePath;
         this.content = noticeRequestDto.getContent();
 
         return this;
