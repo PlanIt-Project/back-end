@@ -28,7 +28,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        log.error("{}",authException.getMessage());
         String accept = request.getHeader("Accept");
 
         ApiResponse<?> error = ApiResponse.error(ErrorCode.NO_AUTHORITY);

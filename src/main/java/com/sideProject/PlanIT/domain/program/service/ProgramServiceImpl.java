@@ -206,17 +206,16 @@ public class ProgramServiceImpl implements ProgramService {
         Registration registration = getRegistrationById(registrationId);
 
         Member member = memberRepository.findById(registration.getMember().getId()).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(registration.getMember().getId() + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
         Employee trainer = null;
         if(registration.getProduct().getType().equals(ProductType.PT)) {
             if(trainerId == null) {
-                log.error("pt권인데 트레이너가 등록되지 않았습니다.");
                 throw new CustomException("파라미터 값을 확인해주세요.", ErrorCode.INVALID_PARAMETER);
             }
             trainer = employeeRepository.findById(trainerId).orElseThrow(() ->
-                    new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+                    new CustomException(trainerId + "는 존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
             );
         }
 
@@ -280,11 +279,11 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Page<ProgramResponseDto> find(long adminId, ProgramSearchStatus option, Pageable pageable) {
         Member admin = memberRepository.findById(adminId).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(adminId + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
         );
 
         if(admin.getRole() != MemberRole.ADMIN) {
-            throw new CustomException("권한이 없습니다.", ErrorCode.NO_AUTHORITY);
+            throw new CustomException(adminId +"는 권한이 없습니다.", ErrorCode.NO_AUTHORITY);
         }
 
         Page<Program> programs = findProgram(option,pageable);
@@ -459,6 +458,8 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public String expiredMemberShipProgram(LocalDate now) {
         //만료 기간이 어제인 프로그램 조회
+        int count = 0;
+
         List<Program> expirationDatePrograms = programRepository
                 .findMembershipProgramsByEndAtAndProductType(
                         now.minusDays(1),
@@ -466,10 +467,12 @@ public class ProgramServiceImpl implements ProgramService {
                 );
 
         for(Program expirationDateProgram : expirationDatePrograms) {
+            log.info("program {} 의 기간이 만료되었습니다.", expirationDateProgram.getId());
             expirationDateProgram.changeToExpired();
 
             programRepository.save(expirationDateProgram);
         }
+        log.info("{} 의 프로그램이 만료되었습니다.", count);
 
         return "ok";
     }

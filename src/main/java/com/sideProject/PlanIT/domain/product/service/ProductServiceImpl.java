@@ -42,7 +42,9 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public String stopProductSell(Long product_id) {
-        Product product = productRepository.findById(product_id).orElseThrow(() -> new CustomException("상품이 존재하지 않습니다.", ErrorCode.PRODUCT_NOT_FOUND));
+        Product product = productRepository.findById(product_id).orElseThrow(() ->
+                new CustomException(product_id + "는 존재하지 않는 상품입니다.", ErrorCode.PRODUCT_NOT_FOUND)
+        );
         productRepository.save(product.stopSelling());
         return "상품 판매 중지";
     }
@@ -67,6 +69,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDto findProduct(Long product_id) {
-        return ProductResponseDto.of(productRepository.findById(product_id).orElseThrow(() -> new CustomException("상품이 존재하지 않습니다.", ErrorCode.PRODUCT_NOT_FOUND)));
+        return ProductResponseDto.of(productRepository.findById(product_id).orElseThrow(() ->
+                new CustomException(product_id + "는 존재하지 않는 상품입니다.", ErrorCode.PRODUCT_NOT_FOUND))
+        );
     }
 }

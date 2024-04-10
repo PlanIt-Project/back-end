@@ -37,8 +37,12 @@ public class WorktimeServiceImpl implements WorktimeService {
     @Override
     public TrainerScheduleRegistrationResponseDto trainerScheduleRegistration(List<TrainerScheduleRequestDto> request, Long id){
 
-        Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND));
-        Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() -> new CustomException("존재하지 않는 직원입니다", ErrorCode.EMPLOYEE_NOT_FOUND));
+        Member member = memberRepository.findById(id).orElseThrow(() ->
+                new CustomException(id+"는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
+        );
+        Employee trainer = employeeRepository.findByMemberId(member.getId()).orElseThrow(() ->
+                new CustomException(member.getId()+"는 직원이 아닙니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+        );
 
 
         for (TrainerScheduleRequestDto requestdto : request) {
@@ -60,7 +64,7 @@ public class WorktimeServiceImpl implements WorktimeService {
     // 특정 일정 가져오기
     private WorkTime getTrainerScheduleByID(Long schdule_id){
         return worktimeRepository.findById(schdule_id).orElseThrow(() ->
-                new CustomException("일정이 존재하지 않습니다.",ErrorCode.TrainerSchedule_NOT_FOUND));
+                new CustomException(schdule_id+ "의 일정이 존재하지 않습니다.",ErrorCode.TrainerSchedule_NOT_FOUND));
     }
     // 트레이너 출퇴근 수정
     @Override
@@ -79,7 +83,7 @@ public class WorktimeServiceImpl implements WorktimeService {
     @Override
     public Page<TrainerScheduleResponseDto> findTrainerSchedule(Long id, Pageable pageable){
         Member member = memberRepository.findById(id).orElseThrow(() ->
-                new CustomException("존재하지 않는 회원입니다.",ErrorCode.MEMBER_NOT_FOUND)
+                new CustomException(id + "는 존재하지 않는 회원입니다.",ErrorCode.MEMBER_NOT_FOUND)
         );
         if(member.getRole() != MemberRole.ADMIN && member.getRole() != MemberRole.TRAINER){
             throw new CustomException("권한이 없습니다.",ErrorCode.NO_AUTHORITY);
@@ -98,7 +102,7 @@ public class WorktimeServiceImpl implements WorktimeService {
 
         List<WorkTime> worktime = worktimeRepository.findByEmployeeId(employee_id);
         if (worktime.isEmpty()){
-            throw new CustomException("일정을 찾을 수 없습니다.",ErrorCode.TrainerSchedule_NOT_FOUND);
+            throw new CustomException(employee_id+"의 일정을 찾을 수 없습니다.",ErrorCode.TrainerSchedule_NOT_FOUND);
         }
 
         return worktime.stream()
