@@ -157,7 +157,7 @@ class ReservationServiceTest {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
+            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 9, 0, 0);
 
             LocalDate date = LocalDate.of(2021,1,1);
             LocalTime time1 = LocalTime.of(10, 0);

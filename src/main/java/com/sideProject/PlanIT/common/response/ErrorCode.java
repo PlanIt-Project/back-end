@@ -26,7 +26,10 @@ public enum ErrorCode {
     //401
     INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),
     INVALID_REFRESH_TOKEN(401, "REFRESH TOKEN 오류"),
-    NO_AUTHORITY(401, "권한이 없습니다."),
+    NO_AUTHORITY(401, "인증되지 않았습니다."),
+
+    //403
+    NO_ACCESS(403, "권한이 없습니다"),
 
     //404 Error Not found.
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),

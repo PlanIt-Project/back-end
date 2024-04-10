@@ -1,5 +1,6 @@
 package com.sideProject.PlanIT.config;
 
+import com.sideProject.PlanIT.common.security.JwtAccessDeniedHandler;
 import com.sideProject.PlanIT.common.security.JwtAuthenticationEntryPoint;
 import com.sideProject.PlanIT.common.security.JwtTokenFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,9 +34,10 @@ public class SecurityConfig {
 
     @Autowired
     JwtTokenFilter jwtTokenFilter;
-
     @Autowired
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    JwtAccessDeniedHandler JwtAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,8 +58,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling((exceptionHandling) ->
-                        exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling((exceptionHandling) ->{
+                            exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                            exceptionHandling.accessDeniedHandler(JwtAccessDeniedHandler);
+                        })
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(
                                 "/member/signin",
