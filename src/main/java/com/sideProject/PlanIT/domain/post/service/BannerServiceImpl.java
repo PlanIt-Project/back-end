@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,12 @@ public class BannerServiceImpl implements BannerService{
     @Autowired
     private FileHandler fileHandler;
 
+    @Transactional
     public String createBanner(BannerRequestDto bannerRequestDto) {
+        if(bannerRequestDto.getImage() == null || bannerRequestDto.getImage().isEmpty()) {
+            throw new CustomException("이미지가 null 입니다.",ErrorCode.EMPTY_IMAGE);
+        }
+
         bannerRepository.save(Banner.builder()
             .title(bannerRequestDto.getTitle())
             .startAt(bannerRequestDto.getStartAt())

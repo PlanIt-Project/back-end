@@ -4,6 +4,7 @@ import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerScheduleChangeRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.employee.response.TrainerScheduleResponseDto;
 import com.sideProject.PlanIT.domain.user.service.WorktimeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,9 @@ public class AdminTrainerScheduleController {
 
     // 특정 직원 일정 수정(출퇴근)
     @PutMapping("/trainer-schedule/{schedule_id}")
-    public ApiResponse<String> updateTrainerSchedule(@PathVariable("schedule_id") Long id, @RequestBody TrainerScheduleChangeRequestDto request){
+    public ApiResponse<String> updateTrainerSchedule(
+            @PathVariable("schedule_id") Long id,
+            @Valid @RequestBody TrainerScheduleChangeRequestDto request){
 
         return ApiResponse.ok(worktimeservice.trainerScheduleChange(request,id));
     }

@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-
 public class FileHandler {
     @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;
@@ -38,6 +37,7 @@ public class FileHandler {
                 return "/file/" + fileName;
             }
         } catch (IOException e) {
+            log.error(e.getMessage());
             return "이미지 업로드 오류 발생";
         }
     }

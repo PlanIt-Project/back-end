@@ -21,6 +21,8 @@ src/main/resources/application-test.yml
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
+!**/image
+!**/logs
 
 ### IntelliJ IDEA ###
 .idea

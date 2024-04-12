@@ -3,6 +3,12 @@ spring:
   profiles:
     default: prod # 기본 환경을 prod로
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+      max-request-size: 10MB
+
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
 
