@@ -36,7 +36,6 @@ public class JwtTokenProvider {
     }
 
     public String createRefreshToken(Member member) {
-
         redisUtil.deleteByValue(member.getId().toString());
 
         Date now = new Date();

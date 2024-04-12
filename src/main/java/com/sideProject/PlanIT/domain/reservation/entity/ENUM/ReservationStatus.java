@@ -6,6 +6,7 @@ import java.util.List;
 
 public enum ReservationStatus {
     RESERVED,
+    IMPOSSIBLE,
     POSSIBLE,
     FINISHED;
 

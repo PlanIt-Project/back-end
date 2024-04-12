@@ -1,6 +1,7 @@
 package com.sideProject.PlanIT.common.security;
 
 import com.sideProject.PlanIT.common.util.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +48,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     // 인증 객체 저장
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-            } catch (Exception e) {
+            } catch (JwtException e) {
+                log.error(e.getMessage());
                 request.setAttribute("exception", e.getMessage());
             }
         }

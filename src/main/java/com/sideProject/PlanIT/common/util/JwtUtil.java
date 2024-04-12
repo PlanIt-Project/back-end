@@ -33,17 +33,44 @@ public class JwtUtil {
     public void validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtConfig.SECRET_KEY).parseClaimsJws(token);
-        } catch (Exception e) {
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("1");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.error("2");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.error("3");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        }catch (IllegalArgumentException e) {
+            log.error("4");
             throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
+//
+//        catch (Exception e) {
+//            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+//        }
     }
 
     public void validateRefreshToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtConfig.SECRET_KEY).parseClaimsJws(token);
-        } catch (Exception e) {
-            redisUtil.deleteData(token);
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("1");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.error("2");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.error("3");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
+        }catch (IllegalArgumentException e) {
+            log.error("4");
+            throw new CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
+//        catch (Exception e) {
+//            redisUtil.deleteData(token);
+//            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+//        }
     }
 }
