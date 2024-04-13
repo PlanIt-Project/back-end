@@ -85,29 +85,6 @@ public class ReservationServiceImpl implements ReservationService {
             reservationRepository.save(newReservation);
         });
 
-
-
-//        // 기존 예약 삭제
-//        List<Reservation> reservedReservations = existingReservations.stream()
-//                .filter(reservation -> reservation.getStatus() == ReservationStatus.POSSIBLE)
-//                .toList();
-//        reservedReservations.forEach(reservationRepository::delete);
-//
-//        // 새 예약 추가 (기존 예약이 없는 reservedTimes에 대해서만)
-//        reservedDateTimes.forEach(reservedDateTime -> {
-//            boolean exists = existingReservations.stream()
-//                    .anyMatch(reservation -> reservation.getReservedTime().equals(reservedDateTime));
-//            if (!exists) {
-//                Reservation newReservation = Reservation.builder()
-//                        .reservedTime(reservedDateTime)
-//                        .status(ReservationStatus.POSSIBLE)
-//                        .employee(employee)
-//                        .classTime(LocalTime.of(1,0))
-//                        .build();
-//                reservationRepository.save(newReservation);
-//            }
-//        });
-
         return "ok";
     }
 

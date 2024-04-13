@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-
 public class FileHandler {
     @Value("${spring.fileStorage.dir}")
     private String fileStorageDir;

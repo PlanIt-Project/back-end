@@ -118,7 +118,7 @@ class ReservationServiceTest {
     @Nested
     @DisplayName("addReservationTest")
     class AddReservationTest {
-        @DisplayName("생성된 예약시간이 없으면 예약시간이 생성된다.")
+        @DisplayName("주어진 시간들로 예약들이 오픈된다.")
         @Test
         void addReservation() {
             //given
@@ -151,13 +151,13 @@ class ReservationServiceTest {
                     .containsExactly(trainer.getId(), trainer.getId(), trainer.getId(), trainer.getId());
         }
 
-        @DisplayName("생성된 예약시간이 있으면 삭제하고 없으면 예약시간이 생성된다.")
+        @DisplayName("오픈할 예약시간들이 주어지면 오픈할 시간외의 다른 시간들은 삭제된다.")
         @Test
         void addReservation2() {
             //given
             Employee trainer = initTrainer("trainer");
 
-            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 10, 0, 0);
+            LocalDateTime time = LocalDateTime.of(2021, 1, 1, 9, 0, 0);
 
             LocalDate date = LocalDate.of(2021,1,1);
             LocalTime time1 = LocalTime.of(10, 0);

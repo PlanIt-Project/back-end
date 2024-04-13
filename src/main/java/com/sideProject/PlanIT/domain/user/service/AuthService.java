@@ -25,7 +25,6 @@ public class AuthService {
         jwtUtil.validateRefreshToken(refreshToken);
 
         if (redisUtil.isExist(refreshToken)) {
-            log.info("refresh 검증 성공");
             Long memberId = Long.parseLong(redisUtil.getData(refreshToken).toString());
             redisUtil.deleteData(refreshToken);
             Member member = memberRepository.findById(memberId).orElseThrow(() ->

@@ -37,6 +37,7 @@ public class MemberShipScheduler {
     @Scheduled(cron = "0 0 0 * * ?")
     public void memberShipExpireEvent() {
         LocalDate toDay = LocalDate.now();
+        log.info("{} 만료된 일정 처리",toDay.atStartOfDay());
 
         programService.expiredMemberShipProgram(toDay);
     }
@@ -45,6 +46,7 @@ public class MemberShipScheduler {
         List<Program> oneWeekLefts = programRepository.findMembershipProgramsByEndAtAndProductType(afterOneWeek, ProductType.MEMBERSHIP);
 
         oneWeekLefts.forEach(program -> {
+            log.info("program = {} 만료기간 일주일 남았습니다.", program.getId());
             emailService.memberShipEmail(program.getMember().getEmail(), "일주일");
         });
     }
@@ -53,6 +55,7 @@ public class MemberShipScheduler {
         List<Program> oneWeekLefts = programRepository.findMembershipProgramsByEndAtAndProductType(afterOneMonth, ProductType.MEMBERSHIP);
 
         oneWeekLefts.forEach(program -> {
+            log.info("program = {} 만료기간 한달 남았습니다.", program.getId());
             emailService.memberShipEmail(program.getMember().getEmail(), "한 달");
         });
     }

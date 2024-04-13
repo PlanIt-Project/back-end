@@ -3,6 +3,12 @@ spring:
     active:
       on-profile: prod # 기본 환경을 prod로
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+      max-request-size: 10MB
+
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
 
@@ -30,6 +36,21 @@ spring:
     cors:
       allowed-origins: "*"
 
+  logging:
+    pattern:
+      console: "%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] %logger[%method:%line] - %msg%n"
+      file: "%-4relative [%thread] %-5level %logger{35} - %msg%n"
+    logback:
+      rollingpolicy:
+        file-name-pattern: "${LOG_FILE}.%d{yyyy-MM-dd}_%i.zip"
+    file:
+      name: logs
+      max-history: 7
+      max-size: 5KB
+      total-size-cap: 1MB
+    level:
+      org:
+        springframework: INFO
 
   naver:
     client-id: ${NAVER_CLIENT_ID}

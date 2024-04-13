@@ -5,6 +5,7 @@ import com.sideProject.PlanIT.domain.user.controller.enums.MemberSearchOption;
 import com.sideProject.PlanIT.domain.user.dto.employee.request.TrainerRequestDto;
 import com.sideProject.PlanIT.domain.user.dto.member.response.MemberResponseDto;
 import com.sideProject.PlanIT.domain.user.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ public class AdminController {
 
 
     @PutMapping("/employee/{member_id}")
-    public ApiResponse<String> grantEmployeeAuth(@PathVariable(name = "member_id") Long member_id, @RequestBody TrainerRequestDto request) {
+    public ApiResponse<String> grantEmployeeAuth(@PathVariable(name = "member_id") Long member_id,@Valid @RequestBody TrainerRequestDto request) {
         return ApiResponse.ok(memberService.grantEmployeeAuth(member_id, request));
     }
 }

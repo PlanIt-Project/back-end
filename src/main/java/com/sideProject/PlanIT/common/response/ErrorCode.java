@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     INVALID_PARAMETER(400, "파라미터 값을 확인해주세요."),
+    EMPTY_IMAGE(400, "파라미터 값을 확인해주세요."),
     ALREADY_REFUNDED_PROGRAM(400, "이미 환불된 프로그램입니다."),
     ALREADY_APPROVE_PROGRAM(400, "이미 등록된 프로그램입니다."),
     ALREADY_EXIST_EMAIL(400, "이미 존재하는 이메일입니다."),
@@ -26,7 +27,10 @@ public enum ErrorCode {
     //401
     INVALID_ACCESS_TOKEN(401, "ACCESS TOKEN 오류"),
     INVALID_REFRESH_TOKEN(401, "REFRESH TOKEN 오류"),
-    NO_AUTHORITY(401, "권한이 없습니다."),
+    NO_AUTHORITY(401, "인증되지 않았습니다."),
+
+    //403
+    NO_ACCESS(403, "권한이 없습니다"),
 
     //404 Error Not found.
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),
