@@ -3,6 +3,12 @@ spring:
     active:
       on-profile: prod # 기본 환경을 prod로
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+      max-request-size: 10MB
+
   fileStorage:
     dir: ${FILE_STORAGE_DIR}
 
@@ -32,11 +38,16 @@ spring:
 
   logging:
     pattern:
-      file: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-      rolling-file-name: "/logs/abc.%d{yyyy-MM-dd}.%i"
+      console: "%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] %logger[%method:%line] - %msg%n"
+      file: "%-4relative [%thread] %-5level %logger{35} - %msg%n"
+    logback:
+      rollingpolicy:
+        file-name-pattern: "${LOG_FILE}.%d{yyyy-MM-dd}_%i.zip"
     file:
-      name: /logs/abc.log
-      max-history: 30
+      name: logs
+      max-history: 7
+      max-size: 5KB
+      total-size-cap: 1MB
     level:
       org:
         springframework: INFO
