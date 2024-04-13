@@ -1,0 +1,4 @@
+2024-04-10T19:37:28.341+09:00  INFO 93028 --- [http-nio-8080-exec-2] DEFAULT_FILE_LOGGER                      : [5642936a] MemberController.signIn(..)
+2024-04-10T19:37:28.341+09:00  INFO 93028 --- [http-nio-8080-exec-2] DEFAULT_FILE_LOGGER                      : [5642936a] |-->MemberServiceImpl.memberValidation(..)
+2024-04-10T19:37:28.638+09:00  INFO 93028 --- [http-nio-8080-exec-2] DEFAULT_FILE_LOGGER                      : [5642936a] |<--MemberServiceImpl.memberValidation(..) time=297ms
+2024-04-10T19:37:28.639+09:00  INFO 93028 --- [http-nio-8080-exec-2] DEFAULT_FILE_LOGGER                      : [5642936a] MemberController.signIn(..) time=298ms

@@ -23,7 +23,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     private ObjectMapper mapper = new ObjectMapper();
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("{}",accessDeniedException.getMessage());
         String accept = request.getHeader("Accept");
 
         ApiResponse<?> error = ApiResponse.error(ErrorCode.NO_ACCESS);

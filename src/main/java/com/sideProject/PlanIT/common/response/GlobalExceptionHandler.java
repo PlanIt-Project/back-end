@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
@@ -39,10 +40,12 @@ public class GlobalExceptionHandler {
                         ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()));
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    protected ResponseEntity<ApiResponse<?>> handleNoHandlerFoundException(NoHandlerFoundException e,
-                                                                          HttpServletRequest request) {
-        return ResponseEntity.status(404)
-                .body(ApiResponse.error(404, "잘못된 페이지 입니다."));
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<ApiResponse<?>> handelMethodArgumentTypeMismatchException(BindException ex) {
+        return ResponseEntity.status(400)
+                .body(
+                        ApiResponse.error(
+                                400,
+                                ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()));
     }
 }
