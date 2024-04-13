@@ -50,7 +50,7 @@ spring:
       total-size-cap: 1MB
     level:
       org:
-        springframework: DEBUG
+        springframework: INFO
 
   naver:
     client-id: ${NAVER_CLIENT_ID}
