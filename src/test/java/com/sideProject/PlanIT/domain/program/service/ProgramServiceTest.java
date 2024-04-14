@@ -737,7 +737,7 @@ class ProgramServiceTest {
             //then
             assertThatThrownBy(() -> programService.approve(saveRegistration.getId(),1L,localDateTime))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage("존재하지 않는 직원입니다.");
+                    .hasMessage(member.getId()+"는 존재하지 않는 직원입니다.");
         }
 
         @DisplayName("실패 : pt권에서 트레이너를 선택하지 않고 등록시 예외가 발생한다.")
@@ -1186,7 +1186,7 @@ class ProgramServiceTest {
             //then
             assertThatThrownBy(() -> programService.find(member2.getId() + 1, ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage("존재하지 않는 회원입니다.");
+                    .hasMessage(member2+"는 존재하지 않는 회원입니다.");
         }
 
         @DisplayName("실패 : 진행중인 모든 프로그램을 조회할 때 어드민이 아니면 예외가 발생한다")
@@ -1201,7 +1201,7 @@ class ProgramServiceTest {
             //then
             assertThatThrownBy(() -> programService.find(member2.getId(), ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage("권한이 없습니다.");
+                    .hasMessage(member2.getId()+"는 권한이 없습니다.");
         }
     }
 
