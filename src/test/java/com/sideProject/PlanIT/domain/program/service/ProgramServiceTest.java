@@ -737,7 +737,7 @@ class ProgramServiceTest {
             //then
             assertThatThrownBy(() -> programService.approve(saveRegistration.getId(),1L,localDateTime))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage(member.getId()+"는 존재하지 않는 직원입니다.");
+                    .hasMessage(1+"는 존재하지 않는 직원입니다.");
         }
 
         @DisplayName("실패 : pt권에서 트레이너를 선택하지 않고 등록시 예외가 발생한다.")
@@ -1186,7 +1186,7 @@ class ProgramServiceTest {
             //then
             assertThatThrownBy(() -> programService.find(member2.getId() + 1, ProgramSearchStatus.VALID, pageable))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage(member2+"는 존재하지 않는 회원입니다.");
+                    .hasMessage(member2.getId()+1+"는 존재하지 않는 회원입니다.");
         }
 
         @DisplayName("실패 : 진행중인 모든 프로그램을 조회할 때 어드민이 아니면 예외가 발생한다")
@@ -2546,7 +2546,7 @@ class ProgramServiceTest {
             assertThat(program1.getSuspendAt()).isEqualTo(stopDay);
         }
 
-        @DisplayName("일시정지 되지 않은 회원권을 재실행 할 수 있다.")
+        @DisplayName("실패 : 일시정지 되지 않은 회원권을 재실행 할 수 없다.")
         @Test
         void resumeProgramNotSuspend(){
             //given
@@ -2585,6 +2585,46 @@ class ProgramServiceTest {
             assertThatThrownBy(() -> programService.resumeProgram(program.getId(), resumeDay))
                     .isInstanceOf(CustomException.class)
                     .hasMessage("프로그램이 정지 상태가 아닙니다.");
+        }
+
+        @DisplayName("실패 : 존재하지 않는 회원권을 재실행 할 수 없다.")
+        @Test
+        void resumeProgramNotExist(){
+            //given
+            LocalDate stopDay = LocalDate.of(2000,1,15);
+            LocalDate resumeDay = LocalDate.of(2000,1,18);
+            Period periodOfTenDays = Period.ofMonths(1);
+            Product product = initProduct("회원권 1달", periodOfTenDays,0,ProductType.MEMBERSHIP);
+            Member member1 = initMember("tester1",MemberRole.MEMBER);
+
+            Registration registration = Registration.builder()
+                    .product(product)
+                    .member(member1)
+                    .discount(0)
+                    .totalPrice(30000)
+                    .status(RegistrationStatus.ACCEPTED)
+                    .paymentAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .registrationAt(LocalDateTime.parse("2000-01-01 00:00", DATE_TIME_FORMATTER))
+                    .refundAt(null)
+                    .build();
+            Registration saveRegistration = registrationRepository.save(registration);
+
+            Program program = Program.builder()
+                    .registration(saveRegistration)
+                    .product(saveRegistration.getProduct())
+                    .member(saveRegistration.getMember())
+                    .status(IN_PROGRESS)
+                    .startAt(LocalDate.parse("2000-01-01", DateTimeFormatter.ISO_DATE))
+                    .endAt(LocalDate.parse("2000-02-01", DateTimeFormatter.ISO_DATE))
+                    .build();
+            Program savedProgram  = programRepository.save(program);
+
+            //when
+
+            //when
+            assertThatThrownBy(() -> programService.resumeProgram(savedProgram.getId()+1, resumeDay))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessage(savedProgram.getId()+1+"는 존재하지 않는 프로그램입니다.");
         }
     }
 

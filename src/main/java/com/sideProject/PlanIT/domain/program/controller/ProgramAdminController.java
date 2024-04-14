@@ -35,9 +35,9 @@ public class ProgramAdminController {
     public ApiResponse<Page<ProgramResponseDto>> find(
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option,
             @PageableDefault(size = 10) Pageable pageable,
-            Principal principal) {
-        Long id = Long.parseLong(principal.getName());
-
+            Authentication authentication) {
+        System.out.println(authentication);
+        Long id = 1L;
         return ApiResponse.ok(
                 programService.find(id,option,pageable)
         );
