@@ -36,7 +36,6 @@ public class ProgramAdminController {
             @RequestParam(value = "option", required = false, defaultValue = "VALID") ProgramSearchStatus option,
             @PageableDefault(size = 10) Pageable pageable,
             Authentication authentication) {
-        System.out.println(authentication);
         Long id = 1L;
         return ApiResponse.ok(
                 programService.find(id,option,pageable)
@@ -76,7 +75,7 @@ public class ProgramAdminController {
     @PutMapping("/{id}")
     public ApiResponse<String> modify(
             @PathVariable("id") Long id,
-            ProgramModifyRequestDto request) {
+            @Valid @RequestBody ProgramModifyRequestDto request) {
         return ApiResponse.ok(
                 programService.modify(id, request)
         );
@@ -102,7 +101,7 @@ public class ProgramAdminController {
     }
 
 
-    @GetMapping("/registration/{id}")
+    @GetMapping("/registration/user/{id}")
     public ApiResponse<Page<FindRegistrationResponseDto>> findRegistrationByUser(
             @PathVariable("id") Long id,
             @PageableDefault(size = 10) Pageable pageable,
