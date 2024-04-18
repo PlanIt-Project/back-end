@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ public class BannerServiceTest {
     }
 
     MultipartFile createMockMutipartFile(String name) {
-        return new MockMultipartFile(name, (byte[]) null);
+        return new MockMultipartFile("file", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8) );
     }
 
     @Nested

@@ -10,7 +10,9 @@ build/
 src/main/resources/application-dev.yml
 src/main/resources/application-test.yml
 src/main/logs
+src/main/logs/**
 src/main/image
+src/main/image/**
 ### STS ###
 .apt_generated
 .classpath

@@ -10,10 +10,12 @@ import com.sideProject.PlanIT.domain.user.entity.Employee;
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
 @Getter
+@NoArgsConstructor
 public class ProgramResponseDto {
     long id;
     String productName;

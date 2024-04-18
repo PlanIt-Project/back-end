@@ -17,4 +17,5 @@ public class ApproveRequestDto {
     public ApproveRequestDto(Long trainer) {
         this.trainer = trainer;
     }
+
 }

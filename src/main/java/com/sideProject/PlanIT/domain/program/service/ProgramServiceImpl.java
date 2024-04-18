@@ -184,7 +184,7 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Long resumeProgram(Long id, LocalDate now) {
         Program program = programRepository.findById(id).orElseThrow(() ->
-                new CustomException("존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
+                new CustomException(id+"는 존재하지 않는 프로그램입니다.", ErrorCode.PROGRAM_NOT_FOUND)
         );
 
         if(program.getStatus() != ProgramStatus.SUSPEND) {
@@ -204,10 +204,6 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Long approve(Long registrationId, Long trainerId, LocalDateTime localDateTime) {
         Registration registration = getRegistrationById(registrationId);
-
-        Member member = memberRepository.findById(registration.getMember().getId()).orElseThrow(() ->
-                new CustomException(registration.getMember().getId() + "는 존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND)
-        );
 
         Employee trainer = null;
         if(registration.getProduct().getType().equals(ProductType.PT)) {
@@ -239,7 +235,7 @@ public class ProgramServiceImpl implements ProgramService {
                 .remainedNumber(product.getNumber())
                 .product(product)
                 .employee(trainer)
-                .member(member)
+                .member(registration.getMember())
                 .registration(registration)
                 .status(ProgramStatus.IN_PROGRESS)
                 .startAt(startAt)
@@ -352,7 +348,7 @@ public class ProgramServiceImpl implements ProgramService {
     private Page<Program> findProgramByEmploy(Member member, ProgramSearchStatus option,Pageable pageable) {
         log.info("findEmployeeByMemberId = {}" , member.getId());
         Employee employee = employeeRepository.findByMemberId(member.getId()).orElseThrow(()->
-            new CustomException("존재하지 않는 직원입니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
+            new CustomException("회원 "+member.getId()+"의 직원정보가 없습니다.", ErrorCode.EMPLOYEE_NOT_FOUND)
         );
         //ALL이면 모든 상태 조회, VALID이면 IN_PROCESS인 경우만 조회
         if(option == ProgramSearchStatus.ALL) {
