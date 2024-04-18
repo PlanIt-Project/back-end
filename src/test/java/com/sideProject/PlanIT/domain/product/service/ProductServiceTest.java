@@ -218,7 +218,7 @@ public class ProductServiceTest {
             // when, then
             assertThatThrownBy(() -> productService.findProduct(productId))
                     .isInstanceOf(CustomException.class)
-                    .hasMessage("상품이 존재하지 않습니다.");
+                    .hasMessage(productId+"는 존재하지 않는 상품입니다.");
         }
     }
 }
