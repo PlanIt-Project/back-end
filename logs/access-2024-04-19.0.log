@@ -1,0 +1,306 @@
+2024-04-19T21:59:30.232+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c324dcf6] ReservationServiceImpl.findReservationForDayByEmployee(..)
+2024-04-19T21:59:30.299+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c324dcf6] ReservationServiceImpl.findReservationForDayByEmployee(..) time=67ms
+2024-04-19T21:59:30.301+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [22acb89b] ReservationServiceImpl.findReservationForDayByEmployee(..)
+2024-04-19T21:59:30.305+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [22acb89b] ReservationServiceImpl.findReservationForDayByEmployee(..) time=4ms
+2024-04-19T21:59:30.362+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [94632b78] ReservationServiceImpl.findReservationForDayByEmployee(..)
+2024-04-19T21:59:30.369+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [94632b78] ReservationServiceImpl.findReservationForDayByEmployee(..) time=7ms
+2024-04-19T21:59:30.370+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6115a858] ReservationServiceImpl.findReservationForDayByEmployee(..)
+2024-04-19T21:59:30.374+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6115a858] ReservationServiceImpl.findReservationForDayByEmployee(..) time=4ms
+2024-04-19T21:59:30.404+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5bef761b] ReservationServiceImpl.cancel(..)
+2024-04-19T21:59:30.408+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5bef761b] ReservationServiceImpl.cancel(..) time=4ms
+2024-04-19T21:59:30.452+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2807a89b] ReservationServiceImpl.cancel(..)
+2024-04-19T21:59:30.454+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2807a89b] ReservationServiceImpl.cancel(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 예약 10은 취소할 수 없습니다.
+2024-04-19T21:59:30.468+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cc80e6a4] ReservationServiceImpl.cancel(..)
+2024-04-19T21:59:30.470+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cc80e6a4] ReservationServiceImpl.cancel(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 예약 0은 없는 예약입니다.
+2024-04-19T21:59:30.497+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5898a591] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.505+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5898a591] ReservationServiceImpl.findReservationForWeekByMember(..) time=8ms
+2024-04-19T21:59:30.506+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2997d6e1] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.509+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2997d6e1] ReservationServiceImpl.findReservationForWeekByMember(..) time=3ms
+2024-04-19T21:59:30.579+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f83d82e1] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.611+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f83d82e1] ReservationServiceImpl.findReservationForWeekByMember(..) time=32ms
+2024-04-19T21:59:30.614+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f3d56d8c] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.634+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f3d56d8c] ReservationServiceImpl.findReservationForWeekByMember(..) time=20ms
+2024-04-19T21:59:30.667+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b8fd621b] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.672+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b8fd621b] ReservationServiceImpl.findReservationForWeekByMember(..) time=5ms
+2024-04-19T21:59:30.673+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a0fb2f1] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.676+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a0fb2f1] ReservationServiceImpl.findReservationForWeekByMember(..) time=3ms
+2024-04-19T21:59:30.697+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [97998b38] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.701+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [97998b38] ReservationServiceImpl.findReservationForWeekByMember(..) time=4ms
+2024-04-19T21:59:30.702+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8d0e2548] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.705+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8d0e2548] ReservationServiceImpl.findReservationForWeekByMember(..) time=3ms
+2024-04-19T21:59:30.728+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6cbec271] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.734+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6cbec271] ReservationServiceImpl.findReservationForWeekByMember(..) time=6ms
+2024-04-19T21:59:30.734+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4ed9d04] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.738+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4ed9d04] ReservationServiceImpl.findReservationForWeekByMember(..) time=4ms
+2024-04-19T21:59:30.781+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cee3a2cb] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.788+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cee3a2cb] ReservationServiceImpl.findReservationForWeekByMember(..) time=7ms
+2024-04-19T21:59:30.789+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2cf3648e] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.794+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2cf3648e] ReservationServiceImpl.findReservationForWeekByMember(..) time=5ms
+2024-04-19T21:59:30.816+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f2fe5361] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.820+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f2fe5361] ReservationServiceImpl.findReservationForWeekByMember(..) time=4ms
+2024-04-19T21:59:30.821+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f2ff106c] ReservationServiceImpl.findReservationForWeekByMember(..)
+2024-04-19T21:59:30.824+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f2ff106c] ReservationServiceImpl.findReservationForWeekByMember(..) time=3ms
+2024-04-19T21:59:30.851+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [69601301] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.855+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [69601301] ReservationServiceImpl.reservation(..) time=4ms ex=com.sideProject.PlanIT.common.response.CustomException: 유저 27은 해당 트레이너에 예약할 수 없습니다.
+2024-04-19T21:59:30.880+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b24caf37] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.890+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b24caf37] ReservationServiceImpl.reservation(..) time=10ms ex=com.sideProject.PlanIT.common.response.CustomException: program 13 은 PT권이 아닙니다.
+2024-04-19T21:59:30.909+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f931b10e] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.912+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f931b10e] ReservationServiceImpl.reservation(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 예약 33은 예약할 수 없습니다.
+2024-04-19T21:59:30.944+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ce88e8d6] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.945+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ce88e8d6] ReservationServiceImpl.reservation(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 34은 존재하지 않는 유저입니다.
+2024-04-19T21:59:30.964+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c99408a7] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.966+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c99408a7] ReservationServiceImpl.reservation(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 17는 존재하지 않는 수업입니다.
+2024-04-19T21:59:30.985+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48f42139] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:30.988+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48f42139] ReservationServiceImpl.reservation(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 37는 존재하지 않는 예약입니다.
+2024-04-19T21:59:31.007+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4a626ae3] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:31.010+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4a626ae3] ReservationServiceImpl.reservation(..) time=3ms
+2024-04-19T21:59:31.035+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2072a150] ReservationServiceImpl.reservation(..)
+2024-04-19T21:59:31.037+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2072a150] ReservationServiceImpl.reservation(..) time=2ms
+2024-04-19T21:59:31.057+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4341be48] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.070+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4341be48] ReservationServiceImpl.changeAvailability(..) time=13ms
+2024-04-19T21:59:31.086+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [89a37994] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.097+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [89a37994] ReservationServiceImpl.changeAvailability(..) time=10ms
+2024-04-19T21:59:31.117+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b8aa86b5] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.124+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b8aa86b5] ReservationServiceImpl.changeAvailability(..) time=7ms
+2024-04-19T21:59:31.139+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a802faff] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.140+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a802faff] ReservationServiceImpl.changeAvailability(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 46는 존재하지 않는 유저입니다.
+2024-04-19T21:59:31.149+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [96f86242] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.151+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [96f86242] ReservationServiceImpl.changeAvailability(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 46은 직원이 아닙니다.
+2024-04-19T21:59:31.165+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [3f414528] ReservationServiceImpl.changeAvailability(..)
+2024-04-19T21:59:31.171+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [3f414528] ReservationServiceImpl.changeAvailability(..) time=6ms ex=com.sideProject.PlanIT.common.response.CustomException: 25 2023-03-19T10:00은 근무시간 입니다.
+2024-04-19T21:59:31.217+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1fd6af98] ProgramServiceImpl.expiredMemberShipProgram(..)
+2024-04-19T21:59:31.224+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1fd6af98] ProgramServiceImpl.expiredMemberShipProgram(..) time=7ms
+2024-04-19T21:59:31.261+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [49f52c30] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.263+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [49f52c30] ProgramServiceImpl.findByProgramId(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 0은 존재하지 않는 프로그램입니다.
+2024-04-19T21:59:31.277+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ec6afd4e] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.281+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ec6afd4e] ProgramServiceImpl.findByProgramId(..) time=4ms
+2024-04-19T21:59:31.306+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a9391025] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.309+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a9391025] ProgramServiceImpl.findByProgramId(..) time=3ms
+2024-04-19T21:59:31.310+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1cd96c6b] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.312+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1cd96c6b] ProgramServiceImpl.findByProgramId(..) time=2ms
+2024-04-19T21:59:31.344+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [30794066] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.345+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [30794066] ProgramServiceImpl.findByProgramId(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 60은 존재하지 않는 회원입니다.
+2024-04-19T21:59:31.375+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [13af9a6b] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.377+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [13af9a6b] ProgramServiceImpl.findByProgramId(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 31은 26의 조회 권한이 없습니다.
+2024-04-19T21:59:31.391+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8df6b69c] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.393+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8df6b69c] ProgramServiceImpl.findByProgramId(..) time=2ms
+2024-04-19T21:59:31.408+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4c8b6391] ProgramServiceImpl.findByProgramId(..)
+2024-04-19T21:59:31.409+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4c8b6391] ProgramServiceImpl.findByProgramId(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 67은 28의 조회 권한이 없습니다.
+2024-04-19T21:59:31.425+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [04069d24] ProgramServiceImpl.resumeProgram(..)
+2024-04-19T21:59:31.427+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [04069d24] ProgramServiceImpl.resumeProgram(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램이 정지 상태가 아닙니다.
+2024-04-19T21:59:31.441+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [7a249726] ProgramServiceImpl.resumeProgram(..)
+2024-04-19T21:59:31.441+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [7a249726] ProgramServiceImpl.resumeProgram(..) time=0ms ex=com.sideProject.PlanIT.common.response.CustomException: 31는 존재하지 않는 프로그램입니다.
+2024-04-19T21:59:31.455+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1a3cca57] ProgramServiceImpl.resumeProgram(..)
+2024-04-19T21:59:31.456+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1a3cca57] ProgramServiceImpl.resumeProgram(..) time=1ms
+2024-04-19T21:59:31.476+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4be205b3] ProgramServiceImpl.suspendProgram(..)
+2024-04-19T21:59:31.477+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4be205b3] ProgramServiceImpl.suspendProgram(..) time=1ms
+2024-04-19T21:59:31.490+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [3cf7a206] ProgramServiceImpl.suspendProgram(..)
+2024-04-19T21:59:31.491+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [3cf7a206] ProgramServiceImpl.suspendProgram(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 존재하지 않는 프로그램입니다.
+2024-04-19T21:59:31.502+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6a71df7e] ProgramServiceImpl.suspendProgram(..)
+2024-04-19T21:59:31.503+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6a71df7e] ProgramServiceImpl.suspendProgram(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 정책상 정지 요청이 거부됩니다.
+2024-04-19T21:59:31.522+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [24bb4d8b] ProgramServiceImpl.findRegistrationsByAdmin(..)
+2024-04-19T21:59:31.530+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [24bb4d8b] ProgramServiceImpl.findRegistrationsByAdmin(..) time=8ms
+2024-04-19T21:59:31.546+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1336af68] ProgramServiceImpl.findRegistrationsByAdmin(..)
+2024-04-19T21:59:31.551+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1336af68] ProgramServiceImpl.findRegistrationsByAdmin(..) time=5ms
+2024-04-19T21:59:31.564+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [20603879] ProgramServiceImpl.findRegistrationsByAdmin(..)
+2024-04-19T21:59:31.565+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [20603879] ProgramServiceImpl.findRegistrationsByAdmin(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 80는 권한이 없습니다.
+2024-04-19T21:59:31.573+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9abe3347] ProgramServiceImpl.findRegistrationsByAdmin(..)
+2024-04-19T21:59:31.576+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9abe3347] ProgramServiceImpl.findRegistrationsByAdmin(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 조건을 만족하는 Registration이 없습니다.
+2024-04-19T21:59:31.588+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [41a02f9a] ProgramServiceImpl.findRegistrationsByAdmin(..)
+2024-04-19T21:59:31.589+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [41a02f9a] ProgramServiceImpl.findRegistrationsByAdmin(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 조건을 만족하는 Registration이 없습니다.
+2024-04-19T21:59:31.607+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2bda110b] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.610+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2bda110b] ProgramServiceImpl.findRegistrationsByUser(..) time=3ms
+2024-04-19T21:59:31.610+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4456af4] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.612+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4456af4] ProgramServiceImpl.findRegistrationsByUser(..) time=2ms
+2024-04-19T21:59:31.623+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [75ed5ca2] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.625+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [75ed5ca2] ProgramServiceImpl.findRegistrationsByUser(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 조건을 만족하는 Registration이 없습니다.
+2024-04-19T21:59:31.644+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48ade63c] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.648+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48ade63c] ProgramServiceImpl.findRegistrationsByUser(..) time=4ms
+2024-04-19T21:59:31.649+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e4df58c4] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.654+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e4df58c4] ProgramServiceImpl.findRegistrationsByUser(..) time=5ms
+2024-04-19T21:59:31.666+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [37cf3500] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.667+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [37cf3500] ProgramServiceImpl.findRegistrationsByUser(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 존재하지 않는 회원입니다.
+2024-04-19T21:59:31.674+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2ece35a6] ProgramServiceImpl.findRegistrationsByUser(..)
+2024-04-19T21:59:31.676+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2ece35a6] ProgramServiceImpl.findRegistrationsByUser(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 조건을 만족하는 Registration이 없습니다.
+2024-04-19T21:59:31.685+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0a179b8a] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.688+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0a179b8a] ProgramServiceImpl.findByUser(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다.
+2024-04-19T21:59:31.715+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e61b5fcb] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.721+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e61b5fcb] ProgramServiceImpl.findByUser(..) time=6ms
+2024-04-19T21:59:31.732+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [35dd260f] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.735+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [35dd260f] ProgramServiceImpl.findByUser(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다.
+2024-04-19T21:59:31.749+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [76909a7a] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.752+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [76909a7a] ProgramServiceImpl.findByUser(..) time=3ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다.
+2024-04-19T21:59:31.760+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ca4f8537] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.760+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ca4f8537] ProgramServiceImpl.findByUser(..) time=0ms ex=com.sideProject.PlanIT.common.response.CustomException: 0는 존재하지 않는 회원입니다.
+2024-04-19T21:59:31.780+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [df7112fb] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.784+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [df7112fb] ProgramServiceImpl.findByUser(..) time=4ms
+2024-04-19T21:59:31.784+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9512c9f1] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.787+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9512c9f1] ProgramServiceImpl.findByUser(..) time=3ms
+2024-04-19T21:59:31.810+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cffebcce] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.814+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cffebcce] ProgramServiceImpl.findByUser(..) time=4ms
+2024-04-19T21:59:31.827+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d77eca22] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.829+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d77eca22] ProgramServiceImpl.findByUser(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다.
+2024-04-19T21:59:31.846+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [11bb15d7] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.851+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [11bb15d7] ProgramServiceImpl.findByUser(..) time=5ms
+2024-04-19T21:59:31.869+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [fe58b56f] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.874+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [fe58b56f] ProgramServiceImpl.findByUser(..) time=5ms
+2024-04-19T21:59:31.874+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [87349422] ProgramServiceImpl.findByUser(..)
+2024-04-19T21:59:31.877+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [87349422] ProgramServiceImpl.findByUser(..) time=3ms
+2024-04-19T21:59:31.887+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48c1fb63] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.888+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [48c1fb63] ProgramServiceImpl.find(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 114는 권한이 없습니다.
+2024-04-19T21:59:31.900+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e12f267e] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.901+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e12f267e] ProgramServiceImpl.find(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다
+2024-04-19T21:59:31.908+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [095c3656] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.909+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [095c3656] ProgramServiceImpl.find(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 119는 존재하지 않는 회원입니다.
+2024-04-19T21:59:31.928+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f792ae93] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.933+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f792ae93] ProgramServiceImpl.find(..) time=5ms
+2024-04-19T21:59:31.953+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4d2e9432] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.956+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [4d2e9432] ProgramServiceImpl.find(..) time=4ms
+2024-04-19T21:59:31.974+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6203dc9c] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.980+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6203dc9c] ProgramServiceImpl.find(..) time=6ms
+2024-04-19T21:59:31.988+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a4983dd3] ProgramServiceImpl.find(..)
+2024-04-19T21:59:31.989+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a4983dd3] ProgramServiceImpl.find(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 프로그램을 찾을 수 없습니다
+2024-04-19T21:59:32.004+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b9ccad6a] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.008+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b9ccad6a] ProgramServiceImpl.approve(..) time=4ms
+2024-04-19T21:59:32.022+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [045b2b34] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.025+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [045b2b34] ProgramServiceImpl.approve(..) time=3ms
+2024-04-19T21:59:32.039+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c9185cfa] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.041+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c9185cfa] ProgramServiceImpl.approve(..) time=2ms
+2024-04-19T21:59:32.056+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c8c2c811] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.058+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c8c2c811] ProgramServiceImpl.approve(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 이미 등록된 프로그램입니다.
+2024-04-19T21:59:32.067+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8d15e52a] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.068+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8d15e52a] ProgramServiceImpl.approve(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 1는 존재하지 않는 직원입니다.
+2024-04-19T21:59:32.077+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bf0e0982] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.078+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bf0e0982] ProgramServiceImpl.approve(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 파라미터 값을 확인해주세요.
+2024-04-19T21:59:32.083+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [676de503] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.084+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [676de503] ProgramServiceImpl.approve(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 0은 존재하지 않는 등록입니다.
+2024-04-19T21:59:32.094+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9a142b40] ProgramServiceImpl.approve(..)
+2024-04-19T21:59:32.096+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9a142b40] ProgramServiceImpl.approve(..) time=2ms
+2024-04-19T21:59:32.112+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9a11cc53] ProgramServiceImpl.refund(..)
+2024-04-19T21:59:32.113+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9a11cc53] ProgramServiceImpl.refund(..) time=1ms
+2024-04-19T21:59:32.131+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bb0b5cb8] ProgramServiceImpl.refund(..)
+2024-04-19T21:59:32.132+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bb0b5cb8] ProgramServiceImpl.refund(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 이미 환불된 프로그램입니다.
+2024-04-19T21:59:32.138+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d98f7282] ProgramServiceImpl.refund(..)
+2024-04-19T21:59:32.138+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d98f7282] ProgramServiceImpl.refund(..) time=0ms ex=com.sideProject.PlanIT.common.response.CustomException: 등록되지 않은 프로그램입니다.
+2024-04-19T21:59:32.155+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f9477aa4] ProgramServiceImpl.modify(..)
+2024-04-19T21:59:32.161+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f9477aa4] ProgramServiceImpl.modify(..) time=6ms
+2024-04-19T21:59:32.170+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cc0562f4] ProgramServiceImpl.modify(..)
+2024-04-19T21:59:32.171+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [cc0562f4] ProgramServiceImpl.modify(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 등록되지 않은 프로그램입니다.
+2024-04-19T21:59:32.184+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a7ff191f] ProgramServiceImpl.modify(..)
+2024-04-19T21:59:32.186+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a7ff191f] ProgramServiceImpl.modify(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 존재하지 않는 회원입니다.
+2024-04-19T21:59:32.198+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f83a0188] ProgramServiceImpl.modify(..)
+2024-04-19T21:59:32.199+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f83a0188] ProgramServiceImpl.modify(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 존재하지 않는 직원입니다.
+2024-04-19T21:59:32.211+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2193908f] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.212+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2193908f] ProgramServiceImpl.registration(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 64은 존재하지 않는 상품입니다.
+2024-04-19T21:59:32.219+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1518e502] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.221+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1518e502] ProgramServiceImpl.registration(..) time=2ms
+2024-04-19T21:59:32.233+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bea10484] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.233+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [bea10484] ProgramServiceImpl.registration(..) time=0ms ex=com.sideProject.PlanIT.common.response.CustomException: 162는 존재하지 않는 회원입니다.
+2024-04-19T21:59:32.240+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [60cb4950] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.243+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [60cb4950] ProgramServiceImpl.registration(..) time=3ms
+2024-04-19T21:59:32.255+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [568d22bd] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.257+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [568d22bd] ProgramServiceImpl.registration(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 0은 존재하지 않는 트레이너입니다.
+2024-04-19T21:59:32.266+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8b669daa] ProgramServiceImpl.registration(..)
+2024-04-19T21:59:32.268+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8b669daa] ProgramServiceImpl.registration(..) time=2ms
+2024-04-19T21:59:32.309+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f57af040] NoticeServiceImpl.findNotice(..)
+2024-04-19T21:59:32.311+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f57af040] NoticeServiceImpl.findNotice(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 공지를 찾을 수 없습니다
+2024-04-19T21:59:32.315+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [17cf644a] NoticeServiceImpl.findNotice(..)
+2024-04-19T21:59:32.317+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [17cf644a] NoticeServiceImpl.findNotice(..) time=2ms
+2024-04-19T21:59:32.324+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [86790bb4] NoticeServiceImpl.findAllNoticesInTime(..)
+2024-04-19T21:59:32.326+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [86790bb4] NoticeServiceImpl.findAllNoticesInTime(..) time=2ms
+2024-04-19T21:59:32.333+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f21e4960] NoticeServiceImpl.findAllNotices(..)
+2024-04-19T21:59:32.337+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f21e4960] NoticeServiceImpl.findAllNotices(..) time=4ms
+2024-04-19T21:59:32.343+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [90f6970a] NoticeServiceImpl.deleteNotice(..)
+2024-04-19T21:59:32.345+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [90f6970a] NoticeServiceImpl.deleteNotice(..) time=2ms
+2024-04-19T21:59:32.351+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [921cf68b] NoticeServiceImpl.editNotice(..)
+2024-04-19T21:59:32.353+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [921cf68b] NoticeServiceImpl.editNotice(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 공지를 찾을 수 없습니다
+2024-04-19T21:59:32.356+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [06a16858] NoticeServiceImpl.editNotice(..)
+2024-04-19T21:59:32.359+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [06a16858] NoticeServiceImpl.editNotice(..) time=3ms
+2024-04-19T21:59:32.364+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ac32375f] NoticeServiceImpl.createNotice(..)
+2024-04-19T21:59:32.365+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ac32375f] NoticeServiceImpl.createNotice(..) time=1ms
+2024-04-19T21:59:32.382+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4171115] ProductServiceImpl.findProduct(..)
+2024-04-19T21:59:32.383+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c4171115] ProductServiceImpl.findProduct(..) time=1ms
+2024-04-19T21:59:32.386+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0b4bbd35] ProductServiceImpl.findProduct(..)
+2024-04-19T21:59:32.386+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0b4bbd35] ProductServiceImpl.findProduct(..) time=0ms ex=com.sideProject.PlanIT.common.response.CustomException: 1는 존재하지 않는 상품입니다.
+2024-04-19T21:59:32.393+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1c9ca855] ProductServiceImpl.findAllProducts(..)
+2024-04-19T21:59:32.395+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [1c9ca855] ProductServiceImpl.findAllProducts(..) time=2ms
+2024-04-19T21:59:32.400+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6ed1ca2f] ProductServiceImpl.findAllProducts(..)
+2024-04-19T21:59:32.401+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [6ed1ca2f] ProductServiceImpl.findAllProducts(..) time=1ms
+2024-04-19T21:59:32.404+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [301e691b] ProductServiceImpl.findAllProducts(..)
+2024-04-19T21:59:32.405+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [301e691b] ProductServiceImpl.findAllProducts(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 상품이 존재하지 않습니다.
+2024-04-19T21:59:32.411+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [af5f570f] ProductServiceImpl.stopProductSell(..)
+2024-04-19T21:59:32.411+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [af5f570f] ProductServiceImpl.stopProductSell(..) time=0ms
+2024-04-19T21:59:32.417+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [72e68ece] ProductServiceImpl.createProduct(..)
+2024-04-19T21:59:32.417+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [72e68ece] ProductServiceImpl.createProduct(..) time=0ms
+2024-04-19T21:59:32.418+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c54da2e2] ProductServiceImpl.createProduct(..)
+2024-04-19T21:59:32.418+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c54da2e2] ProductServiceImpl.createProduct(..) time=0ms
+2024-04-19T21:59:32.428+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8fba6796] BannerServiceImpl.findBanner(..)
+2024-04-19T21:59:32.430+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8fba6796] BannerServiceImpl.findBanner(..) time=2ms
+2024-04-19T21:59:32.433+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [36c5b16e] BannerServiceImpl.findBanner(..)
+2024-04-19T21:59:32.434+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [36c5b16e] BannerServiceImpl.findBanner(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 배너를 찾을 수 없습니다
+2024-04-19T21:59:32.439+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b22948b9] BannerServiceImpl.findAllBannersInTime(..)
+2024-04-19T21:59:32.442+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b22948b9] BannerServiceImpl.findAllBannersInTime(..) time=3ms
+2024-04-19T21:59:32.447+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c5429ff5] BannerServiceImpl.findAllBanners(..)
+2024-04-19T21:59:32.454+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [c5429ff5] BannerServiceImpl.findAllBanners(..) time=7ms
+2024-04-19T21:59:32.459+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a73a1889] BannerServiceImpl.deleteBanner(..)
+2024-04-19T21:59:32.461+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [a73a1889] BannerServiceImpl.deleteBanner(..) time=2ms
+2024-04-19T21:59:32.467+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5a29a859] BannerServiceImpl.editBanner(..)
+2024-04-19T21:59:32.470+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [5a29a859] BannerServiceImpl.editBanner(..) time=3ms
+2024-04-19T21:59:32.475+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [43b209c7] BannerServiceImpl.editBanner(..)
+2024-04-19T21:59:32.476+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [43b209c7] BannerServiceImpl.editBanner(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 배너를 찾을 수 없습니다
+2024-04-19T21:59:32.480+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ff577f07] BannerServiceImpl.createBanner(..)
+2024-04-19T21:59:32.481+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ff577f07] BannerServiceImpl.createBanner(..) time=1ms
+2024-04-19T21:59:32.604+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d2cc45ea] MemberServiceImpl.grantEmployeeAuth(..)
+2024-04-19T21:59:32.606+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [d2cc45ea] MemberServiceImpl.grantEmployeeAuth(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원을 찾을 수 없습니다
+2024-04-19T21:59:32.961+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [35cd3daa] MemberServiceImpl.grantEmployeeAuth(..)
+2024-04-19T21:59:32.966+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [35cd3daa] MemberServiceImpl.grantEmployeeAuth(..) time=5ms
+2024-04-19T21:59:32.980+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a584ab1] MemberServiceImpl.findAllEmployees(..)
+2024-04-19T21:59:32.985+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a584ab1] MemberServiceImpl.findAllEmployees(..) time=5ms
+2024-04-19T21:59:32.994+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [374bbda1] MemberServiceImpl.find(..)
+2024-04-19T21:59:32.997+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [374bbda1] MemberServiceImpl.find(..) time=3ms
+2024-04-19T21:59:33.006+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [7a169d28] MemberServiceImpl.find(..)
+2024-04-19T21:59:33.009+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [7a169d28] MemberServiceImpl.find(..) time=3ms
+2024-04-19T21:59:33.016+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [747206ff] MemberServiceImpl.find(..)
+2024-04-19T21:59:33.017+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [747206ff] MemberServiceImpl.find(..) time=1ms
+2024-04-19T21:59:33.020+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [05c22102] MemberServiceImpl.find(..)
+2024-04-19T21:59:33.021+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [05c22102] MemberServiceImpl.find(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원이 없습니다
+2024-04-19T21:59:33.072+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b83379c8] MemberServiceImpl.signOut(..)
+2024-04-19T21:59:33.074+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [b83379c8] MemberServiceImpl.signOut(..) time=2ms
+2024-04-19T21:59:33.173+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [693170b8] MemberServiceImpl.findMember(..)
+2024-04-19T21:59:33.174+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [693170b8] MemberServiceImpl.findMember(..) time=1ms
+2024-04-19T21:59:33.183+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f425d075] MemberServiceImpl.findMember(..)
+2024-04-19T21:59:33.186+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [f425d075] MemberServiceImpl.findMember(..) time=3ms
+2024-04-19T21:59:33.273+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [01ab4097] MemberServiceImpl.findMember(..)
+2024-04-19T21:59:33.275+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [01ab4097] MemberServiceImpl.findMember(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원을 찾을 수 없습니다
+2024-04-19T21:59:33.281+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [957b0aac] MemberServiceImpl.findMember(..)
+2024-04-19T21:59:33.282+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [957b0aac] MemberServiceImpl.findMember(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 직원을 찾을 수 없습니다
+2024-04-19T21:59:33.373+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a8581cc] MemberServiceImpl.changePassword(..)
+2024-04-19T21:59:33.456+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [8a8581cc] MemberServiceImpl.changePassword(..) time=83ms ex=com.sideProject.PlanIT.common.response.CustomException: 비밀번호가 틀렸습니다.
+2024-04-19T21:59:33.547+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [566a3845] MemberServiceImpl.changePassword(..)
+2024-04-19T21:59:33.629+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [566a3845] MemberServiceImpl.changePassword(..) time=82ms ex=com.sideProject.PlanIT.common.response.CustomException: 비밀번호가 틀렸습니다.
+2024-04-19T21:59:33.718+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [67bdc702] MemberServiceImpl.changePassword(..)
+2024-04-19T21:59:33.887+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [67bdc702] MemberServiceImpl.changePassword(..) time=169ms ex=com.sideProject.PlanIT.common.response.CustomException: 변경 비밀번호가 같습니다.
+2024-04-19T21:59:33.978+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [122564f5] MemberServiceImpl.changePassword(..)
+2024-04-19T21:59:33.980+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [122564f5] MemberServiceImpl.changePassword(..) time=2ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원을 찾을 수 없습니다
+2024-04-19T21:59:34.072+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ff935e48] MemberServiceImpl.changePassword(..)
+2024-04-19T21:59:34.321+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [ff935e48] MemberServiceImpl.changePassword(..) time=249ms
+2024-04-19T21:59:34.411+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [61de0a9d] MemberServiceImpl.editMember(..)
+2024-04-19T21:59:34.412+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [61de0a9d] MemberServiceImpl.editMember(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원을 찾을 수 없습니다
+2024-04-19T21:59:34.418+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e80ec3b8] MemberServiceImpl.editMember(..)
+2024-04-19T21:59:34.421+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [e80ec3b8] MemberServiceImpl.editMember(..) time=3ms
+2024-04-19T21:59:34.513+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [56db79af] MemberServiceImpl.deleteMember(..)
+2024-04-19T21:59:34.526+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [56db79af] MemberServiceImpl.deleteMember(..) time=13ms
+2024-04-19T21:59:34.617+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9b0643a7] MemberServiceImpl.memberValidation(..)
+2024-04-19T21:59:34.705+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [9b0643a7] MemberServiceImpl.memberValidation(..) time=88ms
+2024-04-19T21:59:34.805+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [abd51106] MemberServiceImpl.memberValidation(..)
+2024-04-19T21:59:34.806+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [abd51106] MemberServiceImpl.memberValidation(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 회원을 찾을 수 없습니다
+2024-04-19T21:59:34.895+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [66c7af32] MemberServiceImpl.memberValidation(..)
+2024-04-19T21:59:34.976+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [66c7af32] MemberServiceImpl.memberValidation(..) time=81ms ex=com.sideProject.PlanIT.common.response.CustomException: 비밀번호가 틀렸습니다.
+2024-04-19T21:59:34.983+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2ab36ce2] MemberServiceImpl.signUp(..)
+2024-04-19T21:59:35.067+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [2ab36ce2] MemberServiceImpl.signUp(..) time=84ms
+2024-04-19T21:59:35.154+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0ae7b279] MemberServiceImpl.signUp(..)
+2024-04-19T21:59:35.239+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [0ae7b279] MemberServiceImpl.signUp(..) time=85ms
+2024-04-19T21:59:35.239+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [91e04914] MemberServiceImpl.signUp(..)
+2024-04-19T21:59:35.240+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [91e04914] MemberServiceImpl.signUp(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 이미 존재하는 이메일입니다.
+2024-04-19T21:59:35.245+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [05ee8003] MemberServiceImpl.signUp(..)
+2024-04-19T21:59:35.246+09:00  INFO 24006 --- [main] DEFAULT_FILE_LOGGER                      : [05ee8003] MemberServiceImpl.signUp(..) time=1ms ex=com.sideProject.PlanIT.common.response.CustomException: 비밀번호를 입력해주세요.

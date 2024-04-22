@@ -11,7 +11,6 @@ import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 public class TrainerScheduleChangeRequestDto {
 
     @NotNull(message = "시작 시간이 없습니다")

@@ -69,21 +69,21 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
 
-        // 이미 존재하는 예약
+        // 이미 존재하는 예약 조회
         List<Reservation> reservationsAlreadyExist = reservationRepository.findByEmployeeAndReservedDate(employee, reservedDate);
 
         // 예약 필터링 후 남는 예약 (새로 생성할 예약)
         List<LocalDateTime> newReservedTimes = createLocalDateTimes(reservedDate, updateReservationsByRequest(reservationsAlreadyExist, reservedTimes));
 
-        newReservedTimes.forEach(reservedDateTime -> {
-            Reservation newReservation = Reservation.builder()
+        newReservedTimes.stream().map(reservedDateTime ->
+                Reservation.builder()
                     .reservedTime(reservedDateTime)
                     .status(ReservationStatus.POSSIBLE)
                     .employee(employee)
                     .classTime(LocalTime.of(1, 0))
-                    .build();
-            reservationRepository.save(newReservation);
-        });
+                    .build()
+                )
+                .forEach(reservationRepository::save);
 
         return "ok";
     }
@@ -109,7 +109,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalTime time = dateTime.toLocalTime();
 
         for(WorkTime work : workTimesForDay) {
-            log.info("{} {}",work.getStartAt(),work.getEndAt());
+            log.debug("{} {}",work.getStartAt(),work.getEndAt());
         }
 
         return workTimesForDay.stream()
@@ -245,7 +245,6 @@ public class ReservationServiceImpl implements ReservationService {
         List<WorkTime> workTimes = workTimeRepository.findByEmployeeId(employeeId);
         List<Reservation> reservations = reservationRepository.findByEmployeeAndDateTimeBetween(employee,startOfWeek,endOfWeek);
 
-
         return reservations.stream()
                 .filter(reservation -> !reservation.isWithinEmployeeWorkTime(workTimes))
                 .map(ReservationResponseDto::of)
@@ -262,12 +261,12 @@ public class ReservationServiceImpl implements ReservationService {
         return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
     }
 
-    //그 주의 월요일 00:00:00
+    //그 날의 00:00:00
     private LocalDateTime calStartOfDay(LocalDate date) {
         return date.atStartOfDay();
     }
 
-    //그 주의 일요일 23:59:59
+    //그 날의 23:59:59
     private LocalDateTime calEndOfDay(LocalDate date) {
         return date.atTime(LocalTime.MAX);
     }
