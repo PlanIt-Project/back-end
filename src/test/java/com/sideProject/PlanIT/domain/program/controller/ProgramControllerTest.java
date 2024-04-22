@@ -1,18 +1,15 @@
 package com.sideProject.PlanIT.domain.program.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sideProject.PlanIT.common.security.JwtAccessDeniedHandler;
 import com.sideProject.PlanIT.common.security.JwtAuthenticationEntryPoint;
 import com.sideProject.PlanIT.common.util.JwtUtil;
 import com.sideProject.PlanIT.config.SecurityConfig;
-import com.sideProject.PlanIT.domain.controller_test_module.WithMockCustomMember;
 import com.sideProject.PlanIT.domain.program.dto.request.RegistrationRequestDto;
 import com.sideProject.PlanIT.domain.program.service.ProgramService;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

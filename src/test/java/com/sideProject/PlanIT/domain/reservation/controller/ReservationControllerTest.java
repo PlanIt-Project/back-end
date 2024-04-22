@@ -1,17 +1,12 @@
 package com.sideProject.PlanIT.domain.reservation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sideProject.PlanIT.common.response.ApiResponse;
 import com.sideProject.PlanIT.common.security.JwtAccessDeniedHandler;
 import com.sideProject.PlanIT.common.security.JwtAuthenticationEntryPoint;
 import com.sideProject.PlanIT.common.util.JwtUtil;
 import com.sideProject.PlanIT.config.SecurityConfig;
-import com.sideProject.PlanIT.domain.program.controller.ProgramAdminController;
-import com.sideProject.PlanIT.domain.program.dto.request.ProgramModifyRequestDto;
-import com.sideProject.PlanIT.domain.program.service.ProgramService;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ChangeReservationRequestDto;
 import com.sideProject.PlanIT.domain.reservation.dto.reqeust.ReservationRequestDto;
-import com.sideProject.PlanIT.domain.reservation.dto.response.ReservationResponseDto;
 import com.sideProject.PlanIT.domain.reservation.service.ReservationService;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,9 +26,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
@@ -43,7 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
