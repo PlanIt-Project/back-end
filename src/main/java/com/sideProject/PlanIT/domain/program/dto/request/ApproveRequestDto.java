@@ -12,10 +12,10 @@ import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
 @NoArgsConstructor
 public class ApproveRequestDto {
     @NotNull(message="트레이너 아이디가 없습니다.")
-    Long trainer;
+    Long trainerId;
     @Builder
-    public ApproveRequestDto(Long trainer) {
-        this.trainer = trainer;
+    public ApproveRequestDto(Long trainerId) {
+        this.trainerId = trainerId;
     }
 
 }
