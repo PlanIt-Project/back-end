@@ -85,7 +85,7 @@ public class ProgramAdminController {
     public ApiResponse<Long> approve(@PathVariable("id") Long id, @Valid @RequestBody ApproveRequestDto request) {
         LocalDateTime now = LocalDateTime.now();
         return ApiResponse.ok(
-                programService.approve(id, request.getTrainer(), now)
+                programService.approve(id, request.getTrainerId(), now)
         );
     }
 
