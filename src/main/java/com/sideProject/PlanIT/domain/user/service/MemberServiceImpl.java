@@ -170,6 +170,7 @@ public class MemberServiceImpl implements MemberService {
         employeeRepository.save(Employee.builder()
                         .member(memberToEmployee)
                         .career(trainerRequestDto.getCareer())
+                        .trainerMessage(trainerRequestDto.getTrainerMessage())
                 .build());
 
         return "직원 설정 완료";

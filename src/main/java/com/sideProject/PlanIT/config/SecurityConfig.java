@@ -69,7 +69,8 @@ public class SecurityConfig {
                                 "/member/refresh",
                                 "/member/email/**",
                                 "/login/**",
-                                "/image/**").permitAll()
+                                "/image/**",
+                                "/error").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )

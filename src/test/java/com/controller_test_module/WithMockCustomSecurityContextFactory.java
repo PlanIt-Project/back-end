@@ -1,10 +1,8 @@
-package com.sideProject.PlanIT.domain.controller_test_module;
+package com.controller_test_module;
 
 import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.entity.enums.Gender;
-import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;

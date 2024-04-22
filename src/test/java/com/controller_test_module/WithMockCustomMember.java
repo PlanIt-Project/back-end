@@ -1,6 +1,5 @@
-package com.sideProject.PlanIT.domain.controller_test_module;
+package com.controller_test_module;
 
-import com.sideProject.PlanIT.domain.user.entity.Member;
 import com.sideProject.PlanIT.domain.user.entity.enums.MemberRole;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
