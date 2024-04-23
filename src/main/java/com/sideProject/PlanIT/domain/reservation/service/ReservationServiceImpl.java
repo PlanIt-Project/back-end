@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
         //근무시간 내인지 체크
         for(LocalDateTime dateTime: reservedDateTimes) {
             if(!isAvailableForReservationByWorkTime(dateTime, workTimesForDay)) {
-                throw new CustomException(employee.getId() + " " + dateTime + "은 근무시간 입니다.", ErrorCode.EMPLOYEE_NOT_FOUND);
+                throw new CustomException(employee.getId() + " " + dateTime + "은 근무시간 입니다.", ErrorCode.INVALID_RESERVATION_TIME);
             }
         }
 
