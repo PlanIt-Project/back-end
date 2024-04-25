@@ -129,7 +129,7 @@ public class Program extends BaseEntity {
         }
 
         if(this.remainedNumber == 0) {
-            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.EMPLOYEE_NOT_FOUND);
+            throw new CustomException(this.id + "의 남은 횟수가 없습니다", ErrorCode.NO_REMAIN_NUMBER);
         }else if(this.remainedNumber == 1 ){
             this.status = ProgramStatus.EXPIRED;
         }
