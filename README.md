@@ -1,9 +1,9 @@
 ## PlanIT-BE 입니다.
 
 ## 주소
-- 웹페이지 : ㅇㄹㅇㄹ 
-- 백엔드 코드 : ㅇㄹㅇㄹ
-- 프론트 코드 : 
+- 웹페이지 : https://plan-it-jkkkp.netlify.app/
+- 백엔드 코드 : https://planit.run/
+- 프론트 코드 : https://plan-it-jkkkp.netlify.app/
 - api 명세서 :
 
 # BE 기술스택
