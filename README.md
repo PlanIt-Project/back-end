@@ -4,7 +4,7 @@
 - 웹페이지 : https://plan-it-jkkkp.netlify.app/
 - 백엔드 코드 : https://planit.run/
 - 프론트 코드 : https://plan-it-jkkkp.netlify.app/
-- api 명세서 :
+- api 명세서 : [https://gold-zodiac-265355.postman.co/workspace/e8e5c686-5229-47a5-8fe2-d2eb53d104c5/documentation/24516953-90aa0c69-ac22-498e-82de-eb68f9cb34d0]
 
 # BE 기술스택
 
