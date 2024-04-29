@@ -47,7 +47,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("https://plan-it-jkkkp.netlify.app"));
                         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -64,6 +64,7 @@ public class SecurityConfig {
                         })
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(
+                                "/",
                                 "/member/signin",
                                 "/member/signup",
                                 "/member/refresh",
